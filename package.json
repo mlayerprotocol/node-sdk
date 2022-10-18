@@ -1,0 +1,18 @@
+{
+  "name": "icm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node main.js",
+    "dev-socket": "node client-join.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jayson": "^4.0.0",
+    "web3": "^1.8.0",
+    "websocket": "^1.0.34"
+  }
+}
