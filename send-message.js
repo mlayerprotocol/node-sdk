@@ -11,49 +11,17 @@ const sender = {
   pubKey: process.env.PUBLIC_KEY,
   privKey: process.env.PRIVATE_KEY,
 };
+const nodeAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 
 const web3 = new Web3();
 
-let channelName = "ioc-committee",
-  subscriber = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-  timestampSub = Math.floor(Number(Date.now().toString()) / 1000),
-  actionSub = "join";
+let channelName = "ioc-committee"
 
 const { signature: channelSignature } = web3.eth.accounts.sign(
   web3.utils.soliditySha3(channelName.toLowerCase()),
   sender.privKey
 );
-let sub = [];
-sub.push(`Channel:${channelSignature}`);
-sub.push(`ChannelName:${channelName}`);
-sub.push(`Timestamp:${timestampSub}`);
-sub.push(`Action:${actionSub}`);
-sub = sub.join(",");
-const { signature: signSub } = web3.eth.accounts.sign(
-  web3.utils.soliditySha3(sub),
-  "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-);
 
-// sign channel name
-console.log("sub:::", sub);
-console.log("signSub:::", signSub);
-
-const subscription = [
-  {
-    channel: channelSignature,
-    channelName,
-    subscriber,
-    timestamp: timestampSub,
-    signature: signSub,
-    action: actionSub,
-    // action: "leave"
-  },
-];
-client.request("RpcService.Subscription", subscription, (err, response) => {
-  if (err) throw err;
-  console.log("response", response);
-  if (response.error) throw response.error;
-});
 
 const timestamp = Date.now().toString();
 // const from = sender.pubKey;
@@ -68,7 +36,7 @@ const abi = "Abi";
 const action = "Action";
 const parameters = ["good", "Jon", "Doe"];
 const actions = [{ contract, abi, action, parameters }];
-const origin = sender.pubKey;
+const origin = nodeAddress;
 const text = message;
 const html = message;
 

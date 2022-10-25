@@ -1,0 +1,102 @@
+
+
+var WebSocketClient = require('websocket').client;
+const Web3 = require("web3");
+
+const web3 = new Web3();
+let sender = {
+    pubKey: process.env.PUBLIC_KEY,
+    privKey: process.env.PRIVATE_KEY,
+  };
+let receiver = {
+    pubKey: "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+    privKey: "7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6",
+}
+
+let globalConn = null;
+
+
+
+const message = "ICM-SIGNED-MESSAGE";
+const signer = receiver.pubKey;
+const timestamp = Math.floor(Date.now()/1000);
+
+const { signature } = web3.eth.accounts.sign(
+    web3.utils.soliditySha3(message),
+    receiver.privKey
+  );
+
+const _message = {
+    signature,
+    signer,
+    message
+}
+
+
+
+
+
+
+let client = new WebSocketClient({
+    closeTimeout: 50000
+});
+
+
+
+client.on('connectFailed', function(error) {
+    console.log('Connect Error: ' + error);
+});
+
+client.on('connect',  function(connection) {
+    globalConn = connection;
+    console.log('WebSocket Client Connected');
+    connection.on('error', function(error) {
+        console.log("Connection Error: " + error.toString());
+    });
+    connection.on('close', function() {
+        console.log('echo-protocol Connection Closed');
+    });
+    connection.on('message', handleMessage);
+    
+    function sendSignature() {
+        if (connection.connected) {
+            connection.send(JSON.stringify(_message));
+        }
+    }
+    sendSignature();
+    
+});
+
+client.connect('ws://127.0.0.1:8088/echo');
+
+
+
+function handleMessage(message) {
+    console.log("message", typeof message);
+    if (message.type === 'utf8') {
+        try {
+            const _message = JSON.parse(message.utf8Data);
+            console.log("Received: ", _message);
+
+            const _proof = {
+                messageSender: receiver.pubKey,
+                node: _message.message.origin,
+                timestamp: Math.floor(Date.now()/1000),
+            }
+            const _proofSignatureBody = `${_proof.messageSender}/${_proof.node}/${_proof.timestamp}`;
+            
+            const { signature:_signature } = web3.eth.accounts.sign(
+                web3.utils.soliditySha3(_proofSignatureBody),
+                receiver.privKey
+            );
+            _proof['signature'] = _signature;
+            console.log('_proof', _proof)
+            if (globalConn.connected) {
+                globalConn.send(JSON.stringify(_proof));
+            }
+
+        } catch (error) {
+            console.log("error: ", error);
+        }
+    }
+}
