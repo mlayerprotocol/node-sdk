@@ -11,17 +11,16 @@ const sender = {
   pubKey: process.env.PUBLIC_KEY,
   privKey: process.env.PRIVATE_KEY,
 };
-const nodeAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+const nodeAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 const web3 = new Web3();
 
-let channelName = "ioc-committee"
+let channelName = "ioc-committee";
 
 const { signature: channelSignature } = web3.eth.accounts.sign(
   web3.utils.soliditySha3(channelName.toLowerCase()),
   sender.privKey
 );
-
 
 const timestamp = Date.now().toString();
 // const from = sender.pubKey;
@@ -99,6 +98,8 @@ const params = [
     signature: messageSignature,
     actions,
     origin,
+    messageHash: web3.utils.soliditySha3(message),
+    subjectHash: web3.utils.soliditySha3(subject),
   },
 ];
 
