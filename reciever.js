@@ -60,7 +60,10 @@ client.on('connect',  function(connection) {
     
     function sendSignature() {
         if (connection.connected) {
-            connection.send(JSON.stringify(_message));
+            connection.send(JSON.stringify({
+                type:'handshake',
+                data:_message
+            }));
         }
     }
     sendSignature();
@@ -75,25 +78,43 @@ function handleMessage(message) {
     console.log("message", typeof message);
     if (message.type === 'utf8') {
         try {
-            const _message = JSON.parse(message.utf8Data);
+            let _message = JSON.parse(message.utf8Data);
             console.log("Received: ", _message);
 
-            const _proof = {
-                messageSender: receiver.pubKey,
-                node: _message.message.origin,
-                timestamp: Math.floor(Date.now()/1000),
-            }
-            const _proofSignatureBody = `${_proof.messageSender}/${_proof.node}/${_proof.timestamp}`;
+            switch (_message.type??'') {
+                case 'new-message':
+                    _message = _message.data
+                    const _proof = {
+                        messageSignature: _message.senderSignature,
+                        messageSender: receiver.pubKey,
+                        node: _message.message.origin,
+                        timestamp: Math.floor(Date.now()/1000),
+                    }
+                    const _proofSignatureBody = `Message:${_proof.messageSignature},NodeAddress:${_proof.node},Timestamp:${_proof.timestamp}`;
+                    console.log("_proofSignatureBody: ", _proofSignatureBody);
+                    
+                    const { signature:_signature } = web3.eth.accounts.sign(
+                        web3.utils.soliditySha3(_proofSignatureBody),
+                        receiver.privKey
+                    );
+                    _proof['signature'] = _signature;
+                    console.log('_proof', _proof)
+                    if (globalConn.connected) {
+                        globalConn.send(JSON.stringify(
+                            {
+                                type:'delivery-proof',
+                                data:_proof
+                            }
+                        ));
+                    }
+                    break;
             
-            const { signature:_signature } = web3.eth.accounts.sign(
-                web3.utils.soliditySha3(_proofSignatureBody),
-                receiver.privKey
-            );
-            _proof['signature'] = _signature;
-            console.log('_proof', _proof)
-            if (globalConn.connected) {
-                globalConn.send(JSON.stringify(_proof));
+                default:
+                    break;
             }
+            
+
+            
 
         } catch (error) {
             console.log("error: ", error);
