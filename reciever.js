@@ -4,27 +4,42 @@ var WebSocketClient = require('websocket').client;
 const Web3 = require("web3");
 
 const web3 = new Web3();
+const disposableAccount = web3.eth.accounts.create();
+console.log('disposableAccount', disposableAccount)
 let sender = {
     pubKey: process.env.PUBLIC_KEY,
     privKey: process.env.PRIVATE_KEY,
   };
-let receiver = {
+
+const mainAccount = {
     pubKey: "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
     privKey: "7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6",
 }
+
+const receiver = {
+    pubKey: disposableAccount.address,
+    privKey: disposableAccount.privateKey,
+}
+const disposableAccountMsg = `Type:${'handshake'}`
+console.log('disposableAccountMsg', disposableAccountMsg)
+const { signature:disposableAccountSignature } = web3.eth.accounts.sign(
+    web3.utils.soliditySha3(disposableAccountMsg),
+    mainAccount.privKey
+);
+
 
 let globalConn = null;
 
 
 
 const message = "ICM-SIGNED-MESSAGE";
-const signer = receiver.pubKey;
+const signer = mainAccount.pubKey;
 const timestamp = Math.floor(Date.now()/1000);
 
 const { signature } = web3.eth.accounts.sign(
     web3.utils.soliditySha3(message),
-    receiver.privKey
-  );
+    mainAccount.privKey
+);
 
 const _message = {
     signature,
@@ -62,7 +77,8 @@ client.on('connect',  function(connection) {
         if (connection.connected) {
             connection.send(JSON.stringify({
                 type:'handshake',
-                data:_message
+                data:_message,
+                signature:disposableAccountSignature,
             }));
         }
     }
@@ -103,7 +119,8 @@ function handleMessage(message) {
                         globalConn.send(JSON.stringify(
                             {
                                 type:'delivery-proof',
-                                data:_proof
+                                data:_proof,
+                                signature:disposableAccountSignature,
                             }
                         ));
                     }
