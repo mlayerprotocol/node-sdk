@@ -76,6 +76,15 @@ export class Icm{
     console.log('new Sub', _sub)
     return _sub
   }
+
+
+  public newChannel(channelName: string, privateKey:string) : string {
+    const { signature } = this.web3.eth.accounts.sign(
+      this.web3.utils.soliditySha3(channelName.toLowerCase())??'',
+      privateKey
+    );
+    return signature
+  }
 }
 
 
