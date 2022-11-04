@@ -17,7 +17,7 @@
   "author": "Abdulhafiz",
   "license": "ISC",
   "dependencies": {
-    "@dephizee/icm-core": "^1.0.5",
+    "@dephizee/icm-core": "^1.0.4",
     "dotenv": "^16.0.3",
     "jayson": "^4.0.0",
     "ts-node": "^10.9.1",
