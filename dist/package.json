@@ -1,0 +1,29 @@
+{
+  "name": "@dephizee/icm-core",
+  "version": "1.0.6",
+  "description": "",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "dev": "node main.js",
+    "dev-send": "node send-message.js",
+    "dev-subscribe": "node subscribe.js",
+    "dev-reciever": "node reciever.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -rf dist && npm run && npm run build-ts",
+    "build-ts": "tsc",
+    "deploy": "npm run build && cp package.json dist && cd dist/ && npm publish --access public"
+  },
+  "author": "Abdulhafiz",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "jayson": "^4.0.0",
+    "ts-node": "^10.9.1",
+    "web3": "^1.8.0",
+    "websocket": "^1.0.34"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}

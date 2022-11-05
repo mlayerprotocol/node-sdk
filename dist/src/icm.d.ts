@@ -1,5 +1,5 @@
 import Jayson from "jayson";
-import Web3 from "web3";
+import { Account } from "web3-core";
 export interface Client extends Jayson.TcpClientOptions {
 }
 export declare type SubscriptionActionType = 'join' | 'leave';
@@ -50,8 +50,17 @@ export interface NewMessageParam {
     origin: string;
 }
 export declare class Icm {
-    client: Jayson.TcpClient | undefined;
-    web3: Web3;
+    private client;
+    private web3;
+    private socketClient;
+    activeConnection: any;
+    tmpAccount?: {
+        signer: string;
+        timestamp: number;
+        signature: string;
+    };
+    socketMessageCallback?: (message: any) => void;
+    disposableAccount?: Account;
     constructor(config: Jayson.TcpClientOptions | undefined);
     /**
      * subscribe
@@ -71,4 +80,10 @@ export declare class Icm {
      * newMessage
      */
     newMessage({ channelName, channelSignature, chainId, message, subject, actions, origin, platform, type, ...params }: NewMessageParam, privateKey: string): Message;
+    setupSocket(privateKey: string): void;
+    private handleMessage;
+    /**
+     * listen
+     */
+    listen(socketMessageCallback?: (message: any) => void): void;
 }

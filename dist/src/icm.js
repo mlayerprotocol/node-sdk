@@ -17,12 +17,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Icm = void 0;
 var jayson_1 = __importDefault(require("jayson"));
 var web3_1 = __importDefault(require("web3"));
+var WebSocketClient = require('websocket').client;
 var Icm = /** @class */ (function () {
     function Icm(config) {
+        var _this = this;
+        this.web3 = new web3_1.default();
+        this.handleMessage = function (message) {
+            var _a, _b, _c, _d, _e, _f;
+            console.log("message", typeof message);
+            if (message.type === 'utf8') {
+                try {
+                    var _message = JSON.parse(message.utf8Data);
+                    console.log("Received: ", _message);
+                    switch ((_a = _message.type) !== null && _a !== void 0 ? _a : '') {
+                        case 'new-message':
+                            _message = _message.data;
+                            var _proof = {
+                                messageSignature: _message.senderSignature,
+                                // messageSender: tmpAccount.pubKey,
+                                tmpAccount: _this.tmpAccount,
+                                node: _message.message.origin,
+                                timestamp: Math.floor(Date.now() / 1000),
+                            };
+                            var _proofSignatureBody = "Message:".concat(_proof.messageSignature, ",NodeAddress:").concat(_proof.node, ",Timestamp:").concat(_proof.timestamp);
+                            console.log("_proofSignatureBody: ", _proofSignatureBody);
+                            var _signature = _this.web3.eth.accounts.sign((_b = _this.web3.utils.soliditySha3(_proofSignatureBody)) !== null && _b !== void 0 ? _b : '', (_d = (_c = _this.disposableAccount) === null || _c === void 0 ? void 0 : _c.privateKey) !== null && _d !== void 0 ? _d : '').signature;
+                            _proof['signature'] = _signature;
+                            console.log('_proof', _proof);
+                            if (_this.activeConnection.connected) {
+                                _this.activeConnection.send(JSON.stringify({
+                                    type: 'delivery-proof',
+                                    data: _proof,
+                                    signature: (_e = _this.tmpAccount) === null || _e === void 0 ? void 0 : _e.signature,
+                                }));
+                            }
+                            break;
+                        default:
+                            (_f = _this.socketMessageCallback) === null || _f === void 0 ? void 0 : _f.call(_this, message);
+                            break;
+                    }
+                }
+                catch (error) {
+                    console.log("error: ", error);
+                }
+            }
+        };
         if (config)
             this.client = jayson_1.default.client.tcp(config);
-        this.web3 = new web3_1.default();
     }
+    ;
     /**
      * subscribe
      */
@@ -133,6 +176,67 @@ var Icm = /** @class */ (function () {
         };
         console.log('new _message', _message);
         return _message;
+    };
+    Icm.prototype.setupSocket = function (privateKey) {
+        var _this = this;
+        var _a;
+        this.disposableAccount = this.web3.eth.accounts.create();
+        // const tmpAccount = {
+        //     pubKey: disposableAccount.address,
+        //     privKey: disposableAccount.privateKey,
+        // }
+        var timestamp = Math.floor(Date.now() / 1000);
+        var disposableAccountMsg = "PubKey:".concat(this.disposableAccount.address, ",Timestamp:").concat(timestamp); //
+        var signature = this.web3.eth.accounts.sign((_a = this.web3.utils.soliditySha3(disposableAccountMsg)) !== null && _a !== void 0 ? _a : '', privateKey).signature;
+        var signer = this.web3.eth.accounts.privateKeyToAccount(privateKey).address;
+        this.tmpAccount = {
+            signer: signer,
+            timestamp: timestamp,
+            signature: signature,
+        };
+        var _message = {
+            signature: signature,
+            signer: signer,
+            message: this.disposableAccount.address,
+            timestamp: timestamp,
+        };
+        this.socketClient = new WebSocketClient({
+            closeTimeout: 50000
+        });
+        this.socketClient.on('connectFailed', function (error) {
+            console.log('Connect Error: ' + error);
+        });
+        this.socketClient.on('connect', function (connection) {
+            _this.activeConnection = connection;
+            console.log('WebSocket Client Connected');
+            connection.on('error', function (error) {
+                console.log("Connection Error: " + error.toString());
+            });
+            connection.on('close', function () {
+                console.log('echo-protocol Connection Closed');
+            });
+            connection.on('message', _this.handleMessage);
+            function sendSignature() {
+                if (connection.connected) {
+                    connection.send(JSON.stringify({
+                        type: 'handshake',
+                        data: _message,
+                        signature: signature,
+                    }));
+                }
+            }
+            sendSignature();
+        });
+    };
+    /**
+     * listen
+     */
+    Icm.prototype.listen = function (socketMessageCallback) {
+        if (!this.socketClient) {
+            throw new Error("Web Socket Not Initialize");
+        }
+        this.socketMessageCallback = socketMessageCallback;
+        this.socketClient.connect('ws://127.0.0.1:8088/echo');
     };
     return Icm;
 }());
