@@ -137,6 +137,10 @@ export class Icm{
 
 
   public newChannel(channelName: string, privateKey:string) : string {
+    if(channelName.length == 0){
+      throw new Error("Channel Name can not be empty");
+      
+    }
     const { signature } = this.web3.eth.accounts.sign(
       this.web3.utils.soliditySha3(channelName.toLowerCase())??'',
       privateKey
