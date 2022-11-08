@@ -11,16 +11,18 @@ let sender = {
     privKey: process.env.PRIVATE_KEY,
   };
 
+// Meta Mask
 const mainAccount = {
     pubKey: "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
     privKey: "7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6",
 }
 
-const receiver = {
+const tmpAccount = {
     pubKey: disposableAccount.address,
     privKey: disposableAccount.privateKey,
 }
-const disposableAccountMsg = `Type:${'handshake'}`
+const timestamp = Math.floor(Date.now()/1000);
+const disposableAccountMsg = `PubKey:${tmpAccount.pubKey},Timestamp:${timestamp}`//
 console.log('disposableAccountMsg', disposableAccountMsg)
 const { signature:disposableAccountSignature } = web3.eth.accounts.sign(
     web3.utils.soliditySha3(disposableAccountMsg),
@@ -32,19 +34,21 @@ let globalConn = null;
 
 
 
-const message = "ICM-SIGNED-MESSAGE";
-const signer = mainAccount.pubKey;
-const timestamp = Math.floor(Date.now()/1000);
+// const message = "ICM-SIGNED-MESSAGE";
+// const signer = mainAccount.pubKey;
+// const timestamp = Math.floor(Date.now()/1000);
 
-const { signature } = web3.eth.accounts.sign(
-    web3.utils.soliditySha3(message),
-    mainAccount.privKey
-);
+// const { signature } = web3.eth.accounts.sign(
+//     web3.utils.soliditySha3(message),
+//     mainAccount.privKey
+// );
 
 const _message = {
-    signature,
-    signer,
-    message
+    signature: disposableAccountSignature,
+    signer: mainAccount.pubKey,
+    message: tmpAccount.pubKey,
+    timestamp,
+
 }
 
 
@@ -102,7 +106,13 @@ function handleMessage(message) {
                     _message = _message.data
                     const _proof = {
                         messageSignature: _message.senderSignature,
-                        messageSender: receiver.pubKey,
+                        // messageSender: tmpAccount.pubKey,
+                        tmpAccount: {
+                            signer: mainAccount.pubKey,
+                            timestamp,
+                            signature: disposableAccountSignature,
+                            
+                        },
                         node: _message.message.origin,
                         timestamp: Math.floor(Date.now()/1000),
                     }
@@ -111,7 +121,7 @@ function handleMessage(message) {
                     
                     const { signature:_signature } = web3.eth.accounts.sign(
                         web3.utils.soliditySha3(_proofSignatureBody),
-                        receiver.privKey
+                        tmpAccount.privKey
                     );
                     _proof['signature'] = _signature;
                     console.log('_proof', _proof)

@@ -53,6 +53,7 @@ const subscription = [
     // action: "leave"
   },
 ];
+console.log(subscription)
 client.request("RpcService.Subscription", subscription, (err, response) => {
   if (err) throw err;
   console.log("response", response);
