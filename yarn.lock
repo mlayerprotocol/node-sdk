@@ -9,18 +9,6 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@dephizee/icm-core@^1.0.4", "@dephizee/icm-core@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@dephizee/icm-core/-/icm-core-1.0.5.tgz#def3018878a99e35510199b712b23018ab46d822"
-  integrity sha512-QBlejtOAnrAn09K2Y46jWIyx42K55LKRydV1gsvUKKAvc6uelPoabTmpqqfff9w4Ko+Hp/hRhDjCiBG9JYezJQ==
-  dependencies:
-    "@dephizee/icm-core" "^1.0.4"
-    dotenv "^16.0.3"
-    jayson "^4.0.0"
-    ts-node "^10.9.1"
-    web3 "^1.8.0"
-    websocket "^1.0.34"
-
 "@ethereumjs/common@^2.5.0", "@ethereumjs/common@^2.6.4":
   version "2.6.5"
   resolved "https://registry.npmjs.org/@ethereumjs/common/-/common-2.6.5.tgz"

@@ -62,6 +62,12 @@ export interface NewMessageParam{
   origin: string,
 }
 
+export interface SetupSocket{
+  privateKey: string;
+  socketServer?: string;
+  socketPort?: string;
+}
+
 
 
 
@@ -70,6 +76,8 @@ export class Icm{
   private web3: Web3 = new Web3();;
   private socketClient: any;
   public activeConnection: any;
+  public socketServer?: string;
+  public socketPort?: string;
   public tmpAccount?: {
     signer: string,
     timestamp: number,
@@ -222,12 +230,11 @@ export class Icm{
     return _message
   }
 
-  public setupSocket(privateKey:string) {
+  public setupSocket({privateKey, socketServer, socketPort}:SetupSocket) {
     this.disposableAccount = this.web3.eth.accounts.create();
-    // const tmpAccount = {
-    //     pubKey: disposableAccount.address,
-    //     privKey: disposableAccount.privateKey,
-    // }
+    this.socketServer = socketServer;
+    this.socketPort = socketPort;
+    
     const timestamp = Math.floor(Date.now()/1000);
     
     const disposableAccountMsg = `PubKey:${this.disposableAccount.address},Timestamp:${timestamp}`//
@@ -344,7 +351,8 @@ export class Icm{
       
     }
     this.socketMessageCallback = socketMessageCallback;
-    this.socketClient.connect('ws://127.0.0.1:8088/echo');
+    const url = `${this.socketServer}:${this.socketPort}`;
+    this.socketClient.connect(url);
   }
 
 

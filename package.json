@@ -1,6 +1,6 @@
 {
   "name": "@dephizee/icm-core",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "types": "index.d.ts",
@@ -17,7 +17,6 @@
   "author": "Abdulhafiz",
   "license": "ISC",
   "dependencies": {
-    "@dephizee/icm-core": "^1.0.5",
     "dotenv": "^16.0.3",
     "jayson": "^4.0.0",
     "ts-node": "^10.9.1",
