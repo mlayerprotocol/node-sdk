@@ -1,5 +1,5 @@
 import Jayson from "jayson";
-import { Account } from "web3-core";
+import { Account, provider } from "web3-core";
 export interface Client extends Jayson.TcpClientOptions {
 }
 export declare type SubscriptionActionType = 'join' | 'leave';
@@ -48,12 +48,29 @@ export interface NewMessageParam {
     parameters: string[];
     actions: MessageAction[];
     origin: string;
+    approval?: string;
+}
+export interface SetupSocket {
+    privateKey?: string;
+    socketServer?: string;
+    socketPort?: string;
+    socketMessageCallback?: (message: any) => void;
+}
+export interface SetupSocketResponse {
+    tmpAccount: Account;
+}
+export interface ApproveSender {
+    expiry: string;
+    channels: string[] | '*';
+    sender: string;
 }
 export declare class Icm {
     private client;
     private web3;
-    private socketClient;
-    activeConnection: any;
+    provider?: any;
+    private socketClient?;
+    socketServer?: string;
+    socketPort?: string;
     tmpAccount?: {
         signer: string;
         timestamp: number;
@@ -61,7 +78,7 @@ export declare class Icm {
     };
     socketMessageCallback?: (message: any) => void;
     disposableAccount?: Account;
-    constructor(config: Jayson.TcpClientOptions | undefined);
+    constructor(config: Jayson.TcpClientOptions | undefined, provider?: provider);
     /**
      * subscribe
      */
@@ -70,8 +87,8 @@ export declare class Icm {
     /**
      * newSubscription
      */
-    newSubscription({ channelName, channelSignature, action }: NewSubscriptionParam, privateKey: string): Subscription;
-    newChannel(channelName: string, privateKey: string): string;
+    newSubscription({ channelName, channelSignature, action }: NewSubscriptionParam, privateKey?: string): Promise<Subscription>;
+    newChannel(channelName: string, privateKey?: string): Promise<string>;
     /**
      * sendMessage
      */
@@ -79,11 +96,15 @@ export declare class Icm {
     /**
      * newMessage
      */
-    newMessage({ channelName, channelSignature, chainId, message, subject, actions, origin, platform, type, ...params }: NewMessageParam, privateKey: string): Message;
-    setupSocket(privateKey: string): void;
+    newMessage({ channelName, channelSignature, chainId, message, subject, actions, origin, platform, type, approval, ...params }: NewMessageParam, privateKey?: string): Promise<Message>;
+    setupSocket({ privateKey, socketServer, socketPort, socketMessageCallback }: SetupSocket): Promise<SetupSocketResponse>;
     private handleMessage;
     /**
-     * listen
+     * approveSender
      */
-    listen(socketMessageCallback?: (message: any) => void): void;
+    approveSender({ expiry, channels, sender }: ApproveSender, privateKey?: string): Promise<string>;
+    /**
+     * signData
+     */
+    signData(data: string, privateKey?: string): Promise<string>;
 }

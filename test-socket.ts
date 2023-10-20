@@ -10,10 +10,15 @@ let receiver = {
 }
 const socketServer = 'ws://127.0.0.1'
 const socketPort = '8088'
-const _icm = new Icm(_client)
-_icm.setupSocket({
-  privateKey: receiver.privKey,
-  socketServer,
-  socketPort,
-});
-_icm.listen();
+
+
+async function run() {
+  const _icm = new Icm(_client)
+  await _icm.setupSocket({
+    privateKey: receiver.privKey,
+    socketServer,
+    socketPort,
+  });
+}
+
+run()

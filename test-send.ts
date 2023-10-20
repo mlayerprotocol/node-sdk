@@ -1,4 +1,4 @@
-import {Icm, Client} from "./dist"
+import {Icm, Client} from "./src/icm"
 
 const sender = {
   pubKey: '0x5c7983dd79A4461Bc2e9AeAdD9364a41D49A64dc',
@@ -41,16 +41,24 @@ const param = {
 
 }
 
-const _client : Client = {
-  host: "127.0.0.1",
-  port: 9521,
-  version: 1,
-};
-const _icm = new Icm(_client)
-_icm.sendMessage(_icm.newMessage(param, sender.privKey), (err:any, response:any) => {
-  console.log("response:::", response);
-  if (err) throw err;
-  if (response.error) throw response.error;
-  console.log("response:::", response);
-})
 
+
+
+
+async function run() {
+  const _client : Client = {
+    host: "127.0.0.1",
+    port: 9521,
+    version: 1,
+  };
+  const _icm = new Icm(_client)
+  const _sendParam = await _icm.newMessage(param, sender.privKey);
+  _icm.sendMessage(_sendParam, (err:any, response:any) => {
+    console.log("response:::", response);
+    if (err) throw err;
+    if (response.error) throw response.error;
+    console.log("response:::", response);
+  })
+}
+
+run()
