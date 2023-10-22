@@ -14,7 +14,7 @@ let sender = {
 let receiver = {
   pubKey: "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
   privKey: "7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6",
-}
+};
 
 const web3 = new Web3();
 
@@ -23,12 +23,12 @@ let channelName = "ioc-committee",
   timestampSub = Math.floor(Number(Date.now().toString()) / 1000),
   actionSub = "join";
 
-const { signature: channelSignature } = web3.eth.accounts.sign(
+const { signature: channelNameSignature } = web3.eth.accounts.sign(
   web3.utils.soliditySha3(channelName.toLowerCase()),
   sender.privKey
 );
 let sub = [];
-sub.push(`Channel:${channelSignature}`);
+sub.push(`Channel:${channelNameSignature}`);
 sub.push(`ChannelName:${channelName}`);
 sub.push(`Timestamp:${timestampSub}`);
 sub.push(`Action:${actionSub}`);
@@ -44,7 +44,7 @@ console.log("signSub:::", signSub);
 
 const subscription = [
   {
-    channel: channelSignature,
+    channel: channelNameSignature,
     channelName,
     subscriber,
     timestamp: timestampSub,
@@ -59,4 +59,3 @@ client.request("RpcService.Subscription", subscription, (err, response) => {
   console.log("response", response);
   if (response.error) throw response.error;
 });
-
