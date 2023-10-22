@@ -1,4 +1,4 @@
-import {Icm, Client} from "./dist"
+import {Icm, Client} from "./src/icm"
 
 const sender = {
   pubKey: '0x5c7983dd79A4461Bc2e9AeAdD9364a41D49A64dc',
@@ -18,13 +18,21 @@ const _client : Client = {
   port: 9521,
   version: 1,
 };
-const _icm = new Icm(_client)
-const param = {
-  channelName,
-  channelSignature
+
+
+
+async function run() {
+  const _icm = new Icm(_client)
+  const param = {
+    channelName,
+    channelSignature
+  }
+  const _subParam = await _icm.newSubscription(param, receiver.privKey);
+  _icm.subscribe(_subParam, (err:any, response:any) => {
+    if (err) throw err;
+    console.log("response", response);
+    if (response.error) throw response.error;
+  })
 }
-_icm.subscribe(_icm.newSubscription(param, receiver.privKey), (err:any, response:any) => {
-  if (err) throw err;
-  console.log("response", response);
-  if (response.error) throw response.error;
-})
+
+run()
