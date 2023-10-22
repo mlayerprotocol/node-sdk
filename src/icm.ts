@@ -162,8 +162,8 @@ export class Icm{
   }
 
 
+
   public async newChannel(channelName: string, privateKey?:string) : Promise<string> {
-    
     return await this.signData(channelName.toLowerCase(), privateKey);
   }
 
