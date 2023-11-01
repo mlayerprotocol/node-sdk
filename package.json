@@ -1,7 +1,7 @@
 {
-  "name": "@dephizee/icm-core",
+  "name": "@mlayer/core",
   "version": "1.0.98",
-  "description": "",
+  "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
