@@ -1,15 +1,15 @@
-require('dotenv').config();
-const jayson = require('jayson');
-import { Utils } from '../src/helper';
-import { Authorization } from '../src/entities/authorization';
+require("dotenv").config();
+const jayson = require("jayson");
+import { Utils } from "../src/helper";
+import { Authorization } from "../src/entities/authorization";
 import {
   AuthorizeEventType,
   ClientPayload,
-} from '../src/entities/clientPayload';
-import { Client, RESTProvider } from '../src';
+} from "../src/entities/clientPayload";
+import { Client, RESTProvider } from "../src";
 
 const client = jayson.client.tcp({
-  host: '127.0.0.1',
+  host: "127.0.0.1",
   port: 9521,
   version: 1,
 });
@@ -24,60 +24,60 @@ const client = jayson.client.tcp({
 //   address: 'ml:12htc66jeelcfm4nv7drk4dqz6umntcfe690725',
 // };
 const validator = {
-  publicKey: '2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca',
-  address: 'ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354',
+  publicKey: "2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca",
+  address: "ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354",
 };
 
 const owner = {
   privateKey:
-    '47a89d04c9949c5731837b0b247fef1df6f9573c0b8d1f645cfde472371d633dd8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c',
-  publicKey: 'd8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c',
-  address: 'ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354',
+    "47a89d04c9949c5731837b0b247fef1df6f9573c0b8d1f645cfde472371d633dd8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c",
+  publicKey: "d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c",
+  address: "ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354",
 };
 
 const device = {
   privateKey:
-    '0xbc3d5a5a6bb5024b1a96fccb677f065985d8e65d8054095eb6468244fb5ea4a9',
+    "0xbc3d5a5a6bb5024b1a96fccb677f065985d8e65d8054095eb6468244fb5ea4a9",
   publicKey:
-    '0x02d2c4fa18ba44e53e10d5ec25b6ae8439f3fcaf9611183cdb7785dfe2f0c7ab73',
-  address: '0xe652d28F89A28adb89e674a6b51852D0C341Ebe9',
+    "0x02d2c4fa18ba44e53e10d5ec25b6ae8439f3fcaf9611183cdb7785dfe2f0c7ab73",
+  address: "0xe652d28F89A28adb89e674a6b51852D0C341Ebe9",
 };
 
 async function main() {
   const authority: Authorization = new Authorization();
-  console.log('keypairsss', Utils.generateKeyPairSecp());
+  console.log("keypairsss", Utils.generateKeyPairSecp());
   console.log(
-    'BECH32ADDRESS',
+    "BECH32ADDRESS",
     validator.publicKey,
-    Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
+    Utils.toAddress(Buffer.from(validator.publicKey, "hex"))
   );
   authority.account = owner.publicKey;
   authority.agent = device.address;
   authority.grantor = owner.publicKey;
   authority.timestamp = 1705392178023;
-  authority.topicIds = '*';
+  authority.topicIds = "*";
   authority.privilege = 3;
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   const encoded = authority.encodeBytes();
-  console.log('MESSAGE', encoded.toString('hex'));
+  console.log("MESSAGE", encoded.toString("hex"));
   authority.signature = Utils.signMessageEdd(
     encoded,
-    Buffer.from(owner.privateKey, 'hex')
+    Buffer.from(owner.privateKey, "hex")
   );
-  console.log('Grant', authority.asPayload());
+  console.log("Grant", authority.asPayload());
 
   const payload: ClientPayload<Authorization> = new ClientPayload();
   payload.data = authority;
-  payload.timestamp = 1705392177896;
+  payload.timestamp = 2705392177899;
   payload.eventType = AuthorizeEventType.AuthorizeEvent;
   payload.validator = validator.publicKey;
   const pb = payload.encodeBytes();
   payload.signature = await Utils.signMessageEcc(pb, device.privateKey);
-  console.log('Payload', JSON.stringify(payload.asPayload()));
+  console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider('http://localhost:9531'));
-  console.log('AUTHORIZE', await client.authorize(payload));
+  const client = new Client(new RESTProvider("http://localhost:9531"));
+  console.log("AUTHORIZE", await client.authorize(payload));
 }
 main().then();
 

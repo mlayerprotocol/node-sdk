@@ -1,15 +1,15 @@
-require('dotenv').config();
-const jayson = require('jayson');
-import { Utils } from '../src/helper';
-import { Authorization } from '../src/entities/authorization';
+require("dotenv").config();
+const jayson = require("jayson");
+import { Utils } from "../src/helper";
+import { Authorization } from "../src/entities/authorization";
 import {
   AdminTopicEventType,
   AuthorizeEventType,
   ClientPayload,
-} from '../src/entities/clientPayload';
-import { Client, RESTProvider } from '../src';
-import { validator, account, agent } from './lib/keys';
-import { Topic } from '../src/entities/topic';
+} from "../src/entities/clientPayload";
+import { Client, RESTProvider } from "../src";
+import { validator, account, agent } from "./lib/keys";
+import { Topic } from "../src/entities/topic";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -29,23 +29,24 @@ async function main() {
   //   validator.publicKey,
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
-  topic.handle = 'bitcoinworld';
-  topic.description = 'The best toopic';
+  // topic.account = "0xe652d28F89A28adb89e674a6b51852D0C341Ebe9";
+  topic.handle = "rippleChain1._";
+  topic.description = "Ripple";
   topic.account = account.publicKey;
-  topic.name = 'Bitcoin world';
-  topic.reference = '898989';
+  topic.name = "Ripple";
+  topic.reference = "898999";
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;
-  payload.timestamp = 1705392177896;
+  payload.timestamp = 1705392178023;
   payload.eventType = AdminTopicEventType.CreateTopic;
   payload.validator = validator.publicKey;
   const pb = payload.encodeBytes();
   payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
-  console.log('Payload', JSON.stringify(payload.asPayload()));
+  console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider('http://localhost:9531'));
-  console.log('AUTHORIZE', await client.createTopic(payload));
+  const client = new Client(new RESTProvider("http://localhost:9531"));
+  console.log("AUTHORIZE", await client.createTopic(payload));
 }
 main().then();
 
