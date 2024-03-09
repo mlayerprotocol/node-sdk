@@ -14,8 +14,8 @@ export interface ITopic {
   pTH?: string; // parent handle hash
   desc?: string; // description
   sC?: number; // subscription count
-  acct: AddressString; // owner of topic
-  ts: number; // timestamp in millisec
+  acct?: AddressString; // owner of topic
+  ts?: number; // timestamp in millisec
   pub: boolean; // is public topic
   // sig?: HexString;
   // hash?: HexString;
@@ -45,9 +45,9 @@ export class Topic extends BaseEntity {
       hand: this.handle,
       pTH: this.parentTopicHash, // parent handle hash
       desc: this.description, // description
-      sC: this.subsriberCount, // subscription count
-      acct: this.account, // owner of topic
-      ts: this.timestamp, // timestamp in millisec
+      // sC: this.subsriberCount, // subscription count
+      // acct: this.account, // owner of topic
+      // ts: this.timestamp, // timestamp in millisec
       pub: this.isPublic, // is public topic
     };
   }
@@ -63,8 +63,7 @@ export class Topic extends BaseEntity {
       { type: 'string', value: this.handle },
       { type: 'string', value: this.description },
       { type: 'hex', value: this.parentTopicHash },
-      { type: 'int', value: this.subsriberCount },
-      { type: 'hex', value: this.account },
+      // { type: 'int', value: this.subsriberCount },
       { type: 'boolean', value: this.isPublic }
     );
   }

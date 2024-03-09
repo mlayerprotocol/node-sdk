@@ -54,7 +54,7 @@ async function main() {
   authority.account = owner.publicKey;
   authority.agent = device.address;
   authority.grantor = owner.publicKey;
-  authority.timestamp = 1705392178023;
+  authority.timestamp = 1709115075000;
   authority.topicIds = '*';
   authority.privilege = 3;
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days

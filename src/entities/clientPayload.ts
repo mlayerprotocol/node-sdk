@@ -1,6 +1,6 @@
-import { isHexString } from 'ethers';
+import { keccak256 } from 'ethereum-cryptography/keccak';
 import { BaseEntity } from './base';
-import { Utils } from '../helper';
+import { EncoderDataType, Utils } from '../helper';
 import { Authorization } from './authorization';
 
 // Authrization
@@ -54,14 +54,14 @@ export interface IClientPayload {
   // Secondary
   sig: HexString;
   h: HexString;
-  auth: HexString;
+  acct: HexString;
 }
 
 export class ClientPayload<T> extends BaseEntity {
   public data: T;
   public timestamp: number = 0;
   public eventType: AuthorizeEventType | AdminTopicEventType;
-  public authHash: string = '';
+  public account: string = '';
   public validator: string = '';
   public nonce: number = 0;
 
@@ -70,14 +70,35 @@ export class ClientPayload<T> extends BaseEntity {
   public hash: string = '';
 
   public encodeBytes(): Buffer {
-    return Utils.encodeBytes(
-      { type: 'byte', value: (this.data as BaseEntity).encodeBytes() },
-      { type: 'int', value: this.eventType },
-      { type: 'hex', value: this.authHash },
-      { type: 'hex', value: this.validator },
-      { type: 'int', value: this.nonce },
-      { type: 'int', value: this.timestamp }
+    console.log(
+      'DATABYTESSSSS',
+      (this.data as BaseEntity).encodeBytes().toString('hex'),
+      Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()).toString(
+        'hex'
+      )
     );
+    const params: {
+      type: EncoderDataType;
+      value: string | number | boolean | Buffer | BigInt;
+    }[] = [
+      {
+        type: 'byte',
+        value: Buffer.from(
+          Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()).toString(
+            'hex'
+          ),
+          'hex'
+        ),
+      },
+      { type: 'int', value: this.eventType },
+    ];
+    if (this.account.length) {
+      params.push({ type: 'hex', value: this.account });
+    }
+    params.push({ type: 'hex', value: this.validator });
+    params.push({ type: 'int', value: this.nonce });
+    params.push({ type: 'int', value: this.timestamp });
+    return Utils.encodeBytes(...params);
   }
 
   /**
@@ -92,8 +113,10 @@ export class ClientPayload<T> extends BaseEntity {
       sig: this.signature,
       h: this.hash,
       val: this.validator,
-      auth: this.authHash,
+      acct: this.account,
       nonce: this.nonce,
     };
   }
 }
+//383938393839426974636f696e20776f726c64626974636f696e776f726c64546865206265737420746f6f7069630000000000000000
+//383938393839426974636f696e20776f726c64626974636f696e776f726c64546865206265737420746f6f7069630000000000000000

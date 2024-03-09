@@ -1,9 +1,9 @@
 import * as crypto from 'crypto';
 import { bech32 } from 'bech32';
-import { keccak256 } from 'ethereum-cryptography/keccak';
+// import { keccak256 } from 'ethereum-cryptography/keccak';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
 import { AddressString, HexString } from './entities/base';
-import { ethers } from 'ethers';
+import { ethers, keccak256 } from 'ethers';
 import * as nacl from 'tweetnacl';
 import { encodeUTF8, encodeBase64, decodeUTF8 } from 'tweetnacl-util';
 
@@ -28,10 +28,15 @@ export class Utils {
     // Bech32 encoding
     return bech32.encode('ml:', bech32.toWords(ripemd160Hash));
   }
-  static sha256(data: Buffer): Buffer {
+  static sha256Hash(data: Buffer): Buffer {
     const hash = crypto.createHash('sha256');
     hash.update(data);
     return hash.digest();
+  }
+
+  static keccak256Hash(data: Buffer): Buffer {
+    const hash = keccak256(data);
+    return Buffer.from(hash.replace('0x', ''), 'hex');
   }
 
   static generateKeyPairSecp() {
@@ -91,17 +96,14 @@ export class Utils {
     };
   }
 
-  static async signMessageEcc(
-    message: Buffer,
-    privateKey: string
-  ): Promise<string> {
-    const hash = keccak256(message);
+  static signMessageEcc(message: Buffer, privateKey: string): string {
+    const hash = Utils.keccak256Hash(message);
     const wallet = new ethers.Wallet(privateKey);
-    return await wallet.signMessage(hash);
+    return wallet.signingKey.sign(hash).serialized;
   }
 
   static signMessageEdd(message: Buffer, privateKey: Buffer): string {
-    const buffer = Utils.sha256(message);
+    const buffer = Utils.sha256Hash(message);
     const bytes = new Uint8Array(
       buffer.buffer,
       buffer.byteOffset,
@@ -125,7 +127,7 @@ export class Utils {
   }
 
   static signMessageSecp(message: Buffer, privateKey: Buffer): string {
-    const buffer = Utils.sha256(message);
+    const buffer = Utils.sha256Hash(message);
 
     console.log('HASSSSH', buffer.toString('hex'));
     const bytes = new Uint8Array(
@@ -150,7 +152,7 @@ export class Utils {
     signature: string,
     publicKey: Buffer
   ): boolean {
-    const buffer = Utils.sha256(message);
+    const buffer = Utils.sha256Hash(message);
     console.log('HASHHH', buffer.toString('hex'));
     const bytes = new Uint8Array(
       buffer.buffer,

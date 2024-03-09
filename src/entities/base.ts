@@ -12,6 +12,6 @@ export class BaseEntity {
     return;
   }
   public getHash(): Buffer {
-    return Utils.sha256(this.encodeBytes());
+    return Utils.sha256Hash(this.encodeBytes());
   }
 }
