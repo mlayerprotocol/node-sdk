@@ -1,31 +1,43 @@
 {
-  "name": "@dephizee/icm-core",
-  "version": "1.0.98",
-  "description": "",
+  "name": "@mlayerprotocol/core",
+  "version": "1.0.103",
+  "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "dev": "node main.js",
+    "dev1": "node safe.js",
     "dev-send": "node send-message.js",
     "dev-subscribe": "node subscribe.js",
     "dev-reciever": "node reciever.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && npm run && npm run build-ts",
     "build-ts": "tsc",
+    "depl": "npm run build && cp package.json dist && cd dist/",
     "deploy": "npm run build && cp package.json dist && cd dist/ && npm publish --access public",
     "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack"
   },
   "author": "Abdulhafiz",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.6.5",
+    "bech32": "^2.0.0",
     "dotenv": "^16.0.3",
-    "jayson": "^4.0.0",
-    "ts-node": "^10.9.1",
+    "ethers": "^6.10.0",
+    
+    "node-fetch": "^3.3.2",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "web3": "^1.8.0",
     "websocket": "^1.0.34"
   },
   "devDependencies": {
+    "@types/bech32": "^1.1.4",
+    "@types/node-fetch": "^2.6.11",
     "@types/websocket": "^1.0.5",
-    "typescript": "^4.8.4"
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
   }
 }

@@ -2,7 +2,7 @@ import Jayson from "jayson";
 import { Account, provider } from "web3-core";
 export interface Client extends Jayson.TcpClientOptions {
 }
-export declare type SubscriptionActionType = 'join' | 'leave';
+export type SubscriptionActionType = 'join' | 'leave';
 export interface Subscription {
     channel: string;
     channelName: string;
