@@ -20,6 +20,7 @@
   "author": "Abdulhafiz",
   "license": "ISC",
   "dependencies": {
+    "@cosmjs/crypto": "^0.32.3",
     "axios": "^1.6.5",
     "bech32": "^2.0.0",
     "dotenv": "^16.0.3",

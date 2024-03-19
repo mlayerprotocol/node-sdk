@@ -1,11 +1,12 @@
 import * as crypto from "crypto";
 import { bech32 } from "bech32";
 // import { keccak256 } from 'ethereum-cryptography/keccak';
-import { secp256k1 } from "ethereum-cryptography/secp256k1";
-import { AddressString, HexString } from "./entities/base";
-import { ethers, keccak256 } from "ethers";
-import * as nacl from "tweetnacl";
-import { encodeUTF8, encodeBase64, decodeUTF8 } from "tweetnacl-util";
+import { secp256k1 } from 'ethereum-cryptography/secp256k1';
+import { AddressString, HexString } from './entities/base';
+import { ethers, keccak256 } from 'ethers';
+import * as nacl from 'tweetnacl';
+import { Secp256k1, Sha256 } from '@cosmjs/crypto';
+
 
 export type EncoderDataType =
   | "string"
@@ -17,16 +18,28 @@ export type EncoderDataType =
   | "byte";
 
 export class Utils {
-  static toAddress(publicKey: Buffer) {
+  static toUtf8(str: string): Uint8Array {
+    return new TextEncoder().encode(str);
+  }
+  static bigintToUint8Array(num: bigint, length: number, littleEndian = false) {
+    const bytes = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      const byte = num & 0xffn;
+      bytes[littleEndian ? i : length - 1 - i] = Number(byte);
+      num >>= 8n;
+    }
+    return bytes;
+  }
+  static toAddress(publicKey: Buffer, prefix: string = 'ml') {
     // Perform SHA256 hashing followed by RIPEMD160
-    const sha256Hash = crypto.createHash("sha256").update(publicKey).digest();
+    const sha256Hash = crypto.createHash('sha256').update(publicKey).digest();
     const ripemd160Hash = crypto
-      .createHash("ripemd160")
+      .createHash('ripemd160')
       .update(sha256Hash)
       .digest();
 
     // Bech32 encoding
-    return bech32.encode("ml:", bech32.toWords(ripemd160Hash));
+    return bech32.encode(prefix, bech32.toWords(ripemd160Hash));
   }
   static sha256Hash(data: Buffer): Buffer {
     const hash = crypto.createHash("sha256");
@@ -128,22 +141,70 @@ export class Utils {
 
   static signMessageSecp(message: Buffer, privateKey: Buffer): string {
     const buffer = Utils.sha256Hash(message);
-
-    console.log("HASSSSH", buffer.toString("hex"));
     const bytes = new Uint8Array(
       buffer.buffer,
       buffer.byteOffset,
       buffer.byteLength
     );
-    const signature = secp256k1.sign(
-      bytes,
-      new Uint8Array(
-        privateKey.buffer,
-        privateKey.byteOffset,
-        privateKey.byteLength
+    const signature = secp256k1.sign(bytes, buffer.toString('hex'));
+    return signature.toDERHex();
+  }
+
+  static async signAminoSecp(
+    message: Buffer,
+    privateKey: Buffer,
+    address: string
+  ): Promise<Buffer> {
+    const base64msg = message.toString('base64');
+    const jsonData = `{"account_number":"0","chain_id":"","fee":{"amount":[],"gas":"0"},"memo":"","msgs":[{"type":"sign/MsgSignData","value":{"data":"${base64msg}","signer":"${address}"}}],"sequence":"0"}`;
+
+    const dataUtf = Utils.toUtf8(jsonData);
+    console.log('DATAUFT', dataUtf);
+    // const msgHash = Utils.sha256Hash(
+    //   Buffer.from(dataUtf, dataUtf.byteOffset, dataUtf.byteLength)
+    // );
+    // // console.log('BUFFERR', buffer.toString('hex'));
+    // const msgHashBytes = new Uint8Array(
+    //   msgHash.buffer,
+    //   msgHash.byteOffset,
+    //   msgHash.byteLength
+    // );
+    // const signature = secp256k1.sign(bytes, bytes);
+
+    const msgHash = new Sha256(dataUtf).digest();
+    console.log(
+      'Hashh',
+      Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString(
+        'hex'
       )
     );
-    return signature.toDERHex();
+    // const bufR = Utils.bigintToUint8Array(signature.r, 32, true);
+    // const bufS = Utils.bigintToUint8Array(signature.s, 32, true);
+    const privKeyBytes = new Uint8Array(
+      privateKey.buffer,
+      privateKey.byteOffset,
+      privateKey.byteLength
+    );
+
+    const signature = await Secp256k1.createSignature(msgHash, privateKey);
+    const sign = new Uint8Array([...signature.r(32), ...signature.s(32)]);
+
+    return Buffer.from(sign, sign.byteOffset, sign.byteLength);
+
+    // const signatureBytes = new Uint8Array([
+    //   ...signature.r(32),
+    //   ...signature.s(32),
+    // ]);
+    // console.log(
+    //   'SIGNATURES===>',
+    //   Buffer.from(bufR, bufR.byteOffset, bufR.byteLength).toString('hex'),
+    //   Buffer.from(bufS, bufS.byteOffset, bufS.byteLength).toString('hex')
+    // );
+
+    // return (
+    //   Buffer.from(bufR, bufR.byteOffset, bufR.byteLength).toString('hex') +
+    //   Buffer.from(bufS, bufS.byteOffset, bufS.byteLength).toString('hex')
+    // );
   }
 
   // Function to verify a message
@@ -246,5 +307,3 @@ export class Utils {
     return finalBuffer;
   }
 }
-//6d6c70316735613630736c6736326d7077723570326361666d71756c7a34777879656e39717275357936 2a 0000000000000002 0000018d114b82e6
-//6d6c70316735613630736c6736326d7077723570326361666d71756c7a34777879656e39717275357936 2a 0000000000000002 0000018d114b82e6

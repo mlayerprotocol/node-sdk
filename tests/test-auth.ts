@@ -1,13 +1,14 @@
 require('dotenv').config();
 const jayson = require('jayson');
 import { Utils } from '../src/helper';
-import { Authorization } from '../src/entities/authorization';
+import { Authorization, SignatureData } from '../src/entities/authorization';
+import { secp256k1 } from 'ethereum-cryptography/secp256k1';
 import {
   AuthorizeEventType,
   ClientPayload,
 } from '../src/entities/clientPayload';
 import { Client, RESTProvider } from '../src';
-
+import { validator, account, agent } from './lib/keys';
 const client = jayson.client.tcp({
   host: '127.0.0.1',
   port: 9521,
@@ -23,25 +24,6 @@ const client = jayson.client.tcp({
 //     '02ebec9d95769bb3d71712f0bf1e7e88b199fc945f67f908bbab81e9b7cb1092d8',
 //   address: 'ml:12htc66jeelcfm4nv7drk4dqz6umntcfe690725',
 // };
-const validator = {
-  publicKey: '2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca',
-  address: 'ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354',
-};
-
-const owner = {
-  privateKey:
-    '47a89d04c9949c5731837b0b247fef1df6f9573c0b8d1f645cfde472371d633dd8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c',
-  publicKey: 'd8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c',
-  address: 'ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354',
-};
-
-const device = {
-  privateKey:
-    '0xbc3d5a5a6bb5024b1a96fccb677f065985d8e65d8054095eb6468244fb5ea4a9',
-  publicKey:
-    '0x02d2c4fa18ba44e53e10d5ec25b6ae8439f3fcaf9611183cdb7785dfe2f0c7ab73',
-  address: '0xe652d28F89A28adb89e674a6b51852D0C341Ebe9',
-};
 
 async function main() {
   const authority: Authorization = new Authorization();
@@ -51,20 +33,48 @@ async function main() {
     validator.publicKey,
     Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   );
-  authority.account = owner.publicKey;
-  authority.agent = device.address;
-  authority.grantor = owner.publicKey;
+  authority.account = account.publicKey;
+  authority.agent = agent.address;
+  authority.grantor = account.publicKey;
   authority.timestamp = 1709115075000;
   authority.topicIds = '*';
   authority.privilege = 3;
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   const encoded = authority.encodeBytes();
-  console.log('MESSAGE', encoded.toString('hex'));
-  authority.signature = Utils.signMessageEdd(
-    encoded,
-    Buffer.from(owner.privateKey, 'hex')
+
+  const hash = Utils.sha256Hash(encoded).toString('base64');
+  console.log('Hash string', `Approve ${authority.agent} for tml: ${hash}`);
+  const authSig =
+    'juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==';
+  authority.signatureData = new SignatureData(
+    'tendermint/PubKeySecp256k1',
+    account.publicKey,
+    authSig
   );
+
+  // authority.signatureData = Utils.signMessageEdd(
+  //   encoded,
+  //   Buffer.from(owner.privateKey, 'hex')
+  // );
+  // const privKBuff = Buffer.from(account.privateKey);
+
+  // // const pubk = secp256k1.getPublicKey(account.privateKey, true);
+
+  // const pubKeyBuffer = Buffer.from(account.publicKey, 'hex');
+
+  // const address = Utils.toAddress(pubKeyBuffer, 'cosmos');
+  // const signature = await Utils.signAminoSecp(
+  //   Buffer.from('helloworld', 'ascii'),
+  //   privKBuff,
+  //   address
+  // );
+  // console.log('SIGNATURE', {
+  //   publicKey: pubKeyBuffer.toString('base64'),
+  //   address,
+  //   signature: signature.toString('base64'),
+  // });
+
   console.log('Grant', authority.asPayload());
 
   const payload: ClientPayload<Authorization> = new ClientPayload();
@@ -73,11 +83,11 @@ async function main() {
   payload.eventType = AuthorizeEventType.AuthorizeEvent;
   payload.validator = validator.publicKey;
   const pb = payload.encodeBytes();
-  payload.signature = await Utils.signMessageEcc(pb, device.privateKey);
+  payload.signature = Utils.signMessageEcc(pb, agent.privateKey);
   console.log('Payload', JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider('http://localhost:9531'));
-  console.log('AUTHORIZE', await client.authorize(payload));
+  // const client = new Client(new RESTProvider('http://localhost:9531'));
+  //  console.log('AUTHORIZE', await client.authorize(payload));
 }
 main().then();
 

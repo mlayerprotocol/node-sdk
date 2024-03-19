@@ -17,6 +17,7 @@ export interface ITopic {
   acct?: AddressString; // owner of topic
   ts?: number; // timestamp in millisec
   pub: boolean; // is public topic
+  rO: boolean;
   // sig?: HexString;
   // hash?: HexString;
 }
@@ -32,6 +33,7 @@ export class Topic extends BaseEntity {
   public account: string = '';
   public timestamp: number = 0;
   public isPublic: boolean = false;
+  public readOnly: boolean = false;
 
   /**
    * @override
@@ -49,6 +51,7 @@ export class Topic extends BaseEntity {
       // acct: this.account, // owner of topic
       // ts: this.timestamp, // timestamp in millisec
       pub: this.isPublic, // is public topic
+      rO: this.readOnly,
     };
   }
 
@@ -64,7 +67,8 @@ export class Topic extends BaseEntity {
       { type: 'string', value: this.description },
       { type: 'hex', value: this.parentTopicHash },
       // { type: 'int', value: this.subsriberCount },
-      { type: 'boolean', value: this.isPublic }
+      { type: 'boolean', value: this.isPublic },
+      { type: 'boolean', value: this.readOnly }
     );
   }
 }
