@@ -32,18 +32,14 @@ export class Utils {
   }
   static toAddress(publicKey: Buffer, prefix: string = 'ml') {
     // Perform SHA256 hashing followed by RIPEMD160
-    const sha256Hash = crypto.createHash("sha256").update(publicKey).digest();
+    const sha256Hash = crypto.createHash('sha256').update(publicKey).digest();
     const ripemd160Hash = crypto
-      .createHash("ripemd160")
+      .createHash('ripemd160')
       .update(sha256Hash)
       .digest();
 
     // Bech32 encoding
-<<<<<<< HEAD
     return bech32.encode(prefix, bech32.toWords(ripemd160Hash));
-=======
-    return bech32.encode("ml:", bech32.toWords(ripemd160Hash));
->>>>>>> 0a559862d2a72f1d0b7e6077621dadc9528047d5
   }
   static sha256Hash(data: Buffer): Buffer {
     const hash = crypto.createHash("sha256");
