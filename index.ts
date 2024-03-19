@@ -1,3 +1,4 @@
 import {Icm, Client} from "./src/icm"
+import {Utils} from "./src/helper"
 
-export {Icm, Client}
+export {Icm, Client, Utils}
