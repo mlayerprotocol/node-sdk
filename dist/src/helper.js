@@ -29,9 +29,23 @@ const bech32_1 = require("bech32");
 // import { keccak256 } from 'ethereum-cryptography/keccak';
 const secp256k1_1 = require("ethereum-cryptography/secp256k1");
 const ethers_1 = require("ethers");
+const buffer_1 = require("buffer");
 const nacl = __importStar(require("tweetnacl"));
+const crypto_1 = require("@cosmjs/crypto");
 class Utils {
-    static toAddress(publicKey) {
+    static toUtf8(str) {
+        return new TextEncoder().encode(str);
+    }
+    static bigintToUint8Array(num, length, littleEndian = false) {
+        const bytes = new Uint8Array(length);
+        for (let i = 0; i < length; i++) {
+            const byte = num & 0xffn;
+            bytes[littleEndian ? i : length - 1 - i] = Number(byte);
+            num >>= 8n;
+        }
+        return bytes;
+    }
+    static toAddress(publicKey, prefix = "ml") {
         // Perform SHA256 hashing followed by RIPEMD160
         const sha256Hash = crypto.createHash("sha256").update(publicKey).digest();
         const ripemd160Hash = crypto
@@ -39,7 +53,7 @@ class Utils {
             .update(sha256Hash)
             .digest();
         // Bech32 encoding
-        return bech32_1.bech32.encode("ml:", bech32_1.bech32.toWords(ripemd160Hash));
+        return bech32_1.bech32.encode(prefix, bech32_1.bech32.toWords(ripemd160Hash));
     }
     static sha256Hash(data) {
         const hash = crypto.createHash("sha256");
@@ -48,7 +62,7 @@ class Utils {
     }
     static keccak256Hash(data) {
         const hash = (0, ethers_1.keccak256)(data);
-        return Buffer.from(hash.replace("0x", ""), "hex");
+        return buffer_1.Buffer.from(hash.replace("0x", ""), "hex");
     }
     static generateKeyPairSecp() {
         let privateKey;
@@ -56,7 +70,7 @@ class Utils {
             privateKey = crypto.randomBytes(32);
         } while (!secp256k1_1.secp256k1.utils.isValidPrivateKey(privateKey));
         const publicKey = secp256k1_1.secp256k1.getPublicKey(privateKey);
-        const pubKeyBuffer = Buffer.from(publicKey, publicKey.byteOffset, publicKey.byteLength);
+        const pubKeyBuffer = buffer_1.Buffer.from(publicKey, publicKey.byteOffset, publicKey.byteLength);
         return {
             privateKey: privateKey.toString("hex"),
             publicKey: pubKeyBuffer.toString("hex"),
@@ -82,9 +96,9 @@ class Utils {
     static generateKeyPairEdd() {
         const keypair = nacl.sign.keyPair();
         // Bech32 encoding
-        const publicKey = Buffer.from(keypair.publicKey, keypair.publicKey.byteOffset, keypair.publicKey.byteLength);
+        const publicKey = buffer_1.Buffer.from(keypair.publicKey, keypair.publicKey.byteOffset, keypair.publicKey.byteLength);
         return {
-            privateKey: Buffer.from(keypair.secretKey, keypair.secretKey.byteOffset, keypair.secretKey.byteLength).toString("hex"),
+            privateKey: buffer_1.Buffer.from(keypair.secretKey, keypair.secretKey.byteOffset, keypair.secretKey.byteLength).toString("hex"),
             publicKey: publicKey.toString("hex"),
             address: Utils.toAddress(publicKey),
         };
@@ -97,7 +111,7 @@ class Utils {
     static signMessageEdd(message, privateKey) {
         const buffer = Utils.sha256Hash(message);
         const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-        return Buffer.from(nacl.sign.detached(bytes, new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength))).toString("hex");
+        return buffer_1.Buffer.from(nacl.sign.detached(bytes, new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength))).toString("hex");
     }
     static getSignerEcc(message, signature) {
         const hash = (0, ethers_1.keccak256)(message);
@@ -105,28 +119,63 @@ class Utils {
     }
     static signMessageSecp(message, privateKey) {
         const buffer = Utils.sha256Hash(message);
-        console.log("HASSSSH", buffer.toString("hex"));
         const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-        const signature = secp256k1_1.secp256k1.sign(bytes, new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength));
+        const signature = secp256k1_1.secp256k1.sign(bytes, buffer.toString("hex"));
         return signature.toDERHex();
+    }
+    static async signAminoSecp(message, privateKey, address) {
+        const base64msg = message.toString("base64");
+        const jsonData = `{"account_number":"0","chain_id":"","fee":{"amount":[],"gas":"0"},"memo":"","msgs":[{"type":"sign/MsgSignData","value":{"data":"${base64msg}","signer":"${address}"}}],"sequence":"0"}`;
+        const dataUtf = Utils.toUtf8(jsonData);
+        console.log("DATAUFT", dataUtf);
+        // const msgHash = Utils.sha256Hash(
+        //   Buffer.from(dataUtf, dataUtf.byteOffset, dataUtf.byteLength)
+        // );
+        // // console.log('BUFFERR', buffer.toString('hex'));
+        // const msgHashBytes = new Uint8Array(
+        //   msgHash.buffer,
+        //   msgHash.byteOffset,
+        //   msgHash.byteLength
+        // );
+        // const signature = secp256k1.sign(bytes, bytes);
+        const msgHash = new crypto_1.Sha256(dataUtf).digest();
+        console.log("Hashh", buffer_1.Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString("hex"));
+        // const bufR = Utils.bigintToUint8Array(signature.r, 32, true);
+        // const bufS = Utils.bigintToUint8Array(signature.s, 32, true);
+        const privKeyBytes = new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength);
+        const signature = await crypto_1.Secp256k1.createSignature(msgHash, privateKey);
+        const sign = new Uint8Array([...signature.r(32), ...signature.s(32)]);
+        return buffer_1.Buffer.from(sign, sign.byteOffset, sign.byteLength);
+        // const signatureBytes = new Uint8Array([
+        //   ...signature.r(32),
+        //   ...signature.s(32),
+        // ]);
+        // console.log(
+        //   'SIGNATURES===>',
+        //   Buffer.from(bufR, bufR.byteOffset, bufR.byteLength).toString('hex'),
+        //   Buffer.from(bufS, bufS.byteOffset, bufS.byteLength).toString('hex')
+        // );
+        // return (
+        //   Buffer.from(bufR, bufR.byteOffset, bufR.byteLength).toString('hex') +
+        //   Buffer.from(bufS, bufS.byteOffset, bufS.byteLength).toString('hex')
+        // );
     }
     // Function to verify a message
     static verifyMessageSecp(message, signature, publicKey) {
         const buffer = Utils.sha256Hash(message);
         console.log("HASHHH", buffer.toString("hex"));
         const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-        return secp256k1_1.secp256k1.verify(bytes, Buffer.from(signature, "hex"), publicKey);
+        return secp256k1_1.secp256k1.verify(bytes, buffer_1.Buffer.from(signature, "hex"), publicKey);
     }
     static encodeBytes(...args) {
-        var _a, _b, _c;
-        let buffer = Buffer.from("");
+        let buffer = buffer_1.Buffer.from("");
         let buffers = [];
         let len = 0;
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
             switch (arg.type) {
                 case "string":
-                    buffers.push(Buffer.from(((_a = arg.value) !== null && _a !== void 0 ? _a : "")));
+                    buffers.push(buffer_1.Buffer.from((arg.value ?? "")));
                     // const newBuffer = Buffer.from(arg.value);
                     // const combinedBuffer = Buffer.alloc(
                     //   finalBuffer.length + newBuffer.length
@@ -139,24 +188,24 @@ class Utils {
                     buffers.push(arg.value);
                     break;
                 case "hex":
-                    buffers.push(Buffer.from(arg.value, "hex"));
+                    buffers.push(buffer_1.Buffer.from(arg.value, "hex"));
                     break;
                 case "boolean":
                 case "int":
                 case "BigInt":
-                    const buffer = Buffer.alloc(8);
+                    const buffer = buffer_1.Buffer.alloc(8);
                     const bigNum = BigInt(String(Number(arg.value || 0)));
                     buffer.writeBigUInt64BE(bigNum);
                     buffers.push(buffer);
                     break;
                 case "address":
                     if (arg.value.startsWith("0x")) {
-                        buffers.push(Buffer.from(arg.value.replace("0x", ""), "hex"));
+                        buffers.push(buffer_1.Buffer.from(arg.value.replace("0x", ""), "hex"));
                     }
                     else {
-                        const values = ((_b = arg.value) !== null && _b !== void 0 ? _b : "").trim().split(":");
-                        const tBuf = Buffer.from(values[0]);
-                        const tBuf2 = Buffer.from(values[1]);
+                        const values = (arg.value ?? "").trim().split(":");
+                        const tBuf = buffer_1.Buffer.from(values[0]);
+                        const tBuf2 = buffer_1.Buffer.from(values[1]);
                         let tBuf3;
                         if (values.length == 3) {
                             tBuf3 = this.encodeBytes({
@@ -164,7 +213,7 @@ class Utils {
                                 value: values[3],
                             });
                         }
-                        const cB = Buffer.alloc(tBuf.length + tBuf2.length + ((_c = tBuf3 === null || tBuf3 === void 0 ? void 0 : tBuf3.length) !== null && _c !== void 0 ? _c : 0));
+                        const cB = buffer_1.Buffer.alloc(tBuf.length + tBuf2.length + (tBuf3?.length ?? 0));
                         tBuf.copy(cB, 0);
                         tBuf2.copy(cB, tBuf.length);
                         if (tBuf3)
@@ -176,7 +225,7 @@ class Utils {
             len += buffers[i].length;
         }
         console.log("BUFERSSSS", buffers.length);
-        const finalBuffer = Buffer.alloc(len);
+        const finalBuffer = buffer_1.Buffer.alloc(len);
         let copied = 0;
         for (const b of buffers) {
             b.copy(finalBuffer, copied);
@@ -186,5 +235,3 @@ class Utils {
     }
 }
 exports.Utils = Utils;
-//6d6c70316735613630736c6736326d7077723570326361666d71756c7a34777879656e39717275357936 2a 0000000000000002 0000018d114b82e6
-//6d6c70316735613630736c6736326d7077723570326361666d71756c7a34777879656e39717275357936 2a 0000000000000002 0000018d114b82e6
