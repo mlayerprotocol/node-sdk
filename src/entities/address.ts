@@ -8,6 +8,7 @@ export class Address extends BaseEntity {
   public chain: string = '';
 
   public toString() {
+    if (this.address == '') return '';
     return `${this.prefix}:${this.address}${
       this.chain == '' ? '' : '#' + this.chain
     }`;
