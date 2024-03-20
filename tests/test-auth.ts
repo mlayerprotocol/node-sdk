@@ -1,15 +1,15 @@
-require('dotenv').config();
-const jayson = require('jayson');
-import { Utils } from '../src/helper';
-import { Authorization, SignatureData } from '../src/entities/authorization';
-import { secp256k1 } from 'ethereum-cryptography/secp256k1';
+require("dotenv").config();
+const jayson = require("jayson");
+import { Utils } from "../src/helper";
+import { Authorization, SignatureData } from "../src/entities/authorization";
+import { secp256k1 } from "ethereum-cryptography/secp256k1";
 import {
   AuthorizeEventType,
   ClientPayload,
-} from '../src/entities/clientPayload';
-import { Client, RESTProvider } from '../src';
-import { validator, account, agent } from './lib/keys';
-import { Address } from '../src/entities/address';
+} from "../src/entities/clientPayload";
+import { Client, RESTProvider } from "../src";
+import { validator, account, agent } from "./lib/keys";
+import { Address } from "../src/entities/address";
 const client = jayson.client.tcp({
   host: "127.0.0.1",
   port: 9521,
@@ -38,18 +38,18 @@ async function main() {
   authority.agent = agent.address;
   authority.grantor = Address.fromString(account.address);
   authority.timestamp = 1709115075000;
-  authority.topicIds = '*';
+  authority.topicIds = "*";
   authority.privilege = 3;
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   const encoded = authority.encodeBytes();
 
-  const hash = Utils.sha256Hash(encoded).toString('base64');
-  console.log('Hash string', `Approve ${authority.agent} for tml: ${hash}`);
+  const hash = Utils.sha256Hash(encoded).toString("base64");
+  console.log("Hash string", `Approve ${authority.agent} for tml: ${hash}`);
   const authSig =
-    'juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==';
+    "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
   authority.signatureData = new SignatureData(
-    'tendermint/PubKeySecp256k1',
+    "tendermint/PubKeySecp256k1",
     account.publicKey,
     authSig
   );
@@ -76,7 +76,7 @@ async function main() {
   //   signature: signature.toString('base64'),
   // });
 
-  console.log('Grant', authority.asPayload());
+  console.log("Grant", authority.asPayload());
 
   const payload: ClientPayload<Authorization> = new ClientPayload();
   payload.data = authority;
@@ -85,7 +85,9 @@ async function main() {
   payload.validator = validator.publicKey;
   const pb = payload.encodeBytes();
   payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
-  console.log('Payload', JSON.stringify(payload.asPayload()));
+
+  console.log("Payload", JSON.stringify(payload.asPayload()));
+
 
   // const client = new Client(new RESTProvider("http://localhost:9531"));
   // console.log("AUTHORIZE", await client.authorize(payload));

@@ -1,12 +1,12 @@
 import * as crypto from "crypto";
 import { bech32 } from "bech32";
 // import { keccak256 } from 'ethereum-cryptography/keccak';
-import { secp256k1 } from 'ethereum-cryptography/secp256k1';
-import { AddressString, HexString } from './entities/base';
-import { ethers, keccak256 } from 'ethers';
-import * as nacl from 'tweetnacl';
-import { Secp256k1, Sha256 } from '@cosmjs/crypto';
-
+import { secp256k1 } from "ethereum-cryptography/secp256k1";
+import { AddressString, HexString } from "./entities/base";
+import { ethers, keccak256 } from "ethers";
+import { Buffer } from "buffer";
+import * as nacl from "tweetnacl";
+import { Secp256k1, Sha256 } from "@cosmjs/crypto";
 
 export type EncoderDataType =
   | "string"
@@ -30,11 +30,11 @@ export class Utils {
     }
     return bytes;
   }
-  static toAddress(publicKey: Buffer, prefix: string = 'ml') {
+  static toAddress(publicKey: Buffer, prefix: string = "ml") {
     // Perform SHA256 hashing followed by RIPEMD160
-    const sha256Hash = crypto.createHash('sha256').update(publicKey).digest();
+    const sha256Hash = crypto.createHash("sha256").update(publicKey).digest();
     const ripemd160Hash = crypto
-      .createHash('ripemd160')
+      .createHash("ripemd160")
       .update(sha256Hash)
       .digest();
 
@@ -146,7 +146,7 @@ export class Utils {
       buffer.byteOffset,
       buffer.byteLength
     );
-    const signature = secp256k1.sign(bytes, buffer.toString('hex'));
+    const signature = secp256k1.sign(bytes, buffer.toString("hex"));
     return signature.toDERHex();
   }
 
@@ -155,11 +155,11 @@ export class Utils {
     privateKey: Buffer,
     address: string
   ): Promise<Buffer> {
-    const base64msg = message.toString('base64');
+    const base64msg = message.toString("base64");
     const jsonData = `{"account_number":"0","chain_id":"","fee":{"amount":[],"gas":"0"},"memo":"","msgs":[{"type":"sign/MsgSignData","value":{"data":"${base64msg}","signer":"${address}"}}],"sequence":"0"}`;
 
     const dataUtf = Utils.toUtf8(jsonData);
-    console.log('DATAUFT', dataUtf);
+    console.log("DATAUFT", dataUtf);
     // const msgHash = Utils.sha256Hash(
     //   Buffer.from(dataUtf, dataUtf.byteOffset, dataUtf.byteLength)
     // );
@@ -173,9 +173,9 @@ export class Utils {
 
     const msgHash = new Sha256(dataUtf).digest();
     console.log(
-      'Hashh',
+      "Hashh",
       Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString(
-        'hex'
+        "hex"
       )
     );
     // const bufR = Utils.bigintToUint8Array(signature.r, 32, true);

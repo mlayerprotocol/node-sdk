@@ -1,8 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Authorization = void 0;
+exports.Authorization = exports.SignatureData = void 0;
 const helper_1 = require("../helper");
 const base_1 = require("./base");
+class SignatureData {
+    constructor(type, publicKey, signature) {
+        this.type = type;
+        this.publicKey = publicKey;
+        this.signature = signature;
+        type = '';
+        publicKey = '';
+        signature = '';
+    }
+    /**
+     * @override
+     * @returns {IAuthorization}
+     */
+    asPayload() {
+        return {
+            ty: this.type,
+            pubK: this.publicKey,
+            sig: this.signature,
+        };
+    }
+}
+exports.SignatureData = SignatureData;
 class Authorization extends base_1.BaseEntity {
     constructor() {
         super(...arguments);
@@ -11,7 +33,7 @@ class Authorization extends base_1.BaseEntity {
         this.grantor = '';
         this.privilege = 0;
         this.topicIds = '';
-        this.signature = '';
+        this.signatureData = new SignatureData('', '', '');
     }
     /**
      * @override
@@ -26,7 +48,7 @@ class Authorization extends base_1.BaseEntity {
             topIds: this.topicIds,
             ts: this.timestamp,
             du: this.duration,
-            sig: this.signature,
+            sigD: this.signatureData.asPayload(),
         };
     }
     /**

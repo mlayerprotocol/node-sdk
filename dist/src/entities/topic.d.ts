@@ -1,7 +1,6 @@
 /// <reference types="node" />
-import { BaseEntity } from './base';
-export type AddressString = string;
-export type HexString = string;
+import { BaseEntity } from "./base";
+type AddressString = string;
 export interface ITopic {
     id?: string;
     ref?: string;
@@ -13,6 +12,7 @@ export interface ITopic {
     acct?: AddressString;
     ts?: number;
     pub: boolean;
+    rO: boolean;
 }
 export declare class Topic extends BaseEntity {
     id: string;
@@ -25,6 +25,7 @@ export declare class Topic extends BaseEntity {
     account: string;
     timestamp: number;
     isPublic: boolean;
+    readOnly: boolean;
     /**
      * @override
      * @returns {ITopic}
@@ -36,3 +37,4 @@ export declare class Topic extends BaseEntity {
      */
     encodeBytes(): Buffer;
 }
+export {};

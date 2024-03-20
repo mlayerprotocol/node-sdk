@@ -37,10 +37,9 @@ class RESTProvider extends Provider {
      * @returns
      */
     async write(payload, options) {
-        var _a, _b;
         const argOptions = options;
-        let path = argOptions === null || argOptions === void 0 ? void 0 : argOptions.path;
-        const method = (_a = argOptions === null || argOptions === void 0 ? void 0 : argOptions.method) !== null && _a !== void 0 ? _a : 'put';
+        let path = argOptions?.path;
+        const method = argOptions?.method ?? 'put';
         switch (payload.eventType) {
             case clientPayload_1.AuthorizeEventType.AuthorizeEvent:
             case clientPayload_1.AuthorizeEventType.UnauthorizeEvent:
@@ -55,7 +54,7 @@ class RESTProvider extends Provider {
                 case 'put':
                 case 'patch':
                 case 'delete':
-                    response = await axios_1.default[(_b = options.method) !== null && _b !== void 0 ? _b : 'put'](url, payload, {
+                    response = await axios_1.default[options.method ?? 'put'](url, payload, {
                         headers: {
                             'Content-Type': 'application/json',
                         },

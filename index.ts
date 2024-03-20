@@ -1,4 +1,6 @@
-import {Icm, Client} from "./src/icm"
-import {Utils} from "./src/helper"
+import { Client } from "./src/index";
+import { Icm } from "./src/icm";
+import { Utils } from "./src/helper";
+import * as Entities from "./src/entities";
 
-export {Icm, Client, Utils}
+export { Icm, Client, Utils, Entities };

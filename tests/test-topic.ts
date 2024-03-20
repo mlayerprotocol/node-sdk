@@ -31,12 +31,11 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.handle = 'bitcoinworld';
-  topic.description = 'The best toopic';
+  topic.handle = "bitcoinworld";
+  topic.description = "The best toopic";
 
-  topic.name = 'Bitcoin world';
-  topic.reference = '898989';
-]
+  topic.name = "Bitcoin world";
+  topic.reference = "898989";
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;
@@ -46,7 +45,7 @@ async function main() {
   payload.account = Address.fromString(account.address);
   payload.nonce = 0;
   const pb = payload.encodeBytes();
-  console.log('HEXDATA', pb.toString('hex'));
+  console.log("HEXDATA", pb.toString("hex"));
   payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
@@ -54,7 +53,7 @@ async function main() {
   console.log("AUTHORIZE", await client.createTopic(payload));
 }
 main().then();
-//0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8 
+//0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
 // approve device
 
@@ -183,4 +182,3 @@ main().then();
 //   if (response.error) throw response.error;
 //   console.log('response:::', response);
 // });
-

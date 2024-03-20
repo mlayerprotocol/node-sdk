@@ -43,8 +43,8 @@ export enum MemberTopicEventType {
 //   IsTyping                EventType = 1203
 // )
 
-export type AddressString = string;
-export type HexString = string;
+type AddressString = string;
+type HexString = string;
 
 export interface IClientPayload {
   // Primary
