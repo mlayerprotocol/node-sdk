@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 require('dotenv').config();
 const jayson = require('jayson');
 import { Utils } from '../src/helper';
@@ -11,18 +10,6 @@ import {
 import { Client, RESTProvider } from '../src';
 import { validator, account, agent } from './lib/keys';
 import { Address } from '../src/entities/address';
-=======
-require("dotenv").config();
-const jayson = require("jayson");
-import { Utils } from "../src/helper";
-import { Authorization } from "../src/entities/authorization";
-import {
-  AuthorizeEventType,
-  ClientPayload,
-} from "../src/entities/clientPayload";
-import { Client, RESTProvider } from "../src";
-
->>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
 const client = jayson.client.tcp({
   host: "127.0.0.1",
   port: 9521,
@@ -38,28 +25,6 @@ const client = jayson.client.tcp({
 //     '02ebec9d95769bb3d71712f0bf1e7e88b199fc945f67f908bbab81e9b7cb1092d8',
 //   address: 'ml:12htc66jeelcfm4nv7drk4dqz6umntcfe690725',
 // };
-<<<<<<< HEAD
-=======
-const validator = {
-  publicKey: "2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca",
-  address: "ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354",
-};
-
-const owner = {
-  privateKey:
-    "47a89d04c9949c5731837b0b247fef1df6f9573c0b8d1f645cfde472371d633dd8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c",
-  publicKey: "d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c",
-  address: "ml:103szmymv8qvl9xqzhqxswm5t8mpjsav8c6j354",
-};
-
-const device = {
-  privateKey:
-    "0xbc3d5a5a6bb5024b1a96fccb677f065985d8e65d8054095eb6468244fb5ea4a9",
-  publicKey:
-    "0x02d2c4fa18ba44e53e10d5ec25b6ae8439f3fcaf9611183cdb7785dfe2f0c7ab73",
-  address: "0xe652d28F89A28adb89e674a6b51852D0C341Ebe9",
-};
->>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
 
 async function main() {
   const authority: Authorization = new Authorization();
@@ -69,24 +34,15 @@ async function main() {
     validator.publicKey,
     Utils.toAddress(Buffer.from(validator.publicKey, "hex"))
   );
-<<<<<<< HEAD
   authority.account = Address.fromString(account.address);
   authority.agent = agent.address;
   authority.grantor = Address.fromString(account.address);
   authority.timestamp = 1709115075000;
   authority.topicIds = '*';
-=======
-  authority.account = owner.publicKey;
-  authority.agent = device.address;
-  authority.grantor = owner.publicKey;
-  authority.timestamp = 1705392178023;
-  authority.topicIds = "*";
->>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
   authority.privilege = 3;
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   const encoded = authority.encodeBytes();
-<<<<<<< HEAD
 
   const hash = Utils.sha256Hash(encoded).toString('base64');
   console.log('Hash string', `Approve ${authority.agent} for tml: ${hash}`);
@@ -121,14 +77,6 @@ async function main() {
   // });
 
   console.log('Grant', authority.asPayload());
-=======
-  console.log("MESSAGE", encoded.toString("hex"));
-  authority.signature = Utils.signMessageEdd(
-    encoded,
-    Buffer.from(owner.privateKey, "hex")
-  );
-  console.log("Grant", authority.asPayload());
->>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
 
   const payload: ClientPayload<Authorization> = new ClientPayload();
   payload.data = authority;
@@ -136,19 +84,11 @@ async function main() {
   payload.eventType = AuthorizeEventType.AuthorizeEvent;
   payload.validator = validator.publicKey;
   const pb = payload.encodeBytes();
-<<<<<<< HEAD
-  payload.signature = Utils.signMessageEcc(pb, agent.privateKey);
-  console.log('Payload', JSON.stringify(payload.asPayload()));
-
-  // const client = new Client(new RESTProvider('http://localhost:9531'));
-  //  console.log('AUTHORIZE', await client.authorize(payload));
-=======
   payload.signature = await Utils.signMessageEcc(pb, device.privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
   console.log("AUTHORIZE", await client.authorize(payload));
->>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
 }
 main().then();
 

@@ -10,6 +10,7 @@ import {
 import { Client, RESTProvider } from "../src";
 import { validator, account, agent } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
+import { Address } from "../src/entities/address";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -29,27 +30,20 @@ async function main() {
   //   validator.publicKey,
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
-<<<<<<< HEAD
+
   topic.handle = 'bitcoinworld';
   topic.description = 'The best toopic';
 
   topic.name = 'Bitcoin world';
   topic.reference = '898989';
-=======
-  // topic.account = "0xe652d28F89A28adb89e674a6b51852D0C341Ebe9";
-  topic.handle = "rippleChain1._";
-  topic.description = "Ripple";
-  topic.account = account.publicKey;
-  topic.name = "Ripple";
-  topic.reference = "898999";
->>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
+]
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;
   payload.timestamp = 1705392178023;
   payload.eventType = AdminTopicEventType.CreateTopic;
   payload.validator = validator.publicKey;
-  payload.account = account.publicKey;
+  payload.account = Address.fromString(account.address);
   payload.nonce = 0;
   const pb = payload.encodeBytes();
   console.log('HEXDATA', pb.toString('hex'));
