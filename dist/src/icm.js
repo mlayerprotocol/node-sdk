@@ -1,15 +1,4 @@
 "use strict";
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -22,7 +11,6 @@ class Icm {
     constructor(config, provider) {
         this.web3 = new web3_1.default();
         this.handleMessage = async (event) => {
-            var _a, _b, _c, _d, _e;
             if (!this.socketClient)
                 throw new Error("Client Socket not available");
             const message = event.data;
@@ -30,8 +18,8 @@ class Icm {
             try {
                 let _message = JSON.parse(message);
                 console.log("Received: ", _message);
-                (_a = this.socketMessageCallback) === null || _a === void 0 ? void 0 : _a.call(this, _message);
-                switch ((_b = _message.type) !== null && _b !== void 0 ? _b : '') {
+                this.socketMessageCallback?.(_message);
+                switch (_message.type ?? '') {
                     case 'new-message':
                         _message = _message.data;
                         const _proof = {
@@ -43,7 +31,7 @@ class Icm {
                         };
                         const _proofSignatureBody = `Message:${_proof.messageSignature},NodeAddress:${_proof.node},Timestamp:${_proof.timestamp}`;
                         console.log("_proofSignatureBody: ", _proofSignatureBody);
-                        const _signature = await this.signData(_proofSignatureBody, (_d = (_c = this.disposableAccount) === null || _c === void 0 ? void 0 : _c.privateKey) !== null && _d !== void 0 ? _d : '');
+                        const _signature = await this.signData(_proofSignatureBody, this.disposableAccount?.privateKey ?? '');
                         _proof['signature'] = _signature;
                         console.log('_proof', _proof);
                         const client = this.socketClient;
@@ -51,7 +39,7 @@ class Icm {
                             this.socketClient.send(JSON.stringify({
                                 type: 'delivery-proof',
                                 data: _proof,
-                                signature: (_e = this.tmpAccount) === null || _e === void 0 ? void 0 : _e.signature,
+                                signature: this.tmpAccount?.signature,
                             }));
                         }
                         break;
@@ -130,9 +118,7 @@ class Icm {
     /**
      * newMessage
      */
-    async newMessage(_a, privateKey) {
-        var _b, _c, _d, _e;
-        var { channelName, channelSignature, chainId, message, subject, actions, origin, platform = "channel", type = "html", approval } = _a, params = __rest(_a, ["channelName", "channelSignature", "chainId", "message", "subject", "actions", "origin", "platform", "type", "approval"]);
+    async newMessage({ channelName, channelSignature, chainId, message, subject, actions, origin, platform = "channel", type = "html", approval, ...params }, privateKey) {
         const receiver = `${channelName}:${channelSignature}`;
         const text = message;
         const timestamp = Number(Date.now().toString());
@@ -145,8 +131,8 @@ class Icm {
         chatMessage.push(`Header.ChainId:${chainId}`);
         chatMessage.push(`Header.Platform:${platform}`);
         chatMessage.push(`Header.Timestamp:${timestamp}`);
-        chatMessage.push(`Body.Subject:${(_b = this.web3.utils.soliditySha3(subject)) === null || _b === void 0 ? void 0 : _b.toLowerCase()}`);
-        chatMessage.push(`Body.Message:${(_c = this.web3.utils.soliditySha3(text)) === null || _c === void 0 ? void 0 : _c.toLowerCase()}`);
+        chatMessage.push(`Body.Subject:${this.web3.utils.soliditySha3(subject)?.toLowerCase()}`);
+        chatMessage.push(`Body.Message:${this.web3.utils.soliditySha3(text)?.toLowerCase()}`);
         let _action = [];
         let i = 0;
         while (i < actions.length) {
@@ -182,8 +168,8 @@ class Icm {
             signature: messageSignature,
             actions,
             origin,
-            messageHash: (_d = this.web3.utils.soliditySha3(message)) !== null && _d !== void 0 ? _d : '',
-            subjectHash: (_e = this.web3.utils.soliditySha3(subject)) !== null && _e !== void 0 ? _e : '',
+            messageHash: this.web3.utils.soliditySha3(message) ?? '',
+            subjectHash: this.web3.utils.soliditySha3(subject) ?? '',
         };
         console.log('new _message', _message);
         return _message;
@@ -261,30 +247,29 @@ class Icm {
      * signData
      */
     async signData(data, privateKey) {
-        var _a, _b, _c, _d, _e;
         if (privateKey) {
-            const { signature } = this.web3.eth.accounts.sign((_a = this.web3.utils.soliditySha3(data)) !== null && _a !== void 0 ? _a : '', privateKey);
+            const { signature } = this.web3.eth.accounts.sign(this.web3.utils.soliditySha3(data) ?? '', privateKey);
             return signature;
         }
         const _provider = this.web3.currentProvider;
         if (!_provider)
             throw new Error("Provider or private key is required");
-        (_b = this.provider) === null || _b === void 0 ? void 0 : _b.request({
+        this.provider?.request({
             method: 'wallet_requestPermissions',
             params: [{ eth_accounts: {} }],
         });
-        await ((_c = this.provider) === null || _c === void 0 ? void 0 : _c.request({ method: 'eth_requestAccounts' }));
+        await this.provider?.request({ method: 'eth_requestAccounts' });
         const from = await this.web3.eth.getAccounts();
         if (from.length == 0)
             throw new Error("No account found");
-        const params = [from[0], (_d = this.web3.utils.soliditySha3(data)) !== null && _d !== void 0 ? _d : ''];
+        const params = [from[0], this.web3.utils.soliditySha3(data) ?? ''];
         const method = "eth_sign";
-        return await ((_e = this.provider) === null || _e === void 0 ? void 0 : _e.request({
+        return await this.provider?.request({
             method,
             params,
-        }));
+        });
         return await new Promise((resolve, reject) => {
-            _provider === null || _provider === void 0 ? void 0 : _provider.sendAsync({
+            _provider?.sendAsync({
                 method,
                 params,
                 from: from[0],

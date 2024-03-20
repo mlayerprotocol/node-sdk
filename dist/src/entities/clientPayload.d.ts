@@ -24,8 +24,8 @@ export declare enum MemberTopicEventType {
     'UpgradedEvent' = 1104,
     'InvitedEvent' = 1105
 }
-export type AddressString = string;
-export type HexString = string;
+type AddressString = string;
+type HexString = string;
 export interface IClientPayload {
     d: unknown;
     ts: number;
@@ -52,3 +52,4 @@ export declare class ClientPayload<T> extends BaseEntity {
      */
     asPayload(): IClientPayload;
 }
+export {};

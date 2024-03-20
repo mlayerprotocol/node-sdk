@@ -1,9 +1,9 @@
-import { isHexString } from 'ethers';
-import { BaseEntity } from './base';
-import { Utils } from '../helper';
+import { isHexString } from "ethers";
+import { BaseEntity } from "./base";
+import { Utils } from "../helper";
 
-export type AddressString = string;
-export type HexString = string;
+type AddressString = string;
+type HexString = string;
 
 export interface ITopic {
   // Primary
@@ -23,14 +23,14 @@ export interface ITopic {
 }
 
 export class Topic extends BaseEntity {
-  public id: string = '';
-  public reference: string = '';
-  public name: string = '';
-  public handle: string = '';
-  public description: string = '';
-  public parentTopicHash: string = '';
+  public id: string = "";
+  public reference: string = "";
+  public name: string = "";
+  public handle: string = "";
+  public description: string = "";
+  public parentTopicHash: string = "";
   public subsriberCount: number = 0;
-  public account: string = '';
+  public account: string = "";
   public timestamp: number = 0;
   public isPublic: boolean = false;
   public readOnly: boolean = false;
@@ -61,14 +61,14 @@ export class Topic extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: 'string', value: this.reference },
-      { type: 'string', value: this.name },
-      { type: 'string', value: this.handle },
-      { type: 'string', value: this.description },
-      { type: 'hex', value: this.parentTopicHash },
+      { type: "string", value: this.reference },
+      { type: "string", value: this.name },
+      { type: "string", value: this.handle },
+      { type: "string", value: this.description },
+      { type: "hex", value: this.parentTopicHash },
       // { type: 'int', value: this.subsriberCount },
-      { type: 'boolean', value: this.isPublic },
-      { type: 'boolean', value: this.readOnly }
+      { type: "boolean", value: this.isPublic },
+      { type: "boolean", value: this.readOnly }
     );
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@mlayerprotocol/core",
-  "version": "1.0.103",
+  "version": "1.0.109",
   "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
@@ -20,11 +20,13 @@
   "author": "Abdulhafiz",
   "license": "ISC",
   "dependencies": {
+    "@cosmjs/crypto": "^0.32.3",
     "axios": "^1.6.5",
     "bech32": "^2.0.0",
+    "buffer": "^6.0.3",
     "dotenv": "^16.0.3",
     "ethers": "^6.10.0",
-    
+    "jayson": "^4.1.0",
     "node-fetch": "^3.3.2",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
