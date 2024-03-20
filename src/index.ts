@@ -1,10 +1,11 @@
-import Jayson from 'jayson';
-import { w3cwebsocket } from 'websocket';
-import ethers from 'ethers';
-import { AuthorizeEventType, ClientPayload } from './entities/clientPayload';
-import { Authorization } from './entities/authorization';
-import axios from 'axios';
-import { Topic } from './entities/topic';
+import Jayson from "jayson";
+import { w3cwebsocket } from "websocket";
+import ethers from "ethers";
+import { AuthorizeEventType, ClientPayload } from "./entities/clientPayload";
+import { Authorization } from "./entities/authorization";
+import axios from "axios";
+import { Topic } from "./entities/topic";
+import { Subscription } from "./entities/subscription";
 
 export interface Client extends Jayson.TcpClientOptions {}
 
@@ -35,7 +36,7 @@ export class RPCProvider extends Provider {
   }
 }
 export class RESTProvider extends Provider {
-  private server: string = 'http://localhost:9531';
+  private server: string = "http://localhost:9531";
   constructor(host?: string, ethProvider?: unknown) {
     super();
     if (host.slice(-1) == `/`) host = host.substring(0, host.length - 1);
@@ -49,31 +50,31 @@ export class RESTProvider extends Provider {
    */
   async write<T, O>(
     payload: ClientPayload<T>,
-    options?: { path: string; method?: 'get' | 'put' | 'post' }
+    options?: { path: string; method?: "get" | "put" | "post" }
   ): Promise<Record<string, unknown>> {
     const argOptions = options as Record<string, unknown>;
     let path = argOptions?.path;
-    const method = argOptions?.method ?? 'put';
+    const method = argOptions?.method ?? "put";
     switch (payload.eventType) {
       case AuthorizeEventType.AuthorizeEvent:
       case AuthorizeEventType.UnauthorizeEvent:
-        path = '/authorize';
+        path = "/authorize";
         break;
     }
     try {
       const url = `${this.server}/api${path}`;
       let response;
       switch (method) {
-        case 'post':
-        case 'put':
-        case 'patch':
-        case 'delete':
-          response = await (axios[options.method ?? 'put'] as any)(
+        case "post":
+        case "put":
+        case "patch":
+        case "delete":
+          response = await (axios[options.method ?? "put"] as any)(
             url,
             payload,
             {
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
             }
           );
@@ -81,7 +82,7 @@ export class RESTProvider extends Provider {
         default:
           response = await axios.get(url, {
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           });
       }
@@ -113,15 +114,24 @@ export class Client {
   public async authorize(
     payload: ClientPayload<Authorization>
   ): Promise<Record<string, unknown>> {
-    return await this.provider.write(payload, { path: '/authorize' });
+    return await this.provider.write(payload, { path: "/authorize" });
   }
 
   public async createTopic(
     payload: ClientPayload<Topic>
   ): Promise<Record<string, unknown>> {
     return await this.provider.write(payload, {
-      path: '/topics',
-      method: 'post',
+      path: "/topics",
+      method: "post",
+    });
+  }
+
+  public async createSubscription(
+    payload: ClientPayload<Subscription>
+  ): Promise<Record<string, unknown>> {
+    return await this.provider.write(payload, {
+      path: "/topics/subscribe",
+      method: "post",
     });
   }
 }

@@ -1,15 +1,15 @@
-require('dotenv').config();
-const jayson = require('jayson');
-import { Utils } from '../src/helper';
-import { Authorization } from '../src/entities/authorization';
+require("dotenv").config();
+const jayson = require("jayson");
+import { Utils } from "../src/helper";
+import { Authorization } from "../src/entities/authorization";
 import {
   AdminTopicEventType,
   AuthorizeEventType,
   ClientPayload,
-} from '../src/entities/clientPayload';
-import { Client, RESTProvider } from '../src';
-import { validator, account, agent } from './lib/keys';
-import { Topic } from '../src/entities/topic';
+} from "../src/entities/clientPayload";
+import { Client, RESTProvider } from "../src";
+import { validator, account, agent } from "./lib/keys";
+import { Topic } from "../src/entities/topic";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -29,15 +29,24 @@ async function main() {
   //   validator.publicKey,
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
+<<<<<<< HEAD
   topic.handle = 'bitcoinworld';
   topic.description = 'The best toopic';
 
   topic.name = 'Bitcoin world';
   topic.reference = '898989';
+=======
+  // topic.account = "0xe652d28F89A28adb89e674a6b51852D0C341Ebe9";
+  topic.handle = "rippleChain1._";
+  topic.description = "Ripple";
+  topic.account = account.publicKey;
+  topic.name = "Ripple";
+  topic.reference = "898999";
+>>>>>>> 534fd147a2e1177020eb73c47334aeb607f18f95
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;
-  payload.timestamp = 1705392177896;
+  payload.timestamp = 1705392178023;
   payload.eventType = AdminTopicEventType.CreateTopic;
   payload.validator = validator.publicKey;
   payload.account = account.publicKey;
@@ -45,10 +54,10 @@ async function main() {
   const pb = payload.encodeBytes();
   console.log('HEXDATA', pb.toString('hex'));
   payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
-  console.log('Payload', JSON.stringify(payload.asPayload()));
+  console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider('http://localhost:9531'));
-  console.log('AUTHORIZE', await client.createTopic(payload));
+  const client = new Client(new RESTProvider("http://localhost:9531"));
+  console.log("AUTHORIZE", await client.createTopic(payload));
 }
 main().then();
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8 
