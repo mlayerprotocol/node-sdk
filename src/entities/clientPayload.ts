@@ -2,6 +2,7 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 import { BaseEntity } from './base';
 import { EncoderDataType, Utils } from '../helper';
 import { Authorization } from './authorization';
+import { Address } from './address';
 
 // Authrization
 export enum AuthorizeEventType {
@@ -54,14 +55,14 @@ export interface IClientPayload {
   // Secondary
   sig: HexString;
   h: HexString;
-  acct: HexString;
+  acct: AddressString;
 }
 
 export class ClientPayload<T> extends BaseEntity {
   public data: T;
   public timestamp: number = 0;
   public eventType: AuthorizeEventType | AdminTopicEventType;
-  public account: string = '';
+  public account: Address = new Address();
   public validator: string = '';
   public nonce: number = 0;
 
@@ -92,8 +93,8 @@ export class ClientPayload<T> extends BaseEntity {
       },
       { type: 'int', value: this.eventType },
     ];
-    if (this.account.length) {
-      params.push({ type: 'hex', value: this.account });
+    if (this.account.address.length) {
+      params.push({ type: 'address', value: this.account.toString() });
     }
     params.push({ type: 'hex', value: this.validator });
     params.push({ type: 'int', value: this.nonce });
@@ -113,7 +114,7 @@ export class ClientPayload<T> extends BaseEntity {
       sig: this.signature,
       h: this.hash,
       val: this.validator,
-      acct: this.account,
+      acct: this.account.toString(),
       nonce: this.nonce,
     };
   }
