@@ -9,6 +9,7 @@ import {
 } from '../src/entities/clientPayload';
 import { Client, RESTProvider } from '../src';
 import { validator, account, agent } from './lib/keys';
+import { Address } from '../src/entities/address';
 const client = jayson.client.tcp({
   host: '127.0.0.1',
   port: 9521,
@@ -33,9 +34,9 @@ async function main() {
     validator.publicKey,
     Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   );
-  authority.account = account.publicKey;
+  authority.account = Address.fromString(account.address);
   authority.agent = agent.address;
-  authority.grantor = account.publicKey;
+  authority.grantor = Address.fromString(account.address);
   authority.timestamp = 1709115075000;
   authority.topicIds = '*';
   authority.privilege = 3;

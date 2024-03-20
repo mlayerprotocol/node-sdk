@@ -1,6 +1,7 @@
 import { isHexString, sha256 } from 'ethers';
 import { Utils } from '../helper';
 import { HexString, AddressString, BaseEntity } from './base';
+import { Address } from './address';
 
 export interface ISignatureData {
   ty: string;
@@ -35,7 +36,7 @@ export class SignatureData {
 export interface IAuthorization {
   agt: string;
   gr: AddressString;
-  acct: HexString;
+  acct: AddressString;
   privi: 0 | 1 | 2 | 3; //  0=>Read, 1=>Write,2=>Admin
   topIds: string; // "*" all topics or comma separated list of topic ids
   du: number; // duration
@@ -44,9 +45,9 @@ export interface IAuthorization {
 }
 
 export class Authorization extends BaseEntity {
-  public account: string = '';
+  public account: Address = new Address();
   public agent: string = '';
-  public grantor: string = '';
+  public grantor: Address = new Address();
   public privilege: 0 | 1 | 2 | 3 = 0;
   public topicIds: string = '';
   public timestamp: number;
@@ -60,8 +61,8 @@ export class Authorization extends BaseEntity {
   public asPayload(): IAuthorization {
     return {
       agt: this.agent,
-      acct: this.account,
-      gr: this.grantor,
+      acct: this.account.toString(),
+      gr: this.grantor.toString(),
       privi: this.privilege,
       topIds: this.topicIds,
       ts: this.timestamp,
@@ -76,7 +77,7 @@ export class Authorization extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: 'hex', value: this.account },
+      { type: 'address', value: this.account.toString() },
       { type: 'address', value: this.agent },
       { type: 'string', value: this.topicIds },
       { type: 'int', value: this.privilege },
