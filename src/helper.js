@@ -203,7 +203,7 @@ var Utils = /** @class */ (function () {
                     buffers.push(arg.value);
                     break;
                 case "hex":
-                    buffers.push(Buffer.from(arg.value, "hex"));
+                    buffers.push(Buffer.from(String(arg.value), 'hex'));
                     break;
                 case "boolean":
                 case "int":
