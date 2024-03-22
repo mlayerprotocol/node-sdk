@@ -203,7 +203,8 @@ class Icm {
             message: this.disposableAccount.address,
             timestamp,
         };
-        const url = `${this.socketServer}:${this.socketPort}`;
+        const url = `${this.socketServer}:${this.socketPort}/echo`;
+        console.log({ url });
         this.socketClient = new websocket_1.w3cwebsocket(url);
         this.socketClient.onerror = function () {
             console.log('Connection Error');

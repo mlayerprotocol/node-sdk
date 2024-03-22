@@ -9,9 +9,10 @@ import {
   MemberTopicEventType,
 } from "../src/entities/clientPayload";
 import { Client, RESTProvider } from "../src";
-import { validator, account, agent } from "./lib/keys";
+import { validator, account, agent, agentList } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
 import { Subscription } from "../src/entities/subscription";
+import { Address } from "../src/entities";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -31,10 +32,10 @@ async function main() {
   //   validator.publicKey,
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
-  (subscribe.id = "18915c42-037e-4256-8bec-4a131cad9b61"),
-    (subscribe.topic =
-      "d4b2186ccb072da3c18d6e7bddc7a9eeef6c377ea2108303ca84475f1384fbcb");
-  //   subscribe.subscriber = account.publicKey;
+  // subscribe.status = 1;
+  subscribe.topic =
+    "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
+  // subscribe.subscriber = Address.fromString(account.publicKey);
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";
 
@@ -43,12 +44,13 @@ async function main() {
   payload.timestamp = 2705392177900;
   payload.eventType = MemberTopicEventType.JoinEvent;
   payload.validator = validator.publicKey;
+  payload.account = Address.fromString(agentList[0].account.address);
   const pb = payload.encodeBytes();
   console.log("🚀 ~ main ~ pb:", pb.toString("hex"));
-  payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  //   console.log("AUTHORIZE", await client.createSubscription(payload));
+  console.log("AUTHORIZE", await client.createSubscription(payload));
 }
 main().then();
