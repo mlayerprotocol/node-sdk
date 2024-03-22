@@ -7,7 +7,11 @@ export class Address extends BaseEntity {
   public address: string = "";
   public chain: string = "";
 
-  public toAddressString() {
+  public toString(): string {
+    return this.toAddressString();
+  }
+
+  public toAddressString(): AddressString {
     if (this.address == "") return "";
     return `${this.prefix}:${this.address}${
       this.chain == "" ? "" : "#" + this.chain

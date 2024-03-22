@@ -3,6 +3,7 @@ import { BaseEntity } from "./base";
 import { EncoderDataType, Utils } from "../helper";
 import { Authorization } from "./authorization";
 import { Address } from "./address";
+import { Keccak256 } from "@cosmjs/crypto";
 
 // Authrization
 export enum AuthorizeEventType {
@@ -77,9 +78,15 @@ export class ClientPayload<T> extends BaseEntity {
 
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: "byte", value: (this.data as BaseEntity).encodeBytes() },
+      {
+        type: "byte",
+        value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
+      },
       { type: "int", value: this.eventType },
-      { type: "hex", value: this.authHash },
+      ...((this.account?.toString() ?? "") == ""
+        ? []
+        : ([{ type: "address", value: this.account.toString() }] as any[])),
+      // { type: "hex", value: this.authHash },
       { type: "hex", value: this.validator },
       { type: "int", value: this.nonce },
       { type: "int", value: this.timestamp }
