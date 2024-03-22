@@ -71,7 +71,7 @@ export class RESTProvider extends Provider {
         case "delete":
           response = await (axios[options.method ?? "put"] as any)(
             url,
-            payload,
+            payload.asPayload(),
             {
               headers: {
                 "Content-Type": "application/json",

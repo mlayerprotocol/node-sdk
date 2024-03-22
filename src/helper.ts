@@ -243,8 +243,8 @@ export class Utils {
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       switch (arg.type) {
-        case 'string':
-          buffers.push(Buffer.from((arg.value ?? '') as string));
+        case "string":
+          buffers.push(Buffer.from((arg.value ?? "") as string));
           // const newBuffer = Buffer.from(arg.value);
           // const combinedBuffer = Buffer.alloc(
           //   finalBuffer.length + newBuffer.length
@@ -253,21 +253,23 @@ export class Utils {
           // newBuffer.copy(combinedBuffer, finalBuffer.length);
           // finalBuffer = combinedBuffer;
           break;
-        case 'byte':
+        case "byte":
           buffers.push(arg.value as Buffer);
           break;
-        case 'hex':
-          buffers.push(Buffer.from(arg.value as string, 'hex'));
+        case "hex":
+          buffers.push(
+            Buffer.from((arg.value as string).replace("0x", ""), "hex")
+          );
           break;
-        case 'boolean':
-        case 'int':
-        case 'BigInt':
+        case "boolean":
+        case "int":
+        case "BigInt":
           const buffer = Buffer.alloc(8);
           const bigNum = BigInt(String(Number(arg.value || 0)));
           buffer.writeBigUInt64BE(bigNum);
           buffers.push(buffer);
           break;
-        case 'address':
+        case "address":
           buffers.push(Buffer.from(arg.value as string));
           // if ((arg.value as string).startsWith("0x")) {
           //   buffers.push(

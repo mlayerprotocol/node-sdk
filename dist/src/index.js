@@ -26,7 +26,7 @@ exports.RPCProvider = RPCProvider;
 class RESTProvider extends Provider {
     constructor(host, ethProvider) {
         super();
-        this.server = 'http://localhost:9531';
+        this.server = "http://localhost:9531";
         if (host.slice(-1) == `/`)
             host = host.substring(0, host.length - 1);
         this.server = host;
@@ -39,31 +39,31 @@ class RESTProvider extends Provider {
     async write(payload, options) {
         const argOptions = options;
         let path = argOptions?.path;
-        const method = argOptions?.method ?? 'put';
+        const method = argOptions?.method ?? "put";
         switch (payload.eventType) {
             case clientPayload_1.AuthorizeEventType.AuthorizeEvent:
             case clientPayload_1.AuthorizeEventType.UnauthorizeEvent:
-                path = '/authorize';
+                path = "/authorize";
                 break;
         }
         try {
             const url = `${this.server}/api${path}`;
             let response;
             switch (method) {
-                case 'post':
-                case 'put':
-                case 'patch':
-                case 'delete':
-                    response = await axios_1.default[options.method ?? 'put'](url, payload, {
+                case "post":
+                case "put":
+                case "patch":
+                case "delete":
+                    response = await axios_1.default[options.method ?? "put"](url, payload.asPayload(), {
                         headers: {
-                            'Content-Type': 'application/json',
+                            "Content-Type": "application/json",
                         },
                     });
                     break;
                 default:
                     response = await axios_1.default.get(url, {
                         headers: {
-                            'Content-Type': 'application/json',
+                            "Content-Type": "application/json",
                         },
                     });
             }
@@ -88,12 +88,18 @@ class Client {
         this.provider = provider;
     }
     async authorize(payload) {
-        return await this.provider.write(payload, { path: '/authorize' });
+        return await this.provider.write(payload, { path: "/authorize" });
     }
     async createTopic(payload) {
         return await this.provider.write(payload, {
-            path: '/topics',
-            method: 'post',
+            path: "/topics",
+            method: "post",
+        });
+    }
+    async createSubscription(payload) {
+        return await this.provider.write(payload, {
+            path: "/topics/subscribe",
+            method: "post",
         });
     }
 }

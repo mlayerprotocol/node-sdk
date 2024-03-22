@@ -286,9 +286,9 @@ export class Icm{
     }
 
 
-    const url = `${this.socketServer}:${this.socketPort}`;
+    const url = `${this.socketServer}:${this.socketPort}/echo`;
     
-    
+    console.log({url});
     this.socketClient = new w3cwebsocket(url);
 
     this.socketClient.onerror = function() {

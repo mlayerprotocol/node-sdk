@@ -78,7 +78,7 @@ export class Authorization extends BaseEntity {
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
       { type: 'address', value: this.account.toString() },
-      { type: 'address', value: this.agent },
+      { type: 'hex', value: this.agent },
       { type: 'string', value: this.topicIds },
       { type: 'int', value: this.privilege },
       { type: 'int', value: this.duration },
