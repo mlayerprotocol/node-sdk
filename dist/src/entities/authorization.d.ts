@@ -1,5 +1,6 @@
 /// <reference types="node" />
-import { HexString, AddressString, BaseEntity } from './base';
+import { AddressString, BaseEntity } from './base';
+import { Address } from './address';
 export interface ISignatureData {
     ty: string;
     pubK?: string;
@@ -19,7 +20,7 @@ export declare class SignatureData {
 export interface IAuthorization {
     agt: string;
     gr: AddressString;
-    acct: HexString;
+    acct: AddressString;
     privi: 0 | 1 | 2 | 3;
     topIds: string;
     du: number;
@@ -27,9 +28,9 @@ export interface IAuthorization {
     sigD: ISignatureData;
 }
 export declare class Authorization extends BaseEntity {
-    account: string;
+    account: Address;
     agent: string;
-    grantor: string;
+    grantor: Address;
     privilege: 0 | 1 | 2 | 3;
     topicIds: string;
     timestamp: number;

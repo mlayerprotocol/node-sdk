@@ -188,7 +188,7 @@ class Utils {
                     buffers.push(arg.value);
                     break;
                 case "hex":
-                    buffers.push(buffer_1.Buffer.from(arg.value, "hex"));
+                    buffers.push(buffer_1.Buffer.from(arg.value.replace("0x", ""), "hex"));
                     break;
                 case "boolean":
                 case "int":
@@ -199,27 +199,30 @@ class Utils {
                     buffers.push(buffer);
                     break;
                 case "address":
-                    if (arg.value.startsWith("0x")) {
-                        buffers.push(buffer_1.Buffer.from(arg.value.replace("0x", ""), "hex"));
-                    }
-                    else {
-                        const values = (arg.value ?? "").trim().split(":");
-                        const tBuf = buffer_1.Buffer.from(values[0]);
-                        const tBuf2 = buffer_1.Buffer.from(values[1]);
-                        let tBuf3;
-                        if (values.length == 3) {
-                            tBuf3 = this.encodeBytes({
-                                type: "int",
-                                value: values[3],
-                            });
-                        }
-                        const cB = buffer_1.Buffer.alloc(tBuf.length + tBuf2.length + (tBuf3?.length ?? 0));
-                        tBuf.copy(cB, 0);
-                        tBuf2.copy(cB, tBuf.length);
-                        if (tBuf3)
-                            tBuf3.copy(cB, tBuf.length + tBuf2.length);
-                        buffers.push(cB);
-                    }
+                    buffers.push(buffer_1.Buffer.from(arg.value));
+                    // if ((arg.value as string).startsWith("0x")) {
+                    //   buffers.push(
+                    //     Buffer.from((arg.value as string).replace("0x", ""), "hex")
+                    //   );
+                    // } else {
+                    //   const values = ((arg.value ?? "") as string).trim().split(":");
+                    //   const tBuf = Buffer.from(values[0]);
+                    //   const tBuf2 = Buffer.from(values[1]);
+                    //   let tBuf3: Buffer;
+                    //   if (values.length == 3) {
+                    //     tBuf3 = this.encodeBytes({
+                    //       type: "int",
+                    //       value: values[3],
+                    //     });
+                    //   }
+                    //   const cB = Buffer.alloc(
+                    //     tBuf.length + tBuf2.length + (tBuf3?.length ?? 0)
+                    //   );
+                    //   tBuf.copy(cB, 0);
+                    //   tBuf2.copy(cB, tBuf.length);
+                    //   if (tBuf3) tBuf3.copy(cB, tBuf.length + tBuf2.length);
+                    //   buffers.push(cB);
+                    // }
                     break;
             }
             len += buffers[i].length;

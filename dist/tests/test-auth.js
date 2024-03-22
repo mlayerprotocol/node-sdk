@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv').config();
-const jayson = require('jayson');
+require("dotenv").config();
+const jayson = require("jayson");
 const helper_1 = require("../src/helper");
 const authorization_1 = require("../src/entities/authorization");
 const clientPayload_1 = require("../src/entities/clientPayload");
 const keys_1 = require("./lib/keys");
+const address_1 = require("../src/entities/address");
 const client = jayson.client.tcp({
-    host: '127.0.0.1',
+    host: "127.0.0.1",
     port: 9521,
     version: 1,
 });
@@ -23,18 +24,18 @@ async function main() {
     const authority = new authorization_1.Authorization();
     console.log('keypairsss', helper_1.Utils.generateKeyPairSecp());
     console.log('BECH32ADDRESS', keys_1.validator.publicKey, helper_1.Utils.toAddress(Buffer.from(keys_1.validator.publicKey, 'hex')));
-    authority.account = keys_1.account.publicKey;
+    authority.account = address_1.Address.fromString(keys_1.account.address);
     authority.agent = keys_1.agent.address;
-    authority.grantor = keys_1.account.publicKey;
+    authority.grantor = address_1.Address.fromString(keys_1.account.address);
     authority.timestamp = 1709115075000;
-    authority.topicIds = '*';
+    authority.topicIds = "*";
     authority.privilege = 3;
     authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
     const encoded = authority.encodeBytes();
-    const hash = helper_1.Utils.sha256Hash(encoded).toString('base64');
-    console.log('Hash string', `Approve ${authority.agent} for tml: ${hash}`);
-    const authSig = 'juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==';
-    authority.signatureData = new authorization_1.SignatureData('tendermint/PubKeySecp256k1', keys_1.account.publicKey, authSig);
+    const hash = helper_1.Utils.sha256Hash(encoded).toString("base64");
+    console.log("Hash string", `Approve ${authority.agent} for tml: ${hash}`);
+    const authSig = "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
+    authority.signatureData = new authorization_1.SignatureData("tendermint/PubKeySecp256k1", keys_1.account.publicKey, authSig);
     // authority.signatureData = Utils.signMessageEdd(
     //   encoded,
     //   Buffer.from(owner.privateKey, 'hex')
@@ -53,17 +54,17 @@ async function main() {
     //   address,
     //   signature: signature.toString('base64'),
     // });
-    console.log('Grant', authority.asPayload());
+    console.log("Grant", authority.asPayload());
     const payload = new clientPayload_1.ClientPayload();
     payload.data = authority;
-    payload.timestamp = 1705392177896;
+    payload.timestamp = 2705392177899;
     payload.eventType = clientPayload_1.AuthorizeEventType.AuthorizeEvent;
     payload.validator = keys_1.validator.publicKey;
     const pb = payload.encodeBytes();
-    payload.signature = helper_1.Utils.signMessageEcc(pb, keys_1.agent.privateKey);
-    console.log('Payload', JSON.stringify(payload.asPayload()));
-    // const client = new Client(new RESTProvider('http://localhost:9531'));
-    //  console.log('AUTHORIZE', await client.authorize(payload));
+    payload.signature = await helper_1.Utils.signMessageEcc(pb, keys_1.agent.privateKey);
+    console.log("Payload", JSON.stringify(payload.asPayload()));
+    // const client = new Client(new RESTProvider("http://localhost:9531"));
+    // console.log("AUTHORIZE", await client.authorize(payload));
 }
 main().then();
 // approve device

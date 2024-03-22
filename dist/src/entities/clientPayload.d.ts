@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { BaseEntity } from './base';
+import { Address } from './address';
 export declare enum AuthorizeEventType {
     'AuthorizeEvent' = 100,
     'UnauthorizeEvent' = 101
@@ -14,7 +15,8 @@ export declare enum AdminTopicEventType {
     'UpdateName' = 1006,//  m.room.name
     'UpdateDescription' = 1007,//  m.room.topic
     'UpdateAvatar' = 1008,//  m.room.avatar
-    'PinMessage' = 1008
+    'PinMessage' = 1008,//  m.room.avatar
+    'UpgradeSubscriberEvent' = 1010
 }
 export declare enum MemberTopicEventType {
     'LeaveEvent' = 1100,
@@ -34,14 +36,15 @@ export interface IClientPayload {
     nonce: number;
     sig: HexString;
     h: HexString;
-    acct: HexString;
+    acct: AddressString;
 }
 export declare class ClientPayload<T> extends BaseEntity {
     data: T;
     timestamp: number;
-    eventType: AuthorizeEventType | AdminTopicEventType;
-    account: string;
+    account: Address;
     validator: string;
+    eventType: AuthorizeEventType | AdminTopicEventType | MemberTopicEventType;
+    authHash: string;
     nonce: number;
     signature: string;
     hash: string;

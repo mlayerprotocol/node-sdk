@@ -18,3 +18,4 @@ __exportStar(require("./authorization"), exports);
 __exportStar(require("./base"), exports);
 __exportStar(require("./clientPayload"), exports);
 __exportStar(require("./topic"), exports);
+__exportStar(require("./address"), exports);
