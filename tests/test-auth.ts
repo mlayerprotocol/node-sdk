@@ -28,11 +28,11 @@ const client = jayson.client.tcp({
 
 async function main() {
   const authority: Authorization = new Authorization();
-  console.log('keypairsss', Utils.generateKeyPairSecp());
+  console.log("keypairsss", Utils.generateKeyPairSecp());
   console.log(
-    'BECH32ADDRESS',
+    "BECH32ADDRESS",
     validator.publicKey,
-    Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
+    Utils.toAddress(Buffer.from(validator.publicKey, "hex"))
   );
   authority.account = Address.fromString(account.address);
   authority.agent = agent.address;
@@ -87,7 +87,6 @@ async function main() {
   payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
 
   console.log("Payload", JSON.stringify(payload.asPayload()));
-
 
   // const client = new Client(new RESTProvider("http://localhost:9531"));
   // console.log("AUTHORIZE", await client.authorize(payload));
