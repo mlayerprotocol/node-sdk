@@ -8,7 +8,7 @@ import {
   ClientPayload,
 } from "../src/entities/clientPayload";
 import { Client, RESTProvider } from "../src";
-import { validator, account, agent } from "./lib/keys";
+import { validator, account, agent, agentList } from "./lib/keys";
 import { Address } from "../src/entities/address";
 const client = jayson.client.tcp({
   host: "127.0.0.1",
@@ -34,9 +34,9 @@ async function main() {
     validator.publicKey,
     Utils.toAddress(Buffer.from(validator.publicKey, "hex"))
   );
-  authority.account = Address.fromString(account.address);
+  authority.account = Address.fromString(agentList[0].account.address);
   authority.agent = agent.address;
-  authority.grantor = Address.fromString(account.address);
+  authority.grantor = Address.fromString(agentList[0].account.address);
   authority.timestamp = 1709115075000;
   authority.topicIds = "*";
   authority.privilege = 3;
@@ -50,7 +50,7 @@ async function main() {
     "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
   authority.signatureData = new SignatureData(
     "tendermint/PubKeySecp256k1",
-    account.publicKey,
+    agentList[0].publicKey,
     authSig
   );
 
@@ -84,7 +84,7 @@ async function main() {
   payload.eventType = AuthorizeEventType.AuthorizeEvent;
   payload.validator = validator.publicKey;
   const pb = payload.encodeBytes();
-  payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
 
   console.log("Payload", JSON.stringify(payload.asPayload()));
 

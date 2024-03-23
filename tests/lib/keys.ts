@@ -21,6 +21,14 @@ export const agent = {
 
 export const agentList = [
   {
+    account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
+    privateKey:
+      "0xe46de10e7625e6e5be5dfd7e5f13080157614af8867c326bfc255e1537f0cad7",
+    publicKey:
+      "0x039edf400ca29530bf25eabae83989eb5808be6df279926220873ac3012ae8dc40",
+    address: "0x9E95D6fCd3ACD6fa240EcD088a8624FBBBa52B5B",
+  },
+  {
     account: { address: "cosmos19nt9r0vg5p6599zpjvnlzyq4r78jtfws8g2us3" },
     privateKey:
       "0xaac931cc4636eb02aa71153cc4c11b08438f4cf5e0cf1c13724eb452b48937b1",
