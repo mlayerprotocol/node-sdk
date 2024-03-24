@@ -8,10 +8,13 @@ const jayson_1 = __importDefault(require("jayson"));
 const clientPayload_1 = require("./entities/clientPayload");
 const axios_1 = __importDefault(require("axios"));
 class Provider {
-    async read(query, options) {
-        return {};
-    }
-    async write(payload, options) {
+    // async read<O>(
+    //   query: Record<string, unknown>,
+    //   options?: O
+    // ): Promise<Record<string, unknown> | Record<string, unknown>[]> {
+    //   return {};
+    // }
+    async makeRequest(payload, options) {
         return {};
     }
 }
@@ -36,15 +39,17 @@ class RESTProvider extends Provider {
      * @param payload
      * @returns
      */
-    async write(payload, options) {
+    async makeRequest(payload, options) {
         const argOptions = options;
         let path = argOptions?.path;
         const method = argOptions?.method ?? "put";
-        switch (payload.eventType) {
-            case clientPayload_1.AuthorizeEventType.AuthorizeEvent:
-            case clientPayload_1.AuthorizeEventType.UnauthorizeEvent:
-                path = "/authorize";
-                break;
+        if (payload != null) {
+            switch (payload.eventType) {
+                case clientPayload_1.AuthorizeEventType.AuthorizeEvent:
+                case clientPayload_1.AuthorizeEventType.UnauthorizeEvent:
+                    path = "/authorize";
+                    break;
+            }
         }
         try {
             const url = `${this.server}/api${path}`;
@@ -54,13 +59,14 @@ class RESTProvider extends Provider {
                 case "put":
                 case "patch":
                 case "delete":
-                    response = await axios_1.default[options.method ?? "put"](url, payload.asPayload(), {
+                    response = await axios_1.default[options.method ?? "put"](url, payload?.asPayload(), {
                         headers: {
                             "Content-Type": "application/json",
                         },
                     });
                     break;
                 default:
+                    console.log({ urlurl: url });
                     response = await axios_1.default.get(url, {
                         headers: {
                             "Content-Type": "application/json",
@@ -88,16 +94,22 @@ class Client {
         this.provider = provider;
     }
     async authorize(payload) {
-        return await this.provider.write(payload, { path: "/authorize" });
+        return await this.provider.makeRequest(payload, { path: "/authorize" });
     }
     async createTopic(payload) {
-        return await this.provider.write(payload, {
+        return await this.provider.makeRequest(payload, {
             path: "/topics",
             method: "post",
         });
     }
+    async getTopic() {
+        return await this.provider.makeRequest(null, {
+            path: "/topics",
+            method: "get",
+        });
+    }
     async createSubscription(payload) {
-        return await this.provider.write(payload, {
+        return await this.provider.makeRequest(payload, {
             path: "/topics/subscribe",
             method: "post",
         });
