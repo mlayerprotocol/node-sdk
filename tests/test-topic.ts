@@ -8,7 +8,7 @@ import {
   ClientPayload,
 } from "../src/entities/clientPayload";
 import { Client, RESTProvider } from "../src";
-import { validator, account, agent } from "./lib/keys";
+import { validator, account, agent, agentList } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
 import { Address } from "../src/entities/address";
 
@@ -31,26 +31,26 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.handle = "bitcoinworld";
+  topic.handle = "bitcoinworld0034";
   topic.description = "The best toopic";
 
   topic.name = "Bitcoin world";
-  topic.reference = "898989";
+  topic.reference = "89896";
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;
   payload.timestamp = 1705392178023;
   payload.eventType = AdminTopicEventType.CreateTopic;
   payload.validator = validator.publicKey;
-  payload.account = Address.fromString(account.address);
+  payload.account = Address.fromString(agentList[0].account.address);
   payload.nonce = 0;
   const pb = payload.encodeBytes();
   console.log("HEXDATA", pb.toString("hex"));
-  payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log("AUTHORIZE", await client.createTopic(payload));
+  // console.log("AUTHORIZE", await client.createTopic(payload));
 }
 main().then();
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8

@@ -127,7 +127,7 @@ export class ClientPayload<T> extends BaseEntity {
       sig: this.signature,
       h: this.hash,
       val: this.validator,
-      acct: this.account.toString(),
+      acct: this.account.toAddressString(),
       nonce: this.nonce,
     };
   }
