@@ -37,12 +37,12 @@ export enum MemberTopicEventType {
 }
 
 // // Message Actions
-// const (
-//   DeleteMessage              EventType = 1200      //m.room.encrypted
-// CreateMessage              EventType = 1201      // m.room.message
-// CreateReaction          EventType = 1202 // m.reaction
-//   IsTyping                EventType = 1203
-// )
+export enum MemberMessageEventType {
+  "DeleteMessageEvent " = 1200, //m.room.encrypted
+  "SendMessageEvent" = 1201, // m.room.message
+  // CreateReaction          EventType = 1202 // m.reaction
+  // IsTyping                EventType = 1203
+}
 
 type AddressString = string;
 type HexString = string;
@@ -68,7 +68,8 @@ export class ClientPayload<T> extends BaseEntity {
   public eventType:
     | AuthorizeEventType
     | AdminTopicEventType
-    | MemberTopicEventType;
+    | MemberTopicEventType
+    | MemberMessageEventType;
   public authHash: string = "";
   public nonce: number = 0;
 
