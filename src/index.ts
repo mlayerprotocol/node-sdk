@@ -3,7 +3,7 @@ import { w3cwebsocket } from "websocket";
 import ethers from "ethers";
 import { AuthorizeEventType, ClientPayload } from "./entities/clientPayload";
 import { Authorization } from "./entities/authorization";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Topic } from "./entities/topic";
 import { Subscription } from "./entities/subscription";
 
@@ -17,7 +17,7 @@ class Provider {
   //   return {};
   // }
   async makeRequest(
-    payload: unknown,
+    // payload: unknown,
     options?: unknown
   ): Promise<Record<string, unknown>> {
     return {};
@@ -48,13 +48,16 @@ export class RESTProvider extends Provider {
    * @param payload
    * @returns
    */
-  async makeRequest<T, O>(
-    payload: ClientPayload<T> | undefined,
-    options?: { path: string; method?: "get" | "put" | "post" }
-  ): Promise<Record<string, unknown>> {
-    const argOptions = options as Record<string, unknown>;
-    let path = argOptions?.path;
-    const method = argOptions?.method ?? "put";
+  async makeRequest<T, O>(options: {
+    path: string;
+    method?: "get" | "put" | "post" | "patch" | "delete";
+    params?: Record<string, any>;
+    payload?: ClientPayload<T> | undefined;
+  }): Promise<Record<string, unknown>> {
+    var { payload, path, method = "put", params } = options ?? {};
+    // let path = argOptions?.path;
+    // const method = argOptions?.method ?? "put";
+    // const params = argOptions?.params;
     if (payload != null) {
       switch (payload.eventType) {
         case AuthorizeEventType.AuthorizeEvent:
@@ -65,7 +68,7 @@ export class RESTProvider extends Provider {
     }
     try {
       const url = `${this.server}/api${path}`;
-      let response;
+      let response: AxiosResponse<any, any>;
       switch (method) {
         case "post":
         case "put":
@@ -78,6 +81,7 @@ export class RESTProvider extends Provider {
               headers: {
                 "Content-Type": "application/json",
               },
+              params,
             }
           );
           break;
@@ -87,6 +91,7 @@ export class RESTProvider extends Provider {
             headers: {
               "Content-Type": "application/json",
             },
+            params,
           });
       }
 
@@ -117,31 +122,43 @@ export class Client {
   public async authorize(
     payload: ClientPayload<Authorization>
   ): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest(payload, { path: "/authorize" });
+    return await this.provider.makeRequest({ path: "/authorize", payload });
   }
 
   public async createTopic(
     payload: ClientPayload<Topic>
   ): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest(payload, {
+    return await this.provider.makeRequest({
       path: "/topics",
       method: "post",
+      payload,
     });
   }
 
   public async getTopic(): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest(null, {
+    return await this.provider.makeRequest({
       path: "/topics",
       method: "get",
+    });
+  }
+
+  public async getAuthorizations({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/authorizations",
+      method: "get",
+      params,
     });
   }
 
   public async createSubscription(
     payload: ClientPayload<Subscription>
   ): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest(payload, {
+    return await this.provider.makeRequest({
       path: "/topics/subscribe",
       method: "post",
+      payload,
     });
   }
 }

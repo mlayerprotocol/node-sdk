@@ -14,7 +14,9 @@ class Provider {
     // ): Promise<Record<string, unknown> | Record<string, unknown>[]> {
     //   return {};
     // }
-    async makeRequest(payload, options) {
+    async makeRequest(
+    // payload: unknown,
+    options) {
         return {};
     }
 }
@@ -39,10 +41,11 @@ class RESTProvider extends Provider {
      * @param payload
      * @returns
      */
-    async makeRequest(payload, options) {
-        const argOptions = options;
-        let path = argOptions?.path;
-        const method = argOptions?.method ?? "put";
+    async makeRequest(options) {
+        var { payload, path, method = "put", params } = options ?? {};
+        // let path = argOptions?.path;
+        // const method = argOptions?.method ?? "put";
+        // const params = argOptions?.params;
         if (payload != null) {
             switch (payload.eventType) {
                 case clientPayload_1.AuthorizeEventType.AuthorizeEvent:
@@ -63,6 +66,7 @@ class RESTProvider extends Provider {
                         headers: {
                             "Content-Type": "application/json",
                         },
+                        params,
                     });
                     break;
                 default:
@@ -71,6 +75,7 @@ class RESTProvider extends Provider {
                         headers: {
                             "Content-Type": "application/json",
                         },
+                        params,
                     });
             }
             return (await response.data);
@@ -94,24 +99,33 @@ class Client {
         this.provider = provider;
     }
     async authorize(payload) {
-        return await this.provider.makeRequest(payload, { path: "/authorize" });
+        return await this.provider.makeRequest({ path: "/authorize", payload });
     }
     async createTopic(payload) {
-        return await this.provider.makeRequest(payload, {
+        return await this.provider.makeRequest({
             path: "/topics",
             method: "post",
+            payload,
         });
     }
     async getTopic() {
-        return await this.provider.makeRequest(null, {
+        return await this.provider.makeRequest({
             path: "/topics",
             method: "get",
         });
     }
+    async getAuthorizations({ params, }) {
+        return await this.provider.makeRequest({
+            path: "/authorizations",
+            method: "get",
+            params,
+        });
+    }
     async createSubscription(payload) {
-        return await this.provider.makeRequest(payload, {
+        return await this.provider.makeRequest({
             path: "/topics/subscribe",
             method: "post",
+            payload,
         });
     }
 }

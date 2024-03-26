@@ -50,6 +50,6 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  // console.log("AUTHORIZE", await client.createSubscription(payload));
+  console.log("AUTHORIZE", await client.createSubscription(payload));
 }
 main().then();

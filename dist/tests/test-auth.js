@@ -22,11 +22,11 @@ const client = jayson.client.tcp({
 // };
 async function main() {
     const authority = new authorization_1.Authorization();
-    console.log('keypairsss', helper_1.Utils.generateKeyPairSecp());
-    console.log('BECH32ADDRESS', keys_1.validator.publicKey, helper_1.Utils.toAddress(Buffer.from(keys_1.validator.publicKey, 'hex')));
-    authority.account = address_1.Address.fromString(keys_1.account.address);
+    console.log("keypairsss", helper_1.Utils.generateKeyPairSecp());
+    console.log("BECH32ADDRESS", keys_1.validator.publicKey, helper_1.Utils.toAddress(Buffer.from(keys_1.validator.publicKey, "hex")));
+    authority.account = address_1.Address.fromString(keys_1.agentList[0].account.address);
     authority.agent = keys_1.agent.address;
-    authority.grantor = address_1.Address.fromString(keys_1.account.address);
+    authority.grantor = address_1.Address.fromString(keys_1.agentList[0].account.address);
     authority.timestamp = 1709115075000;
     authority.topicIds = "*";
     authority.privilege = 3;
@@ -35,7 +35,7 @@ async function main() {
     const hash = helper_1.Utils.sha256Hash(encoded).toString("base64");
     console.log("Hash string", `Approve ${authority.agent} for tml: ${hash}`);
     const authSig = "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
-    authority.signatureData = new authorization_1.SignatureData("tendermint/PubKeySecp256k1", keys_1.account.publicKey, authSig);
+    authority.signatureData = new authorization_1.SignatureData("tendermint/PubKeySecp256k1", keys_1.agentList[0].publicKey, authSig);
     // authority.signatureData = Utils.signMessageEdd(
     //   encoded,
     //   Buffer.from(owner.privateKey, 'hex')
@@ -61,7 +61,7 @@ async function main() {
     payload.eventType = clientPayload_1.AuthorizeEventType.AuthorizeEvent;
     payload.validator = keys_1.validator.publicKey;
     const pb = payload.encodeBytes();
-    payload.signature = await helper_1.Utils.signMessageEcc(pb, keys_1.agent.privateKey);
+    payload.signature = await helper_1.Utils.signMessageEcc(pb, keys_1.agentList[0].privateKey);
     console.log("Payload", JSON.stringify(payload.asPayload()));
     // const client = new Client(new RESTProvider("http://localhost:9531"));
     // console.log("AUTHORIZE", await client.authorize(payload));
