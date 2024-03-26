@@ -33,7 +33,7 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
   // subscribe.status = 1;
-  subscribe.topic = "f354b96a-63ee-aa10-11ac-65203a695c52";
+  subscribe.topic = "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
   // subscribe.subscriber = Address.fromString(account.publicKey);
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";
@@ -50,6 +50,6 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  // console.log("AUTHORIZE", await client.createSubscription(payload));
+  console.log("AUTHORIZE", await client.createSubscription(payload));
 }
 main().then();
