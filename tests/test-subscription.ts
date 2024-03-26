@@ -33,14 +33,14 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
   // subscribe.status = 1;
-  subscribe.topic = "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
-  // subscribe.subscriber = Address.fromString(account.publicKey);
+  subscribe.topic = "43545300-d5f7-24a0-b271-902d399d29f7";
+  subscribe.subscriber = Address.fromString(agentList[0].account.address);
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";
 
   const payload: ClientPayload<Subscription> = new ClientPayload();
   payload.data = subscribe;
-  payload.timestamp = 2705392177906;
+  payload.timestamp = 2705392177908;
   payload.eventType = MemberTopicEventType.JoinEvent;
   payload.validator = validator.publicKey;
   payload.account = Address.fromString(agentList[0].account.address);
