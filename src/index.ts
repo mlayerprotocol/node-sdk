@@ -163,6 +163,16 @@ export class Client {
     });
   }
 
+  public async getAccountSubscriptions(
+    payload: ClientPayload<Subscription>
+  ): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/subscription/account",
+      method: "post",
+      payload,
+    });
+  }
+
   public async createMessage(
     payload: ClientPayload<Message>
   ): Promise<Record<string, unknown>> {
