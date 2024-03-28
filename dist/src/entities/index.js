@@ -19,3 +19,5 @@ __exportStar(require("./base"), exports);
 __exportStar(require("./clientPayload"), exports);
 __exportStar(require("./topic"), exports);
 __exportStar(require("./address"), exports);
+__exportStar(require("./message"), exports);
+__exportStar(require("./subscription"), exports);

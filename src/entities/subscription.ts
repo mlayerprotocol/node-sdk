@@ -3,8 +3,8 @@ import { BaseEntity } from "./base";
 import { Utils } from "../helper";
 import { Address } from "./address";
 
-export type AddressString = string;
-export type HexString = string;
+type AddressString = string;
+type HexString = string;
 
 export interface ISubscription {
   id: string;

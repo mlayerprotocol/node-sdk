@@ -128,5 +128,12 @@ class Client {
             payload,
         });
     }
+    async createMessage(payload) {
+        return await this.provider.makeRequest({
+            path: "/topics/messages",
+            method: "post",
+            payload,
+        });
+    }
 }
 exports.Client = Client;
