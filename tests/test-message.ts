@@ -46,7 +46,7 @@ async function main() {
 
   messagettachments.push(messageAttachment);
 
-  message.topicId = "43545300-d5f7-24a0-b271-902d399d29f7";
+  message.topicId = "cd20bb0c-bbf9-69d2-b177-3a9e2b88c10a";
   message.sender = Address.fromString(agentList[0].account.address);
   message.data = Buffer.from("Hello World");
   message.attachments = messagettachments;

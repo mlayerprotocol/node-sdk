@@ -33,7 +33,7 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
   // subscribe.status = 1;
-  subscribe.topic = "43545300-d5f7-24a0-b271-902d399d29f7";
+  subscribe.topic = "cd20bb0c-bbf9-69d2-b177-3a9e2b88c10a";
   subscribe.subscriber = Address.fromString(agentList[0].account.address);
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";

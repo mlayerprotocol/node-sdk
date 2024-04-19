@@ -31,7 +31,7 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.handle = "blockchainworld0099";
+  topic.handle = "blockchainworld200";
   topic.description = "The best toopic";
 
   topic.name = "Blockchain world";
