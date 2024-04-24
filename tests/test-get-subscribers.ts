@@ -6,10 +6,13 @@ import {
   AdminTopicEventType,
   AuthorizeEventType,
   ClientPayload,
-  IClientPayload,
+  MemberTopicEventType,
 } from "../src/entities/clientPayload";
 import { Client, RESTProvider } from "../src";
-import { agentList } from "./lib/keys";
+import { validator, account, agent, agentList } from "./lib/keys";
+import { Topic } from "../src/entities/topic";
+import { Subscription } from "../src/entities/subscription";
+import { Address } from "../src/entities";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -22,40 +25,26 @@ import { agentList } from "./lib/keys";
 // };
 
 async function main() {
-  // const topic: Topic = new Topic();
-  // //console.log('keypairsss', Utils.generateKeyPairSecp());
-  // // console.log(
-  // //   'BECH32ADDRESS',
-  // //   validator.publicKey,
-  // //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
-  // // );
+  // const subscribe: Subscription = new Subscription();
 
-  // topic.handle = "bitcoinworld";
-  // topic.description = "The best toopic";
-
-  // topic.name = "Bitcoin world";
-  // topic.reference = "898989";
-
-  // const payload: ClientPayload<Topic> = new ClientPayload();
-  // payload.data = topic;
-  // payload.timestamp = 1705392178023;
-  // payload.eventType = AdminTopicEventType.CreateTopic;
+  // const payload: ClientPayload<Subscription> = new ClientPayload();
+  // payload.data = subscribe;
+  // payload.timestamp = 2705392177908;
+  // payload.eventType = MemberTopicEventType.JoinEvent;
   // payload.validator = validator.publicKey;
-  // payload.account = Address.fromString(account.address);
-  // payload.nonce = 0;
+  // payload.account = Address.fromString(agentList[0].account.address);
   // const pb = payload.encodeBytes();
-  // console.log("HEXDATA", pb.toString("hex"));
-  // payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
+  // console.log("🚀 ~ main ~ pb:", pb.toString("hex"));
+  // payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
   // console.log("Payload", JSON.stringify(payload.asPayload()));
-  const param: Record<string, any> = { acct: "" };
+
   const client = new Client(new RESTProvider("http://localhost:9531"));
   console.log(
     "AUTHORIZE",
-
-    await client.getAuthorizations({
+    await client.getTopicSubscribers({
       params: {
         // acct: agentList[0].account.address,
-        acct: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx",
+        top: "211d12d4-fc98-b956-6f70-1a8c3d5859f1",
       },
     })
   );

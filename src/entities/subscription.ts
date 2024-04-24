@@ -9,7 +9,7 @@ type HexString = string;
 export interface ISubscription {
   id: string;
   top: string;
-  sub: AddressString;
+  acct: AddressString;
   ts: number;
   st: number;
   sig: string;
@@ -31,7 +31,7 @@ enum SubscriptionStatus {
 export class Subscription extends BaseEntity {
   public id: string = "";
   public topic: string = "";
-  public subscriber: Address = Address.fromString("");
+  public account: Address = Address.fromString("");
   public timestamp: number = 0;
   public status: SubscriptionStatus = 0;
   public signature: string = "";
@@ -48,7 +48,7 @@ export class Subscription extends BaseEntity {
     return {
       id: this.id,
       top: this.topic,
-      sub: this.subscriber.toString(),
+      acct: this.account.toString(),
       ts: this.timestamp,
       sig: this.signature,
       h: this.hash,

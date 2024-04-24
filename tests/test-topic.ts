@@ -54,7 +54,29 @@ async function main() {
   const activityClient = new ActivityClient(
     new RESTProvider("http://localhost:5005")
   );
-  // console.log("AUTHORIZE", await client.createTopic(payload));
+  const resp = await client
+    .createTopic(payload)
+    .then(async (response) => {
+      if (payload.eventType === AdminTopicEventType.CreateTopic) {
+        const event = await client.resolveEvent({
+          type: AdminTopicEventType.CreateTopic,
+          id: response.id,
+          delay: 5,
+        });
+        if (event?.["data"]?.["sync"]) {
+          await activityClient.createTopic({
+            secret: "",
+            wallet: payload.account,
+          });
+        }
+      }
+      return response;
+    })
+    .catch((err) => {
+      console.log("err", err);
+      return err;
+    });
+  console.log("AUTHORIZE", resp);
 }
 main().then();
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8

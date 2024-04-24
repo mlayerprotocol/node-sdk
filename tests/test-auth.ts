@@ -7,7 +7,7 @@ import {
   AuthorizeEventType,
   ClientPayload,
 } from "../src/entities/clientPayload";
-import { Client, RESTProvider } from "../src";
+import { ActivityClient, Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Address } from "../src/entities/address";
 const client = jayson.client.tcp({
@@ -86,9 +86,35 @@ async function main() {
   const pb = payload.encodeBytes();
   payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
 
-  console.log("Payload", JSON.stringify(payload.asPayload()));
+  // console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  // const client = new Client(new RESTProvider("http://localhost:9531"));
+  const client = new Client(new RESTProvider("http://localhost:9531"));
+  const activityClient = new ActivityClient(
+    new RESTProvider("http://localhost:5005")
+  );
+  const resp = await client
+    .authorize(payload)
+    .then(async (response) => {
+      if (payload.eventType === AuthorizeEventType.AuthorizeEvent) {
+        const event = await client.resolveEvent({
+          type: AuthorizeEventType.AuthorizeEvent,
+          id: response.id,
+          delay: 5,
+        });
+        if (event?.["data"]?.["sync"]) {
+          await activityClient.authorize({
+            secret: "",
+            wallet: payload.account,
+          });
+        }
+      }
+      return response;
+    })
+    .catch((err) => {
+      console.log("err", err);
+      return err;
+    });
+  console.log("AUTHORIZE", resp);
   // console.log("AUTHORIZE", await client.authorize(payload));
 }
 main().then();

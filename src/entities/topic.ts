@@ -61,6 +61,7 @@ export class Topic extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
+      { type: "string", value: this.id },
       { type: "string", value: this.reference },
       { type: "string", value: this.name },
       { type: "string", value: this.handle },

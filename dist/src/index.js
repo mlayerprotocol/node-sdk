@@ -70,7 +70,7 @@ class RESTProvider extends Provider {
                     });
                     break;
                 default:
-                    console.log({ urlurl: url });
+                    // console.log({ urlurl: url });
                     response = await axios_1.default.get(url, {
                         headers: {
                             "Content-Type": "application/json",
@@ -108,6 +108,13 @@ class Client {
             payload,
         });
     }
+    async updateTopic(payload) {
+        return await this.provider.makeRequest({
+            path: `/topics`,
+            method: "put",
+            payload,
+        });
+    }
     async getTopic() {
         return await this.provider.makeRequest({
             path: "/topics",
@@ -128,12 +135,66 @@ class Client {
             payload,
         });
     }
+    async getAccountSubscriptions({ params, }) {
+        return await this.provider.makeRequest({
+            path: "/subscription/account",
+            method: "post",
+            params,
+        });
+    }
+    async getTopicSubscribers({ params, }) {
+        return await this.provider.makeRequest({
+            path: "/topics/subscribers",
+            method: "get",
+            params,
+        });
+    }
     async createMessage(payload) {
         return await this.provider.makeRequest({
             path: "/topics/messages",
             method: "post",
             payload,
         });
+    }
+    async getBlockStats({ params, }) {
+        return await this.provider.makeRequest({
+            path: "/block-stats",
+            method: "get",
+            params,
+        });
+    }
+    async getMainStats({ params, }) {
+        return await this.provider.makeRequest({
+            path: "/main-stats",
+            method: "get",
+            params,
+        });
+    }
+    async getTopicMessages({ id, params, }) {
+        return await this.provider.makeRequest({
+            path: `/topics/${id}/messages`,
+            method: "get",
+            params,
+        });
+    }
+    async getEvent({ type, id, }) {
+        return await this.provider.makeRequest({
+            path: `/event/${type}/${id}`,
+            method: "get",
+        });
+    }
+    async resolveEvent({ type, id, delay = 0, }) {
+        const data = await this.getEvent({ type, id });
+        const synced = data?.["data"]?.["sync"] ?? false;
+        if (synced) {
+            return data;
+        }
+        // console.log({ delay, synced });
+        await new Promise((r) => setTimeout(r, 2000));
+        if (delay < 10) {
+            return this.resolveEvent({ type, id, delay: delay + 2 });
+        }
+        return { data };
     }
 }
 exports.Client = Client;

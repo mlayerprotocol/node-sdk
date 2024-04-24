@@ -1,18 +1,6 @@
 require("dotenv").config();
-const jayson = require("jayson");
-import { Utils } from "../src/helper";
-import { Authorization } from "../src/entities/authorization";
-import {
-  AdminTopicEventType,
-  AuthorizeEventType,
-  ClientPayload,
-  MemberTopicEventType,
-} from "../src/entities/clientPayload";
+
 import { Client, RESTProvider } from "../src";
-import { validator, account, agent, agentList } from "./lib/keys";
-import { Topic } from "../src/entities/topic";
-import { Subscription } from "../src/entities/subscription";
-import { Address } from "../src/entities";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -37,14 +25,15 @@ async function main() {
   // console.log("🚀 ~ main ~ pb:", pb.toString("hex"));
   // payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
   // console.log("Payload", JSON.stringify(payload.asPayload()));
-
+  const id = "a6972f51-7ff9-96b4-6fae-e34fc56c0873";
   const client = new Client(new RESTProvider("http://localhost:9531"));
   console.log(
     "AUTHORIZE",
-    await client.getAccountSubscriptions({
+    await client.getTopicMessages({
+      id,
       params: {
         // acct: agentList[0].account.address,
-        acct: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx",
+        top: "211d12d4-fc98-b956-6f70-1a8c3d5859f1",
       },
     })
   );

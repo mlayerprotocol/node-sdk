@@ -39,14 +39,21 @@ async function main() {
   // console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
+  // console.log(
+  //   "AUTHORIZE",
+  //   await client.getEvent({
+  //     type: 1001,
+  //     id: "25541eb4-581a-5061-593a-99cc93c52b47",
+  //   })
+  // );
   console.log(
     "AUTHORIZE",
-    await client.getAccountSubscriptions({
-      params: {
-        // acct: agentList[0].account.address,
-        acct: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx",
-      },
-    })
+    await client
+      .resolveEvent({
+        type: 1001,
+        id: "25541eb4-581a-5061-593a-99cc93c52b47",
+      })
+      .catch((e) => console.log({ e }))
   );
 }
 main().then();
