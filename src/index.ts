@@ -87,7 +87,7 @@ export class RESTProvider extends Provider {
           );
           break;
         default:
-          console.log({ urlurl: url });
+          // console.log({ urlurl: url });
           response = await axios.get(url, {
             headers: {
               "Content-Type": "application/json",
@@ -136,6 +136,16 @@ export class Client {
     });
   }
 
+  public async updateTopic(
+    payload: ClientPayload<Topic>
+  ): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: `/topics`,
+      method: "put",
+      payload,
+    });
+  }
+
   public async getTopic(): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: "/topics",
@@ -163,13 +173,23 @@ export class Client {
     });
   }
 
-  public async getAccountSubscriptions(
-    payload: ClientPayload<Subscription>
-  ): Promise<Record<string, unknown>> {
+  public async getAccountSubscriptions({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: "/subscription/account",
       method: "post",
-      payload,
+      params,
+    });
+  }
+
+  public async getTopicSubscribers({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/topics/subscribers",
+      method: "get",
+      params,
     });
   }
 
@@ -181,5 +201,63 @@ export class Client {
       method: "post",
       payload,
     });
+  }
+
+  public async getBlockStats({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/block-stats",
+      method: "get",
+      params,
+    });
+  }
+
+  public async getMainStats({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/main-stats",
+      method: "get",
+      params,
+    });
+  }
+  public async getTopicMessages({
+    id,
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: `/topics/${id}/messages`,
+      method: "get",
+      params,
+    });
+  }
+
+  public async getEvent({
+    type,
+    id,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: `/event/${type}/${id}`,
+      method: "get",
+    });
+  }
+
+  public async resolveEvent({
+    type,
+    id,
+    delay = 0,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    const data = await this.getEvent({ type, id });
+    const synced: boolean = data?.["data"]?.["sync"] ?? false;
+    if (synced) {
+      return data;
+    }
+    // console.log({ delay, synced });
+    await new Promise((r) => setTimeout(r, 2000));
+    if (delay < 10) {
+      return this.resolveEvent({ type, id, delay: delay + 2 });
+    }
+    return { data };
   }
 }

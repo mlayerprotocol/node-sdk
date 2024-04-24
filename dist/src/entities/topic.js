@@ -42,7 +42,7 @@ class Topic extends base_1.BaseEntity {
      * @returns {Buffer}
      */
     encodeBytes() {
-        return helper_1.Utils.encodeBytes({ type: "string", value: this.reference }, { type: "string", value: this.name }, { type: "string", value: this.handle }, { type: "string", value: this.description }, { type: "hex", value: this.parentTopicHash }, 
+        return helper_1.Utils.encodeBytes({ type: "string", value: this.id }, { type: "string", value: this.reference }, { type: "string", value: this.name }, { type: "string", value: this.handle }, { type: "string", value: this.description }, { type: "hex", value: this.parentTopicHash }, 
         // { type: 'int', value: this.subsriberCount },
         { type: "boolean", value: this.isPublic }, { type: "boolean", value: this.readOnly });
     }

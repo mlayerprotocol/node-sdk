@@ -16,6 +16,7 @@ export declare enum AdminTopicEventType {
     "UpdateDescription" = 1007,//  m.room.topic
     "UpdateAvatar" = 1008,//  m.room.avatar
     "PinMessage" = 1008,//  m.room.avatar
+    "UpdateTopic" = 1009,// m.room.create
     "UpgradeSubscriberEvent" = 1010
 }
 export declare enum MemberTopicEventType {

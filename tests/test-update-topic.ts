@@ -1,19 +1,19 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const jayson = require("jayson");
-const helper_1 = require("../src/helper");
-const authorization_1 = require("../src/entities/authorization");
-const clientPayload_1 = require("../src/entities/clientPayload");
-const src_1 = require("../src");
-const keys_1 = require("./lib/keys");
-const address_1 = require("../src/entities/address");
-const client = jayson.client.tcp({
-    host: "127.0.0.1",
-    port: 9521,
-    version: 1,
-});
+import { Utils } from "../src/helper";
+import { Authorization } from "../src/entities/authorization";
+import {
+  AdminTopicEventType,
+  AuthorizeEventType,
+  ClientPayload,
+} from "../src/entities/clientPayload";
+import { Client, RESTProvider } from "../src";
+import { validator, account, agent, agentList } from "./lib/keys";
+import { Topic } from "../src/entities/topic";
+import { Address } from "../src/entities/address";
+
 // console.log(Utils.generateKeyPairEdd());
+
 // const owner = {
 //   privateKey:
 //     '524324bf5d8d62add5b5980a4fded961bd72fd69469bb36a4aaf1f2c7ec8dc39',
@@ -21,57 +21,50 @@ const client = jayson.client.tcp({
 //     '02ebec9d95769bb3d71712f0bf1e7e88b199fc945f67f908bbab81e9b7cb1092d8',
 //   address: 'ml:12htc66jeelcfm4nv7drk4dqz6umntcfe690725',
 // };
+
+const topicId = "9bc1fb90-89c0-ab62-de46-b87bd8252cc2";
+
 async function main() {
-    const authority = new authorization_1.Authorization();
-    console.log("keypairsss", helper_1.Utils.generateKeyPairSecp());
-    console.log("BECH32ADDRESS", keys_1.validator.publicKey, helper_1.Utils.toAddress(Buffer.from(keys_1.validator.publicKey, "hex")));
-    authority.account = address_1.Address.fromString(keys_1.agentList[0].account.address);
-    authority.agent = keys_1.agent.address;
-    authority.grantor = address_1.Address.fromString(keys_1.agentList[0].account.address);
-    authority.timestamp = 1709115075000;
-    authority.topicIds = "*";
-    authority.privilege = 3;
-    authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
-    const encoded = authority.encodeBytes();
-    const hash = helper_1.Utils.sha256Hash(encoded).toString("base64");
-    console.log("Hash string", `Approve ${authority.agent} for tml: ${hash}`);
-    const authSig = "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
-    authority.signatureData = new authorization_1.SignatureData("tendermint/PubKeySecp256k1", keys_1.agentList[0].publicKey, authSig);
-    // authority.signatureData = Utils.signMessageEdd(
-    //   encoded,
-    //   Buffer.from(owner.privateKey, 'hex')
-    // );
-    // const privKBuff = Buffer.from(account.privateKey);
-    // // const pubk = secp256k1.getPublicKey(account.privateKey, true);
-    // const pubKeyBuffer = Buffer.from(account.publicKey, 'hex');
-    // const address = Utils.toAddress(pubKeyBuffer, 'cosmos');
-    // const signature = await Utils.signAminoSecp(
-    //   Buffer.from('helloworld', 'ascii'),
-    //   privKBuff,
-    //   address
-    // );
-    // console.log('SIGNATURE', {
-    //   publicKey: pubKeyBuffer.toString('base64'),
-    //   address,
-    //   signature: signature.toString('base64'),
-    // });
-    console.log("Grant", authority.asPayload());
-    const payload = new clientPayload_1.ClientPayload();
-    payload.data = authority;
-    payload.timestamp = 2705392177899;
-    payload.eventType = clientPayload_1.AuthorizeEventType.AuthorizeEvent;
-    payload.validator = keys_1.validator.publicKey;
-    const pb = payload.encodeBytes();
-    payload.signature = await helper_1.Utils.signMessageEcc(pb, keys_1.agentList[0].privateKey);
-    // console.log("Payload", JSON.stringify(payload.asPayload()));
-    const client = new src_1.Client(new src_1.RESTProvider("http://localhost:9531"));
-    console.log("AUTHORIZE", await client.authorize(payload));
+  const topic: Topic = new Topic();
+  //console.log('keypairsss', Utils.generateKeyPairSecp());
+  // console.log(
+  //   'BECH32ADDRESS',
+  //   validator.publicKey,
+  //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
+  // );
+
+  topic.handle = "Spsxs";
+  topic.description = "The best toopic";
+
+  topic.name = "Perfectl POpy";
+  topic.reference = "898978";
+  topic.isPublic = true;
+  topic.id = topicId;
+
+  const payload: ClientPayload<Topic> = new ClientPayload();
+  payload.data = topic;
+  payload.timestamp = 1705392178023;
+  payload.eventType = AdminTopicEventType.UpdateTopic;
+  payload.validator = validator.publicKey;
+  payload.account = Address.fromString(agentList[0].account.address);
+  payload.nonce = 0;
+  const pb = payload.encodeBytes();
+  console.log("HEXDATA", pb.toString("hex"));
+  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
+  console.log("Payload", JSON.stringify(payload.asPayload()));
+
+  const client = new Client(new RESTProvider("http://localhost:9531"));
+  console.log("AUTHORIZE", await client.updateTopic(payload));
 }
 main().then();
+//0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
+//0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
 // approve device
+
 // create a topic
 // let topicName = 'ioc-committee',
 //   timestampSub = Math.floor(Number(Date.now().toString()) / 1000);
+
 // const { signature: channelSignature } = web3.eth.accounts.sign(
 //   web3.utils.soliditySha3(channelName.toLowerCase()),
 //   sender.privKey
@@ -86,9 +79,11 @@ main().then();
 //   web3.utils.soliditySha3(sub),
 //   'ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
 // );
+
 // // sign channel name
 // console.log('sub:::', sub);
 // console.log('signSub:::', signSub);
+
 // const subscription = [
 //   {
 //     channel: channelSignature,
@@ -105,6 +100,7 @@ main().then();
 //   console.log('response', response);
 //   if (response.error) throw response.error;
 // });
+
 // const timestamp = Date.now().toString();
 // // const from = sender.pubKey;
 // const receiver = `${channelName}:${channelSignature}`;
@@ -121,9 +117,11 @@ main().then();
 // const origin = sender.pubKey;
 // const text = message;
 // const html = message;
+
 // // user should calculate the hash... propagate it to part where it is stored on the ipfs network...
 // // libraries
 // // propagating with md5 ...
+
 // let chatMessage = [];
 // // chatMessage.push(`Header.Sender:${from}`);
 // chatMessage.push(`Header.Receiver:${receiver}`);
@@ -134,6 +132,7 @@ main().then();
 //   `Body.Subject:${web3.utils.soliditySha3(subject).toLowerCase()}`
 // );
 // chatMessage.push(`Body.Message:${web3.utils.soliditySha3(text).toLowerCase()}`);
+
 // let _action = [];
 // let i = 0;
 // while (i < actions.length) {
@@ -164,6 +163,7 @@ main().then();
 //   sender.privKey
 //   //   "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 // );
+
 // const params = [
 //   {
 //     timestamp: Number(timestamp),
@@ -179,6 +179,7 @@ main().then();
 //     origin,
 //   },
 // ];
+
 // client.request('RpcService.SendMessage', params, (err, response) => {
 //   console.log('response:::', response);
 //   if (err) throw err;

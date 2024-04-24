@@ -86,10 +86,10 @@ async function main() {
   const pb = payload.encodeBytes();
   payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
 
-  console.log("Payload", JSON.stringify(payload.asPayload()));
+  // console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  // const client = new Client(new RESTProvider("http://localhost:9531"));
-  // console.log("AUTHORIZE", await client.authorize(payload));
+  const client = new Client(new RESTProvider("http://localhost:9531"));
+  console.log("AUTHORIZE", await client.authorize(payload));
 }
 main().then();
 

@@ -26,6 +26,15 @@ export declare class Utils {
      *
      * @returns
      */
+    static getKeysEcc(privKey: string): {
+        privateKey: string;
+        address: string;
+        publicKey: any;
+    };
+    /**
+     *
+     * @returns
+     */
     static generateKeyPairEdd(): {
         privateKey: string;
         publicKey: string;

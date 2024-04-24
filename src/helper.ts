@@ -91,6 +91,19 @@ export class Utils {
    *
    * @returns
    */
+  static getKeysEcc(privKey: string) {
+    const wallet = new ethers.Wallet(privKey);
+    const privateKey = wallet.privateKey;
+    const publicKey = (wallet as any).publicKey;
+    const address = wallet.address;
+
+    return { privateKey, address, publicKey };
+  }
+
+  /**
+   *
+   * @returns
+   */
   static generateKeyPairEdd() {
     const keypair = nacl.sign.keyPair();
     // Bech32 encoding
