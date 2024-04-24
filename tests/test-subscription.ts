@@ -33,8 +33,8 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
   // subscribe.status = 1;
-  subscribe.topic = "cd20bb0c-bbf9-69d2-b177-3a9e2b88c10a";
-  subscribe.subscriber = Address.fromString(agentList[0].account.address);
+  subscribe.topic = "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
+  subscribe.subscriber = Address.fromString(agentList[2].account.address);
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";
 
@@ -43,10 +43,10 @@ async function main() {
   payload.timestamp = 2705392177908;
   payload.eventType = MemberTopicEventType.JoinEvent;
   payload.validator = validator.publicKey;
-  payload.account = Address.fromString(agentList[0].account.address);
+  payload.account = Address.fromString(agentList[2].account.address);
   const pb = payload.encodeBytes();
   console.log("🚀 ~ main ~ pb:", pb.toString("hex"));
-  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[2].privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));

@@ -26,6 +26,10 @@ export declare enum MemberTopicEventType {
     "UpgradedEvent" = 1104,
     "InvitedEvent" = 1105
 }
+export declare enum MemberMessageEventType {
+    "DeleteMessageEvent " = 1200,//m.room.encrypted
+    "SendMessageEvent" = 1201
+}
 type AddressString = string;
 type HexString = string;
 export interface IClientPayload {
@@ -43,7 +47,7 @@ export declare class ClientPayload<T> extends BaseEntity {
     timestamp: number;
     account: Address;
     validator: string;
-    eventType: AuthorizeEventType | AdminTopicEventType | MemberTopicEventType;
+    eventType: AuthorizeEventType | AdminTopicEventType | MemberTopicEventType | MemberMessageEventType;
     authHash: string;
     nonce: number;
     signature: string;

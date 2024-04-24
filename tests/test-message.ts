@@ -46,8 +46,8 @@ async function main() {
 
   messagettachments.push(messageAttachment);
 
-  message.topicId = "cd20bb0c-bbf9-69d2-b177-3a9e2b88c10a";
-  message.sender = Address.fromString(agentList[0].account.address);
+  message.topicId = "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
+  message.sender = Address.fromString(agentList[2].account.address);
   message.data = Buffer.from("Hello World");
   message.attachments = messagettachments;
   message.actions = messageActions;
@@ -57,14 +57,18 @@ async function main() {
   payload.timestamp = 1705392178023;
   payload.eventType = MemberMessageEventType.SendMessageEvent;
   payload.validator = validator.publicKey;
-  payload.account = Address.fromString(agentList[0].account.address);
+  payload.account = Address.fromString(agentList[2].account.address);
   payload.nonce = 0;
   const pb = payload.encodeBytes();
   console.log("HEXDATA", pb.toString("hex"));
-  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[2].privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  //   console.log("AUTHORIZE", await client.createMessage(payload));
+  const resp = await client.createMessage(payload).catch((err) => {
+    console.log("err", err);
+    return err;
+  });
+  console.log("AUTHORIZE", resp.body);
 }
 main().then();

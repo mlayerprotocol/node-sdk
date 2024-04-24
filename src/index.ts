@@ -6,6 +6,7 @@ import { Authorization } from "./entities/authorization";
 import axios, { AxiosResponse } from "axios";
 import { Topic } from "./entities/topic";
 import { Subscription } from "./entities/subscription";
+import { Message } from "./entities/message";
 
 export interface Client extends Jayson.TcpClientOptions {}
 
@@ -167,6 +168,59 @@ export class Client {
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: "/subscription/account",
+      method: "post",
+      payload,
+    });
+  }
+
+  public async createMessage(
+    payload: ClientPayload<Message>
+  ): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/topics/messages",
+      method: "post",
+      payload,
+    });
+  }
+}
+
+export class ActivityClient {
+  constructor(public provider: RESTProvider) {}
+
+  public async authorize(payload: any): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/authorize-agent",
+      method: "post",
+      payload,
+    });
+  }
+
+  public async connectWallet(payload: any): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/connect-wallet",
+      method: "post",
+      payload,
+    });
+  }
+
+  public async createTopic(payload: any): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/create-topic",
+      method: "post",
+      payload,
+    });
+  }
+  public async joinTopic(payload: any): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/join-topic",
+      method: "post",
+      payload,
+    });
+  }
+
+  public async sendMessage(payload: any): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/send-message",
       method: "post",
       payload,
     });
