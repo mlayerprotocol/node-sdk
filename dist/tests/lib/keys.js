@@ -18,6 +18,12 @@ exports.agent = {
 exports.agentList = [
     {
         account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
+        privateKey: "0x715729b6556ee27d8f8c70ab513ae2cf0d73c762f3bdbb391cb5ed9a5470367f",
+        publicKey: "0x02683292e9abb5664aba976861a16d7f1e24e3cec74ae768505d13903fa88ecfe8",
+        address: "0x7896C696f67d1457EF238C8Cdfd3eCc2938e873d",
+    },
+    {
+        account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
         privateKey: "0xe46de10e7625e6e5be5dfd7e5f13080157614af8867c326bfc255e1537f0cad7",
         publicKey: "0x039edf400ca29530bf25eabae83989eb5808be6df279926220873ac3012ae8dc40",
         address: "0x9E95D6fCd3ACD6fa240EcD088a8624FBBBa52B5B",

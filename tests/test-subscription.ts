@@ -34,7 +34,7 @@ async function main() {
   // );
   // subscribe.status = 1;
   subscribe.topic = "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
-  subscribe.subscriber = Address.fromString(agentList[2].account.address);
+  subscribe.account = Address.fromString(agentList[2].account.address);
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";
 
