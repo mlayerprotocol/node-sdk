@@ -51,7 +51,9 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("https://rest.mlayerscan.com"));
-  const activityClient = new ActivityClient(client);
+  const activityClient = new ActivityClient(
+    new Client(new RESTProvider("http://localhost:5005"))
+  );
   await client
     .createTopic(payload)
     .then(async (response) => {

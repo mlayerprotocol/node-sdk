@@ -51,7 +51,9 @@ async function main() {
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
   // console.log("AUTHORIZE", await client.createSubscription(payload));
-  const activityClient = new ActivityClient(client);
+  const activityClient = new ActivityClient(
+    new Client(new RESTProvider("http://localhost:5005"))
+  );
   await client
     .createSubscription(payload)
     .then(async (response) => {

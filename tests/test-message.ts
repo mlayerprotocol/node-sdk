@@ -65,7 +65,9 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  const activityClient = new ActivityClient(client);
+  const activityClient = new ActivityClient(
+    new Client(new RESTProvider("http://localhost:5005"))
+  );
   await client
     .createMessage(payload)
     .then(async (response) => {

@@ -89,7 +89,9 @@ async function main() {
   console.log("Payload", payload);
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  const activityClient = new ActivityClient(client);
+  const activityClient = new ActivityClient(
+    new Client(new RESTProvider("http://localhost:5005"))
+  );
   await client
     .authorize(payload)
     .then(async (response) => {
