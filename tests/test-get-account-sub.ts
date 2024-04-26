@@ -38,7 +38,7 @@ async function main() {
   // payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
   // console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider("http://localhost:9531"));
+  const client = new Client(new RESTProvider("https://rest.mlayerscan.com"));
 
   console.log(
     "AUTHORIZE",

@@ -279,7 +279,7 @@ export class Client {
 
   public async connectWallet(payload: any): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: "/activity-point/connect",
+      path: "/activity-point/account/connect",
       method: "post",
       payload,
       pathSuffix: "v1",
@@ -296,6 +296,7 @@ export class ActivityClient {
     return await this.client.connectWallet({
       secret: process.env.ACTIVITY_SECRET,
       projectId: process.env.PROJECT_ID,
+      activityId: process.env.CONNECT_WALLET,
       walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
     });
   }
@@ -303,7 +304,7 @@ export class ActivityClient {
   public async authorizeAgentActivity(
     payload: ClientPayload<Authorization>
   ): Promise<Record<string, unknown>> {
-    const auths = await this.client.getAuthorizations({
+    const auths: any = await this.client.getAuthorizations({
       params: {
         // acct: payload.account
         acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
@@ -314,14 +315,14 @@ export class ActivityClient {
       projectId: process.env.PROJECT_ID,
       walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
       activityId: process.env.AUTHORIZE_AGENT,
-      activityCount: auths.length,
+      activityCount: auths.data.length,
     });
   }
 
   public async createTopicActivity(
     payload: ClientPayload<Topic>
   ): Promise<Record<string, unknown>> {
-    const topics = await this.client.getAccountSubscriptions({
+    const topics: any = await this.client.getAccountSubscriptions({
       params: {
         // acct: payload.account
         acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
@@ -332,25 +333,28 @@ export class ActivityClient {
       projectId: process.env.PROJECT_ID,
       walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
       activityId: process.env.CREATE_TOPIC,
-      activityCount: topics.length,
+      activityCount: topics.data.length,
     });
   }
 
   public async joinTopicActivity(
     payload: ClientPayload<Subscription>
   ): Promise<Record<string, unknown>> {
-    const topics = await this.client.getAccountSubscriptions({
+    const topics: any = await this.client.getAccountSubscriptions({
       params: {
         // acct: payload.account
         acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
       },
     });
+    const joinedTopics = topics.data.filter(
+      (topic) => topic.acct === payload.account
+    );
     return await this.client.claimActivityPoint({
       secret: process.env.ACTIVITY_SECRET,
       projectId: process.env.PROJECT_ID,
       walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
       activityId: process.env.JOIN_TOPIC,
-      activityCount: topics.length,
+      activityCount: joinedTopics.length,
     });
   }
 

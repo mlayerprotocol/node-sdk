@@ -50,7 +50,7 @@ async function main() {
     "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
   authority.signatureData = new SignatureData(
     "tendermint/PubKeySecp256k1",
-    agentList[0].publicKey,
+    "Ag2Ogr/PK9VF1dq+29+cb5dGTRLZopnmu1AzqRfZZTd+",
     authSig
   );
 

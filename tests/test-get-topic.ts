@@ -49,8 +49,8 @@ async function main() {
   // payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
   // console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log("AUTHORIZE", JSON.stringify(await client.getTopic()));
+  const client = new Client(new RESTProvider("https://rest.mlayerscan.com"));
+  console.log("AUTHORIZE", await client.getTopic());
 }
 main().then();
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8

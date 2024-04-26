@@ -50,9 +50,7 @@ async function main() {
   payload.signature = await Utils.signMessageEcc(pb, agentList[1].privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(
-    new RESTProvider("https://rest.mlayerscan.com/api")
-  );
+  const client = new Client(new RESTProvider("https://rest.mlayerscan.com"));
   const activityClient = new ActivityClient(client);
   await client
     .createTopic(payload)
