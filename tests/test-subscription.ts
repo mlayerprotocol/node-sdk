@@ -8,7 +8,7 @@ import {
   ClientPayload,
   MemberTopicEventType,
 } from "../src/entities/clientPayload";
-import { Client, RESTProvider } from "../src";
+import { ActivityClient, Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
 import { Subscription } from "../src/entities/subscription";
@@ -50,6 +50,26 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log("AUTHORIZE", await client.createSubscription(payload));
+  // console.log("AUTHORIZE", await client.createSubscription(payload));
+  const activityClient = new ActivityClient(client);
+  await client
+    .createSubscription(payload)
+    .then(async (response) => {
+      const eventData: any = response.data;
+      if (eventData.t === MemberTopicEventType.JoinEvent) {
+        const event = await client.resolveEvent({
+          type: eventData.t,
+          id: eventData.id,
+          delay: 5,
+        });
+        if (event?.["data"]?.["sync"]) {
+          await activityClient.joinTopicActivity(payload);
+        }
+      }
+      console.log("AUTHORIZE", response);
+    })
+    .catch((err) => {
+      console.log("ERROR", err);
+    });
 }
 main().then();

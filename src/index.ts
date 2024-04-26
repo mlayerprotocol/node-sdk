@@ -54,8 +54,15 @@ export class RESTProvider extends Provider {
     method?: "get" | "put" | "post" | "patch" | "delete";
     params?: Record<string, any>;
     payload?: ClientPayload<T> | undefined;
+    pathSuffix?: string | undefined;
   }): Promise<Record<string, unknown>> {
-    var { payload, path, method = "put", params } = options ?? {};
+    var {
+      payload,
+      path,
+      method = "put",
+      params,
+      pathSuffix = "api",
+    } = options ?? {};
     // let path = argOptions?.path;
     // const method = argOptions?.method ?? "put";
     // const params = argOptions?.params;
@@ -68,7 +75,7 @@ export class RESTProvider extends Provider {
       }
     }
     try {
-      const url = `${this.server}/api${path}`;
+      const url = `${this.server}/${pathSuffix}${path}`;
       let response: AxiosResponse<any, any>;
       switch (method) {
         case "post":
@@ -77,7 +84,7 @@ export class RESTProvider extends Provider {
         case "delete":
           response = await (axios[options.method ?? "put"] as any)(
             url,
-            payload?.asPayload(),
+            payload?.asPayload ? payload?.asPayload() : payload,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -126,9 +133,7 @@ export class Client {
     return await this.provider.makeRequest({ path: "/authorize", payload });
   }
 
-  public async createTopic(
-    payload: ClientPayload<Topic>
-  ): Promise<Record<string, unknown>> {
+  public async createTopic(payload: any): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: "/topics",
       method: "post",
@@ -260,47 +265,110 @@ export class Client {
     }
     return { data };
   }
-}
 
-export class ActivityClient {
-  constructor(public provider: RESTProvider) {}
-
-  public async authorize(payload: any): Promise<Record<string, unknown>> {
+  public async claimActivityPoint(
+    payload: any
+  ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: "/authorize-agent",
+      path: "/activity-point/claim",
       method: "post",
       payload,
+      pathSuffix: "v1",
     });
   }
 
   public async connectWallet(payload: any): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: "/connect-wallet",
+      path: "/activity-point/connect",
       method: "post",
       payload,
+      pathSuffix: "v1",
+    });
+  }
+}
+
+export class ActivityClient {
+  constructor(public client: Client) {}
+
+  public async connectWalletActivity(
+    payload: ClientPayload<Authorization>
+  ): Promise<Record<string, unknown>> {
+    return await this.client.connectWallet({
+      secret: process.env.ACTIVITY_SECRET,
+      projectId: process.env.PROJECT_ID,
+      walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
     });
   }
 
-  public async createTopic(payload: any): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest({
-      path: "/create-topic",
-      method: "post",
-      payload,
+  public async authorizeAgentActivity(
+    payload: ClientPayload<Authorization>
+  ): Promise<Record<string, unknown>> {
+    const auths = await this.client.getAuthorizations({
+      params: {
+        // acct: payload.account
+        acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      },
     });
-  }
-  public async joinTopic(payload: any): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest({
-      path: "/join-topic",
-      method: "post",
-      payload,
+    return await this.client.claimActivityPoint({
+      secret: process.env.ACTIVITY_SECRET,
+      projectId: process.env.PROJECT_ID,
+      walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      activityId: process.env.AUTHORIZE_AGENT,
+      activityCount: auths.length,
     });
   }
 
-  public async sendMessage(payload: any): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest({
-      path: "/send-message",
-      method: "post",
-      payload,
+  public async createTopicActivity(
+    payload: ClientPayload<Topic>
+  ): Promise<Record<string, unknown>> {
+    const topics = await this.client.getAccountSubscriptions({
+      params: {
+        // acct: payload.account
+        acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      },
+    });
+    return await this.client.claimActivityPoint({
+      secret: process.env.ACTIVITY_SECRET,
+      projectId: process.env.PROJECT_ID,
+      walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      activityId: process.env.CREATE_TOPIC,
+      activityCount: topics.length,
+    });
+  }
+
+  public async joinTopicActivity(
+    payload: ClientPayload<Subscription>
+  ): Promise<Record<string, unknown>> {
+    const topics = await this.client.getAccountSubscriptions({
+      params: {
+        // acct: payload.account
+        acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      },
+    });
+    return await this.client.claimActivityPoint({
+      secret: process.env.ACTIVITY_SECRET,
+      projectId: process.env.PROJECT_ID,
+      walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      activityId: process.env.JOIN_TOPIC,
+      activityCount: topics.length,
+    });
+  }
+
+  public async sendMessageActivity(
+    payload: ClientPayload<Message>
+  ): Promise<Record<string, unknown>> {
+    const topics = await this.client.getTopicMessages({
+      params: {
+        // acct: payload.account
+        acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      },
+    });
+    return await this.client.claimActivityPoint({
+      secret: process.env.ACTIVITY_SECRET,
+      projectId: process.env.PROJECT_ID,
+      walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+      activityId: process.env.SEND_MESSAGE_TO_TOPIC,
+      activityCount: topics.length,
     });
   }
 }

@@ -8,7 +8,7 @@ import {
   ClientPayload,
   MemberTopicEventType,
 } from "../src/entities/clientPayload";
-import { Client, RESTProvider } from "../src";
+import { ActivityClient, Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
 import { Subscription } from "../src/entities/subscription";
@@ -39,14 +39,19 @@ async function main() {
   // console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
+
   console.log(
     "AUTHORIZE",
-    await client.getAccountSubscriptions({
-      params: {
-        // acct: agentList[0].account.address,
-        acct: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx",
-      },
-    })
+    await client
+      .getAccountSubscriptions({
+        params: {
+          acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+        },
+      })
+      .catch((err) => {
+        console.log("err", err.response);
+        return err;
+      })
   );
 }
 main().then();

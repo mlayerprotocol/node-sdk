@@ -7,7 +7,7 @@ import {
   ClientPayload,
   MemberMessageEventType,
 } from "../src/entities/clientPayload";
-import { Client, RESTProvider } from "../src";
+import { ActivityClient, Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Address } from "../src/entities/address";
 import {
@@ -65,10 +65,25 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  const resp = await client.createMessage(payload).catch((err) => {
-    console.log("err", err);
-    return err;
-  });
-  console.log("AUTHORIZE", resp.body);
+  const activityClient = new ActivityClient(client);
+  await client
+    .createMessage(payload)
+    .then(async (response) => {
+      const eventData: any = response.data;
+      if (eventData.t === MemberMessageEventType.SendMessageEvent) {
+        const event = await client.resolveEvent({
+          type: eventData.t,
+          id: eventData.id,
+          delay: 5,
+        });
+        if (event?.["data"]?.["sync"]) {
+          await activityClient.sendMessageActivity(payload);
+        }
+      }
+      console.log("AUTHORIZE", response.body);
+    })
+    .catch((err) => {
+      console.log("ERROR", err);
+    });
 }
 main().then();

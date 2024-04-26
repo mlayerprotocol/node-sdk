@@ -37,7 +37,7 @@ async function main() {
   authority.account = Address.fromString(agentList[0].account.address);
   authority.agent = agent.address;
   authority.grantor = Address.fromString(agentList[0].account.address);
-  authority.timestamp = 1709115075000;
+  authority.timestamp = 2709115075001;
   authority.topicIds = "*";
   authority.privilege = 3;
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -86,35 +86,31 @@ async function main() {
   const pb = payload.encodeBytes();
   payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
 
-  // console.log("Payload", JSON.stringify(payload.asPayload()));
+  console.log("Payload", payload);
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  const activityClient = new ActivityClient(
-    new RESTProvider("http://localhost:5005")
-  );
-  const resp = await client
+  const activityClient = new ActivityClient(client);
+  await client
     .authorize(payload)
     .then(async (response) => {
-      if (payload.eventType === AuthorizeEventType.AuthorizeEvent) {
+      const eventData: any = response;
+      console.log("🚀 ~ .then ~ eventData:", eventData);
+      if (eventData.t === AuthorizeEventType.AuthorizeEvent) {
         const event = await client.resolveEvent({
-          type: AuthorizeEventType.AuthorizeEvent,
-          id: response.id,
+          type: eventData.t,
+          id: eventData.id,
           delay: 5,
         });
         if (event?.["data"]?.["sync"]) {
-          await activityClient.authorize({
-            secret: "",
-            wallet: payload.account,
-          });
+          await activityClient.authorizeAgentActivity(payload);
         }
       }
-      return response;
+      console.log("AUTHORIZE", response);
     })
     .catch((err) => {
-      console.log("err", err);
-      return err;
+      console.log("ERROR", err);
     });
-  console.log("AUTHORIZE", resp);
+
   // console.log("AUTHORIZE", await client.authorize(payload));
 }
 main().then();

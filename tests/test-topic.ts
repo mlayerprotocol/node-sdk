@@ -43,40 +43,36 @@ async function main() {
   payload.timestamp = 1705392178023;
   payload.eventType = AdminTopicEventType.CreateTopic;
   payload.validator = validator.publicKey;
-  payload.account = Address.fromString(agentList[0].account.address);
+  payload.account = Address.fromString(agentList[1].account.address);
   payload.nonce = 0;
   const pb = payload.encodeBytes();
   console.log("HEXDATA", pb.toString("hex"));
-  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[1].privateKey);
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider("http://localhost:9531"));
-  const activityClient = new ActivityClient(
-    new RESTProvider("http://localhost:5005")
+  const client = new Client(
+    new RESTProvider("https://rest.mlayerscan.com/api")
   );
-  const resp = await client
+  const activityClient = new ActivityClient(client);
+  await client
     .createTopic(payload)
     .then(async (response) => {
-      if (payload.eventType === AdminTopicEventType.CreateTopic) {
+      const eventData: any = response.data;
+      if (eventData.t === AdminTopicEventType.CreateTopic) {
         const event = await client.resolveEvent({
-          type: AdminTopicEventType.CreateTopic,
-          id: response.id,
+          type: eventData.t,
+          id: eventData.id,
           delay: 5,
         });
         if (event?.["data"]?.["sync"]) {
-          await activityClient.createTopic({
-            secret: "",
-            wallet: payload.account,
-          });
+          await activityClient.createTopicActivity(payload);
         }
       }
-      return response;
+      console.log("AUTHORIZE", response);
     })
     .catch((err) => {
-      console.log("err", err);
-      return err;
+      console.log("ERROR", err);
     });
-  console.log("AUTHORIZE", resp);
 }
 main().then();
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
@@ -208,3 +204,5 @@ main().then();
 //   if (response.error) throw response.error;
 //   console.log('response:::', response);
 // });
+
+const data = {};
