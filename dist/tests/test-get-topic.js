@@ -2,17 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const jayson = require("jayson");
-const helper_1 = require("../src/helper");
-const authorization_1 = require("../src/entities/authorization");
-const clientPayload_1 = require("../src/entities/clientPayload");
 const src_1 = require("../src");
-const keys_1 = require("./lib/keys");
-const address_1 = require("../src/entities/address");
-const client = jayson.client.tcp({
-    host: "127.0.0.1",
-    port: 9521,
-    version: 1,
-});
 // console.log(Utils.generateKeyPairEdd());
 // const owner = {
 //   privateKey:
@@ -22,73 +12,34 @@ const client = jayson.client.tcp({
 //   address: 'ml:12htc66jeelcfm4nv7drk4dqz6umntcfe690725',
 // };
 async function main() {
-    const authority = new authorization_1.Authorization();
-    console.log("keypairsss", helper_1.Utils.generateKeyPairSecp());
-    console.log("BECH32ADDRESS", keys_1.validator.publicKey, helper_1.Utils.toAddress(Buffer.from(keys_1.validator.publicKey, "hex")));
-    authority.account = address_1.Address.fromString(keys_1.agentList[0].account.address);
-    authority.agent = keys_1.agent.address;
-    authority.grantor = address_1.Address.fromString(keys_1.agentList[0].account.address);
-    authority.timestamp = 2709115075001;
-    authority.topicIds = "*";
-    authority.privilege = 3;
-    authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
-    const encoded = authority.encodeBytes();
-    const hash = helper_1.Utils.sha256Hash(encoded).toString("base64");
-    console.log("Hash string", `Approve ${authority.agent} for tml: ${hash}`);
-    const authSig = "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
-    authority.signatureData = new authorization_1.SignatureData("tendermint/PubKeySecp256k1", "Ag2Ogr/PK9VF1dq+29+cb5dGTRLZopnmu1AzqRfZZTd+", authSig);
-    // authority.signatureData = Utils.signMessageEdd(
-    //   encoded,
-    //   Buffer.from(owner.privateKey, 'hex')
-    // );
-    // const privKBuff = Buffer.from(account.privateKey);
-    // // const pubk = secp256k1.getPublicKey(account.privateKey, true);
-    // const pubKeyBuffer = Buffer.from(account.publicKey, 'hex');
-    // const address = Utils.toAddress(pubKeyBuffer, 'cosmos');
-    // const signature = await Utils.signAminoSecp(
-    //   Buffer.from('helloworld', 'ascii'),
-    //   privKBuff,
-    //   address
-    // );
-    // console.log('SIGNATURE', {
-    //   publicKey: pubKeyBuffer.toString('base64'),
-    //   address,
-    //   signature: signature.toString('base64'),
-    // });
-    console.log("Grant", authority.asPayload());
-    const payload = new clientPayload_1.ClientPayload();
-    payload.data = authority;
-    payload.timestamp = 2705392177899;
-    payload.eventType = clientPayload_1.AuthorizeEventType.AuthorizeEvent;
-    payload.validator = keys_1.validator.publicKey;
-    const pb = payload.encodeBytes();
-    payload.signature = await helper_1.Utils.signMessageEcc(pb, keys_1.agentList[0].privateKey);
-    console.log("Payload", payload);
-    const client = new src_1.Client(new src_1.RESTProvider("http://localhost:9531"));
-    const activityClient = new src_1.ActivityClient(new src_1.Client(new src_1.RESTProvider("http://localhost:5005")));
-    await client
-        .authorize(payload)
-        .then(async (response) => {
-        const eventData = response;
-        console.log("🚀 ~ .then ~ eventData:", eventData);
-        if (eventData.t === clientPayload_1.AuthorizeEventType.AuthorizeEvent) {
-            const event = await client.resolveEvent({
-                type: eventData.t,
-                id: eventData.id,
-                delay: 5,
-            });
-            if (event?.["data"]?.["sync"]) {
-                await activityClient.authorizeAgentActivity(payload);
-            }
-        }
-        console.log("AUTHORIZE", response);
-    })
-        .catch((err) => {
-        console.log("ERROR", err);
-    });
-    // console.log("AUTHORIZE", await client.authorize(payload));
+    // const topic: Topic = new Topic();
+    // //console.log('keypairsss', Utils.generateKeyPairSecp());
+    // // console.log(
+    // //   'BECH32ADDRESS',
+    // //   validator.publicKey,
+    // //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
+    // // );
+    // topic.handle = "bitcoinworld";
+    // topic.description = "The best toopic";
+    // topic.name = "Bitcoin world";
+    // topic.reference = "898989";
+    // const payload: ClientPayload<Topic> = new ClientPayload();
+    // payload.data = topic;
+    // payload.timestamp = 1705392178023;
+    // payload.eventType = AdminTopicEventType.CreateTopic;
+    // payload.validator = validator.publicKey;
+    // payload.account = Address.fromString(account.address);
+    // payload.nonce = 0;
+    // const pb = payload.encodeBytes();
+    // console.log("HEXDATA", pb.toString("hex"));
+    // payload.signature = await Utils.signMessageEcc(pb, agent.privateKey);
+    // console.log("Payload", JSON.stringify(payload.asPayload()));
+    const client = new src_1.Client(new src_1.RESTProvider("https://rest.mlayerscan.com"));
+    console.log("AUTHORIZE", await client.getTopic());
 }
 main().then();
+//0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
+//0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
 // approve device
 // create a topic
 // let topicName = 'ioc-committee',

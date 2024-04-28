@@ -17,10 +17,10 @@ exports.agent = {
 };
 exports.agentList = [
     {
-        account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
-        privateKey: "0x715729b6556ee27d8f8c70ab513ae2cf0d73c762f3bdbb391cb5ed9a5470367f",
-        publicKey: "0x02683292e9abb5664aba976861a16d7f1e24e3cec74ae768505d13903fa88ecfe8",
-        address: "0x7896C696f67d1457EF238C8Cdfd3eCc2938e873d",
+        account: { address: "cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp" },
+        privateKey: "0xc0f224298da4409b52d4f1a2df7606c8f0090795e4c2b941b8165caefe72658f",
+        publicKey: "0x03a9162d8c72ef5ad393c84e25e11714111ea696e992fd0bba47d737103ee34f9f",
+        address: "0x673a3D5b29B773b23a4a538C275C293d071e3fe0",
     },
     {
         account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },

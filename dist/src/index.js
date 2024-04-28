@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Client = exports.WSProvider = exports.RESTProvider = exports.RPCProvider = void 0;
+exports.ActivityClient = exports.Client = exports.WSProvider = exports.RESTProvider = exports.RPCProvider = void 0;
 const jayson_1 = __importDefault(require("jayson"));
 const clientPayload_1 = require("./entities/clientPayload");
 const axios_1 = __importDefault(require("axios"));
@@ -42,7 +42,7 @@ class RESTProvider extends Provider {
      * @returns
      */
     async makeRequest(options) {
-        var { payload, path, method = "put", params } = options ?? {};
+        var { payload, path, method = "put", params, pathSuffix = "api", } = options ?? {};
         // let path = argOptions?.path;
         // const method = argOptions?.method ?? "put";
         // const params = argOptions?.params;
@@ -55,14 +55,14 @@ class RESTProvider extends Provider {
             }
         }
         try {
-            const url = `${this.server}/api${path}`;
+            const url = `${this.server}/${pathSuffix}${path}`;
             let response;
             switch (method) {
                 case "post":
                 case "put":
                 case "patch":
                 case "delete":
-                    response = await axios_1.default[options.method ?? "put"](url, payload?.asPayload(), {
+                    response = await axios_1.default[options.method ?? "put"](url, payload?.asPayload ? payload?.asPayload() : payload, {
                         headers: {
                             "Content-Type": "application/json",
                         },
@@ -196,5 +196,96 @@ class Client {
         }
         return { data };
     }
+    async claimActivityPoint(payload) {
+        return await this.provider.makeRequest({
+            path: "/activity-point/claim",
+            method: "post",
+            payload,
+            pathSuffix: "v1",
+        });
+    }
+    async connectWallet(payload) {
+        return await this.provider.makeRequest({
+            path: "/activity-point/account/connect",
+            method: "post",
+            payload,
+            pathSuffix: "v1",
+        });
+    }
 }
 exports.Client = Client;
+class ActivityClient {
+    constructor(client) {
+        this.client = client;
+    }
+    async connectWalletActivity(payload) {
+        return await this.client.connectWallet({
+            secret: process.env.ACTIVITY_SECRET,
+            projectId: process.env.PROJECT_ID,
+            activityId: process.env.CONNECT_WALLET,
+            walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+        });
+    }
+    async authorizeAgentActivity(payload) {
+        const auths = await this.client.getAuthorizations({
+            params: {
+                // acct: payload.account
+                acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            },
+        });
+        return await this.client.claimActivityPoint({
+            secret: process.env.ACTIVITY_SECRET,
+            projectId: process.env.PROJECT_ID,
+            walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            activityId: process.env.AUTHORIZE_AGENT,
+            activityCount: auths.data.length,
+        });
+    }
+    async createTopicActivity(payload) {
+        const topics = await this.client.getAccountSubscriptions({
+            params: {
+                // acct: payload.account
+                acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            },
+        });
+        return await this.client.claimActivityPoint({
+            secret: process.env.ACTIVITY_SECRET,
+            projectId: process.env.PROJECT_ID,
+            walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            activityId: process.env.CREATE_TOPIC,
+            activityCount: topics.data.length,
+        });
+    }
+    async joinTopicActivity(payload) {
+        const topics = await this.client.getAccountSubscriptions({
+            params: {
+                // acct: payload.account
+                acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            },
+        });
+        const joinedTopics = topics.data.filter((topic) => topic.acct === payload.account);
+        return await this.client.claimActivityPoint({
+            secret: process.env.ACTIVITY_SECRET,
+            projectId: process.env.PROJECT_ID,
+            walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            activityId: process.env.JOIN_TOPIC,
+            activityCount: joinedTopics.length,
+        });
+    }
+    async sendMessageActivity(payload) {
+        const topics = await this.client.getTopicMessages({
+            params: {
+                // acct: payload.account
+                acct: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            },
+        });
+        return await this.client.claimActivityPoint({
+            secret: process.env.ACTIVITY_SECRET,
+            projectId: process.env.PROJECT_ID,
+            walletAddress: "did:cosmos1v825p3zrd4vpmp5r0p8szmvujdcl284ap22jcp",
+            activityId: process.env.SEND_MESSAGE_TO_TOPIC,
+            activityCount: topics.length,
+        });
+    }
+}
+exports.ActivityClient = ActivityClient;
