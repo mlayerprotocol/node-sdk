@@ -32,12 +32,10 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  subNetwork.handle = 'blockchainworld0099';
-  subNetwork.description = 'The best toopic';
+
 
   subNetwork.name = 'New Network';
   subNetwork.reference = '898978';
-  subNetwork.isPublic = true;
 
   const payload: ClientPayload<Subnet> = new ClientPayload();
   payload.data = subNetwork;
