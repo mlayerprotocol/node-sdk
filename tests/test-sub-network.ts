@@ -3,15 +3,15 @@ const jayson = require("jayson");
 import { Utils } from "../src/helper";
 import { Authorization } from "../src/entities/authorization";
 import {
-  AdminSubNetworkEventType,
-  // AdminSubNetworkEventType,
+  AdminSubnetEventType,
+  // AdminSubnetEventType,
   AuthorizeEventType,
   ClientPayload,
-} from "../src/entities/clientPayload";
+} from '../src/entities/clientPayload';
 import { Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Address } from "../src/entities/address";
-import { SubNetwork } from "../src/entities/subNetwork";
+import { Subnet } from '../src/entities/subNetwork';
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -24,7 +24,7 @@ import { SubNetwork } from "../src/entities/subNetwork";
 // };
 
 async function main() {
-  const subNetwork: SubNetwork = new SubNetwork();
+  const subNetwork: Subnet = new Subnet();
   //console.log('keypairsss', Utils.generateKeyPairSecp());
   // console.log(
   //   'BECH32ADDRESS',
@@ -32,17 +32,17 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  subNetwork.handle = "blockchainworld0099";
-  subNetwork.description = "The best toopic";
+  subNetwork.handle = 'blockchainworld0099';
+  subNetwork.description = 'The best toopic';
 
-  subNetwork.name = "New Network";
-  subNetwork.reference = "898978";
+  subNetwork.name = 'New Network';
+  subNetwork.reference = '898978';
   subNetwork.isPublic = true;
 
-  const payload: ClientPayload<SubNetwork> = new ClientPayload();
+  const payload: ClientPayload<Subnet> = new ClientPayload();
   payload.data = subNetwork;
   payload.timestamp = 1705392178023;
-  payload.eventType = AdminSubNetworkEventType.CreateSubNetwork;
+  payload.eventType = AdminSubnetEventType.CreateSubnet;
   payload.validator = validator.publicKey;
   payload.account = Address.fromString(agentList[0].account.address);
   payload.nonce = 0;
@@ -52,6 +52,6 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log("AUTHORIZE", await client.createSubNetwork(payload));
+  console.log('AUTHORIZE', await client.createSubnet(payload));
 }
 main().then();
