@@ -45,6 +45,22 @@ export enum MemberMessageEventType {
   // IsTyping                EventType = 1203
 }
 
+// // Administrative Topic Actions
+export enum AdminSubNetworkEventType {
+  "DeleteSubNetwork" = 1300,
+  "CreateSubNetwork" = 1301, // m.room.create
+  // "PrivacySet" = 1002,
+  // "BanMember" = 1003,
+  // "UnbanMember" = 1004,
+  // "ContractSet" = 1005,
+  // "UpdateName" = 1006, //  m.room.name
+  // "UpdateDescription" = 1007, //  m.room.topic
+  // "UpdateAvatar" = 1008, //  m.room.avatar
+  // "PinMessage" = 1008, //  m.room.avatar
+  "SubNetworkTopic" = 1309, // m.room.create
+  // "UpgradeSubscriberEvent" = 1010,
+}
+
 type AddressString = string;
 type HexString = string;
 
@@ -69,6 +85,7 @@ export class ClientPayload<T> extends BaseEntity {
   public eventType:
     | AuthorizeEventType
     | AdminTopicEventType
+    | AdminSubNetworkEventType
     | MemberTopicEventType
     | MemberMessageEventType;
   public authHash: string = "";

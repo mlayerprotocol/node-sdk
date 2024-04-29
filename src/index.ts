@@ -7,6 +7,7 @@ import axios, { AxiosResponse } from "axios";
 import { Topic } from "./entities/topic";
 import { Subscription } from "./entities/subscription";
 import { Message } from "./entities/message";
+import { SubNetwork } from "./entities/subNetwork";
 
 export interface Client extends Jayson.TcpClientOptions {}
 
@@ -259,5 +260,15 @@ export class Client {
       return this.resolveEvent({ type, id, delay: delay + 2 });
     }
     return { data };
+  }
+
+  public async createSubNetwork(
+    payload: ClientPayload<SubNetwork>
+  ): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/sub-networks",
+      method: "post",
+      payload,
+    });
   }
 }
