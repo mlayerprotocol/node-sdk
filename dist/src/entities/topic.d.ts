@@ -13,6 +13,7 @@ export interface ITopic {
     ts?: number;
     pub: boolean;
     rO: boolean;
+    snet: string;
 }
 export declare class Topic extends BaseEntity {
     id: string;
@@ -26,6 +27,7 @@ export declare class Topic extends BaseEntity {
     timestamp: number;
     isPublic: boolean;
     readOnly: boolean;
+    subnet: string;
     /**
      * @override
      * @returns {ITopic}

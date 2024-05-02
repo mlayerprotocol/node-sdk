@@ -3,15 +3,15 @@ const jayson = require("jayson");
 import { Utils } from "../src/helper";
 import { Authorization } from "../src/entities/authorization";
 import {
-  AdminSubnetEventType,
-  // AdminSubnetEventType,
+  AdminWalletEventType,
+  // AdminWalletEventType,
   AuthorizeEventType,
   ClientPayload,
 } from '../src/entities/clientPayload';
 import { Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Address } from "../src/entities/address";
-import { Subnet } from '../src/entities/subNetwork';
+import { Wallet } from '../src/entities/wallet';
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -24,7 +24,7 @@ import { Subnet } from '../src/entities/subNetwork';
 // };
 
 async function main() {
-  const subNetwork: Subnet = new Subnet();
+  const wallet: Wallet = new Wallet();
   //console.log('keypairsss', Utils.generateKeyPairSecp());
   // console.log(
   //   'BECH32ADDRESS',
@@ -34,13 +34,13 @@ async function main() {
 
 
 
-  subNetwork.name = 'New Network';
-  subNetwork.reference = 'a898978';
+  wallet.name = 'New Network';
+  wallet.subnet = 'c870ce77c41a36f1fc60966c8c4e111964a32af400e7d9cbe78ac9117d4e0cdb';
 
-  const payload: ClientPayload<Subnet> = new ClientPayload();
-  payload.data = subNetwork;
+  const payload: ClientPayload<Wallet> = new ClientPayload();
+  payload.data = wallet;
   payload.timestamp = 1705392178023;
-  payload.eventType = AdminSubnetEventType.CreateSubnet;
+  payload.eventType = AdminWalletEventType.CreateWallet;
   payload.validator = validator.publicKey;
   payload.account = Address.fromString(agentList[0].account.address);
   payload.nonce = 0;
@@ -50,6 +50,6 @@ async function main() {
   console.log("Payload", JSON.stringify(payload.asPayload()));
 
   const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log('AUTHORIZE', await client.createSubnet(payload));
+  console.log('AUTHORIZE', await client.createWallet(payload));
 }
 main().then();

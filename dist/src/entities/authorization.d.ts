@@ -1,16 +1,16 @@
 /// <reference types="node" />
-import { AddressString, BaseEntity } from './base';
-import { Address } from './address';
+import { AddressString, BaseEntity } from "./base";
+import { Address } from "./address";
 export interface ISignatureData {
     ty: string;
     pubK?: string;
     sig: string;
 }
 export declare class SignatureData {
-    type: '' | 'tendermint/PubKeySecp256k1' | 'eth';
+    type: "" | "tendermint/PubKeySecp256k1" | "eth";
     publicKey: string;
     signature: string;
-    constructor(type: '' | 'tendermint/PubKeySecp256k1' | 'eth', publicKey: string, signature: string);
+    constructor(type: "" | "tendermint/PubKeySecp256k1" | "eth", publicKey: string, signature: string);
     /**
      * @override
      * @returns {IAuthorization}
@@ -24,6 +24,7 @@ export interface IAuthorization {
     privi: 0 | 1 | 2 | 3;
     topIds: string;
     du: number;
+    snet: string;
     ts: number;
     sigD: ISignatureData;
 }
@@ -35,6 +36,7 @@ export declare class Authorization extends BaseEntity {
     topicIds: string;
     timestamp: number;
     duration: number;
+    subnet: string;
     signatureData: SignatureData;
     /**
      * @override
