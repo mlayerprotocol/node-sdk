@@ -1,7 +1,7 @@
-import { isHexString, sha256 } from 'ethers';
-import { Utils } from '../helper';
-import { HexString, AddressString, BaseEntity } from './base';
-import { Address } from './address';
+import { isHexString, sha256 } from "ethers";
+import { Utils } from "../helper";
+import { HexString, AddressString, BaseEntity } from "./base";
+import { Address } from "./address";
 
 export interface ISignatureData {
   ty: string;
@@ -11,13 +11,13 @@ export interface ISignatureData {
 
 export class SignatureData {
   constructor(
-    public type: '' | 'tendermint/PubKeySecp256k1' | 'eth',
+    public type: "" | "tendermint/PubKeySecp256k1" | "eth",
     public publicKey: string,
     public signature: string
   ) {
-    type = '';
-    publicKey = '';
-    signature = '';
+    type = "";
+    publicKey = "";
+    signature = "";
   }
 
   /**
@@ -40,19 +40,21 @@ export interface IAuthorization {
   privi: 0 | 1 | 2 | 3; //  0=>Read, 1=>Write,2=>Admin
   topIds: string; // "*" all topics or comma separated list of topic ids
   du: number; // duration
+  snet: string; // subnet
   ts: number; // timestmap
   sigD: ISignatureData; // signatureData
 }
 
 export class Authorization extends BaseEntity {
   public account: Address = new Address();
-  public agent: string = '';
+  public agent: string = "";
   public grantor: Address = new Address();
   public privilege: 0 | 1 | 2 | 3 = 0;
-  public topicIds: string = '';
+  public topicIds: string = "";
   public timestamp: number;
   public duration: number;
-  public signatureData: SignatureData = new SignatureData('', '', '');
+  public subnet: string = "";
+  public signatureData: SignatureData = new SignatureData("", "", "");
 
   /**
    * @override
@@ -67,6 +69,7 @@ export class Authorization extends BaseEntity {
       topIds: this.topicIds,
       ts: this.timestamp,
       du: this.duration,
+      snet: this.subnet,
       sigD: this.signatureData.asPayload(),
     };
   }
@@ -77,12 +80,13 @@ export class Authorization extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: 'address', value: this.account.toString() },
-      { type: 'hex', value: this.agent },
-      { type: 'string', value: this.topicIds },
-      { type: 'int', value: this.privilege },
-      { type: 'int', value: this.duration },
-      { type: 'int', value: this.timestamp }
+      { type: "address", value: this.account.toString() },
+      { type: "hex", value: this.agent },
+      { type: "string", value: this.topicIds },
+      { type: "int", value: this.privilege },
+      { type: "int", value: this.duration },
+      { type: "hex", value: this.subnet },
+      { type: "int", value: this.timestamp }
     );
   }
 }

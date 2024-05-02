@@ -17,6 +17,43 @@ exports.agent = {
 };
 exports.agentList = [
     {
+        privateKey: "0xdd799c27b01c8e3c6b467b70c3a9f13318c783cd45911c026df6f09ffacec5d6",
+        publicKey: "0x0309500a9a883f3fa2366bec7cc2c05468e04aecbc8b3d746fd5da6dc81bc804ba",
+        address: "0x0B410779b070d33Fc29a81c64708fEed40B144b2",
+        account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
+        authData: {
+            id: "34914fe2-4108-56b5-fa68-0a5c2650f57e",
+            agt: "0x0B410779b070d33Fc29a81c64708fEed40B144b2",
+            acct: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx",
+            gr: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx",
+            privi: 1,
+            topIds: "*",
+            ts: 1713360415289,
+            du: 518400000,
+            sigD: {
+                ty: "tendermint/PubKeySecp256k1",
+                pubK: "ApZD4XdMqXS0Rz7XCI7TBZ2EO4L/SBH9UFuD1yV1NUQu",
+                sig: "t8bQAq4SieBQo7Iw9HIta6cbAPu1BIyFOBmVHLw1wkMi0A4N4S9Gy67Yiawi1ggwqAW5lfIfCpt44i7uf55Gow==",
+            },
+            h: "0df9431ef2131afebf8b42e65ebee04f4acfe1fb7cb10a1dc5246e2bda804efb",
+            e: {
+                mod: "auth",
+                h: "ecd2ef03655a1c098dc37c86394e4cac0c19361028d733ab8b2f8f17f8cb18c3",
+                val: "2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca",
+            },
+            snet: "",
+            CreatedAt: "2024-04-15T13:48:53.056725+01:00",
+            UpdatedAt: "2024-04-17T14:26:56.894247+01:00",
+            DeletedAt: null,
+        },
+    },
+    {
+        account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
+        privateKey: "0x861a8a866a052aa913504dc860a22ac004e4b2d646425206afa999340b05149b",
+        publicKey: "0x03fdce5544290d986b8b84480084dbb60f1b2f1a05ef81f354eb97f5cd35d77290",
+        address: "0x2af114dBA11fD53946A5C0F84b2eC5Eabe25064B",
+    },
+    {
         account: { address: "cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgqx" },
         privateKey: "0x715729b6556ee27d8f8c70ab513ae2cf0d73c762f3bdbb391cb5ed9a5470367f",
         publicKey: "0x02683292e9abb5664aba976861a16d7f1e24e3cec74ae768505d13903fa88ecfe8",

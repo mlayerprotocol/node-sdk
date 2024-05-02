@@ -9,9 +9,9 @@ class SignatureData {
         this.type = type;
         this.publicKey = publicKey;
         this.signature = signature;
-        type = '';
-        publicKey = '';
-        signature = '';
+        type = "";
+        publicKey = "";
+        signature = "";
     }
     /**
      * @override
@@ -30,11 +30,12 @@ class Authorization extends base_1.BaseEntity {
     constructor() {
         super(...arguments);
         this.account = new address_1.Address();
-        this.agent = '';
+        this.agent = "";
         this.grantor = new address_1.Address();
         this.privilege = 0;
-        this.topicIds = '';
-        this.signatureData = new SignatureData('', '', '');
+        this.topicIds = "";
+        this.subnet = "";
+        this.signatureData = new SignatureData("", "", "");
     }
     /**
      * @override
@@ -49,6 +50,7 @@ class Authorization extends base_1.BaseEntity {
             topIds: this.topicIds,
             ts: this.timestamp,
             du: this.duration,
+            snet: this.subnet,
             sigD: this.signatureData.asPayload(),
         };
     }
@@ -57,7 +59,7 @@ class Authorization extends base_1.BaseEntity {
      * @returns {Buffer}
      */
     encodeBytes() {
-        return helper_1.Utils.encodeBytes({ type: 'address', value: this.account.toString() }, { type: 'hex', value: this.agent }, { type: 'string', value: this.topicIds }, { type: 'int', value: this.privilege }, { type: 'int', value: this.duration }, { type: 'int', value: this.timestamp });
+        return helper_1.Utils.encodeBytes({ type: "address", value: this.account.toString() }, { type: "hex", value: this.agent }, { type: "string", value: this.topicIds }, { type: "int", value: this.privilege }, { type: "int", value: this.duration }, { type: "hex", value: this.subnet }, { type: "int", value: this.timestamp });
     }
 }
 exports.Authorization = Authorization;

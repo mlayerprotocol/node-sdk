@@ -196,5 +196,26 @@ class Client {
         }
         return { data };
     }
+    async createSubnet(payload) {
+        return await this.provider.makeRequest({
+            path: "/subnets",
+            method: "post",
+            payload,
+        });
+    }
+    async getSubnets({ params, }) {
+        return await this.provider.makeRequest({
+            path: "/subnets",
+            method: "get",
+            params,
+        });
+    }
+    async createWallet(payload) {
+        return await this.provider.makeRequest({
+            path: "/wallets",
+            method: "post",
+            payload,
+        });
+    }
 }
 exports.Client = Client;

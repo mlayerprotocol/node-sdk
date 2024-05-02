@@ -28,9 +28,11 @@ async function main() {
     authority.account = address_1.Address.fromString(keys_1.agentList[0].account.address);
     authority.agent = keys_1.agent.address;
     authority.grantor = address_1.Address.fromString(keys_1.agentList[0].account.address);
-    authority.timestamp = 1709115075000;
+    authority.timestamp = 1714408257702;
     authority.topicIds = "*";
     authority.privilege = 3;
+    authority.subnet =
+        "c870ce77c41a36f1fc60966c8c4e111964a32af400e7d9cbe78ac9117d4e0cdb";
     authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
     const encoded = authority.encodeBytes();
     const hash = helper_1.Utils.sha256Hash(encoded).toString("base64");

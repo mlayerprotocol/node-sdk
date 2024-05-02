@@ -7,7 +7,8 @@ import axios, { AxiosResponse } from "axios";
 import { Topic } from "./entities/topic";
 import { Subscription } from "./entities/subscription";
 import { Message } from "./entities/message";
-import { Subnet } from './entities/subNetwork';
+import { Subnet } from "./entities/subNetwork";
+import { Wallet } from "./entities/wallet";
 
 export interface Client extends Jayson.TcpClientOptions {}
 
@@ -124,15 +125,15 @@ export class Client {
   public async authorize(
     payload: ClientPayload<Authorization>
   ): Promise<Record<string, unknown>> {
-    return await this.provider.makeRequest({ path: '/authorize', payload });
+    return await this.provider.makeRequest({ path: "/authorize", payload });
   }
 
   public async createTopic(
     payload: ClientPayload<Topic>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics',
-      method: 'post',
+      path: "/topics",
+      method: "post",
       payload,
     });
   }
@@ -142,15 +143,15 @@ export class Client {
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: `/topics`,
-      method: 'put',
+      method: "put",
       payload,
     });
   }
 
   public async getTopic(): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics',
-      method: 'get',
+      path: "/topics",
+      method: "get",
     });
   }
 
@@ -158,8 +159,8 @@ export class Client {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/authorizations',
-      method: 'get',
+      path: "/authorizations",
+      method: "get",
       params,
     });
   }
@@ -168,8 +169,8 @@ export class Client {
     payload: ClientPayload<Subscription>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics/subscribe',
-      method: 'post',
+      path: "/topics/subscribe",
+      method: "post",
       payload,
     });
   }
@@ -178,8 +179,8 @@ export class Client {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/subscription/account',
-      method: 'post',
+      path: "/subscription/account",
+      method: "post",
       params,
     });
   }
@@ -188,8 +189,8 @@ export class Client {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics/subscribers',
-      method: 'get',
+      path: "/topics/subscribers",
+      method: "get",
       params,
     });
   }
@@ -198,8 +199,8 @@ export class Client {
     payload: ClientPayload<Message>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics/messages',
-      method: 'post',
+      path: "/topics/messages",
+      method: "post",
       payload,
     });
   }
@@ -208,8 +209,8 @@ export class Client {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/block-stats',
-      method: 'get',
+      path: "/block-stats",
+      method: "get",
       params,
     });
   }
@@ -218,8 +219,8 @@ export class Client {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/main-stats',
-      method: 'get',
+      path: "/main-stats",
+      method: "get",
       params,
     });
   }
@@ -229,7 +230,7 @@ export class Client {
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: `/topics/${id}/messages`,
-      method: 'get',
+      method: "get",
       params,
     });
   }
@@ -240,7 +241,7 @@ export class Client {
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: `/event/${type}/${id}`,
-      method: 'get',
+      method: "get",
     });
   }
 
@@ -250,7 +251,7 @@ export class Client {
     delay = 0,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     const data = await this.getEvent({ type, id });
-    const synced: boolean = data?.['data']?.['sync'] ?? false;
+    const synced: boolean = data?.["data"]?.["sync"] ?? false;
     if (synced) {
       return data;
     }
@@ -266,8 +267,28 @@ export class Client {
     payload: ClientPayload<Subnet>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/sub-networks',
-      method: 'post',
+      path: "/subnets",
+      method: "post",
+      payload,
+    });
+  }
+
+  public async getSubnets({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/subnets",
+      method: "get",
+      params,
+    });
+  }
+
+  public async createWallet(
+    payload: ClientPayload<Wallet>
+  ): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/wallets",
+      method: "post",
       payload,
     });
   }

@@ -18,6 +18,7 @@ export interface ITopic {
   ts?: number; // timestamp in millisec
   pub: boolean; // is public topic
   rO: boolean;
+  snet: string; // subnet
   // sig?: HexString;
   // hash?: HexString;
 }
@@ -34,6 +35,7 @@ export class Topic extends BaseEntity {
   public timestamp: number = 0;
   public isPublic: boolean = false;
   public readOnly: boolean = false;
+  public subnet: string = "";
 
   /**
    * @override
@@ -52,6 +54,7 @@ export class Topic extends BaseEntity {
       // ts: this.timestamp, // timestamp in millisec
       pub: this.isPublic, // is public topic
       rO: this.readOnly,
+      snet: this.subnet,
     };
   }
 
@@ -69,7 +72,8 @@ export class Topic extends BaseEntity {
       { type: "hex", value: this.parentTopicHash },
       // { type: 'int', value: this.subsriberCount },
       { type: "boolean", value: this.isPublic },
-      { type: "boolean", value: this.readOnly }
+      { type: "boolean", value: this.readOnly },
+      { type: "hex", value: this.subnet }
     );
   }
 }

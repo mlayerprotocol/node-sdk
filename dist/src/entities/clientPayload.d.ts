@@ -31,6 +31,16 @@ export declare enum MemberMessageEventType {
     "DeleteMessageEvent " = 1200,//m.room.encrypted
     "SendMessageEvent" = 1201
 }
+export declare enum AdminSubnetEventType {
+    "DeleteSubnet" = 1300,
+    "CreateSubnet" = 1301,// m.room.create
+    "SubnetTopic" = 1309
+}
+export declare enum AdminWalletEventType {
+    "DeleteWallet" = 1400,
+    "CreateWallet" = 1401,// m.room.create
+    "WalletTopic" = 1409
+}
 type AddressString = string;
 type HexString = string;
 export interface IClientPayload {
@@ -48,7 +58,7 @@ export declare class ClientPayload<T> extends BaseEntity {
     timestamp: number;
     account: Address;
     validator: string;
-    eventType: AuthorizeEventType | AdminTopicEventType | MemberTopicEventType | MemberMessageEventType;
+    eventType: AuthorizeEventType | AdminTopicEventType | AdminSubnetEventType | AdminWalletEventType | MemberTopicEventType | MemberMessageEventType;
     authHash: string;
     nonce: number;
     signature: string;

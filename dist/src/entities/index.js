@@ -21,3 +21,5 @@ __exportStar(require("./topic"), exports);
 __exportStar(require("./address"), exports);
 __exportStar(require("./message"), exports);
 __exportStar(require("./subscription"), exports);
+__exportStar(require("./subNetwork"), exports);
+__exportStar(require("./wallet"), exports);
