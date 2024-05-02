@@ -71,6 +71,7 @@ export interface IClientPayload {
   ty: number; // `type`
   val: AddressString;
   nonce: number;
+  snet?: string;
   // Secondary
   sig: HexString;
   h: HexString;
@@ -90,6 +91,7 @@ export class ClientPayload<T> extends BaseEntity {
     | MemberMessageEventType;
   public authHash: string = '';
   public nonce: number = 0;
+  public subnet: string = '';
 
   // Secondary
   public signature: string = '';
@@ -102,6 +104,7 @@ export class ClientPayload<T> extends BaseEntity {
         value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
       },
       { type: 'int', value: this.eventType },
+      { type: 'string', value: this.subnet },
       ...((this.account?.toString() ?? '') == ''
         ? []
         : ([{ type: 'address', value: this.account.toString() }] as any[])),
@@ -144,6 +147,7 @@ export class ClientPayload<T> extends BaseEntity {
       ts: this.timestamp,
       ty: this.eventType,
       sig: this.signature,
+      snet: this.subnet,
       h: this.hash,
       val: this.validator,
       acct: this.account.toAddressString(),
