@@ -121,7 +121,7 @@ export class ClientPayload<T> extends BaseEntity {
         value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
       },
       { type: 'int', value: this.eventType },
-      { type: 'string', value: this.subnet },
+      // { type: 'string', value: this.subnet },
       ...((this.account?.toString() ?? '') == ''
         ? []
         : ([{ type: "address", value: this.account.toString() }] as any[])),

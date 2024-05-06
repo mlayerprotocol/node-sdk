@@ -4,10 +4,8 @@ type AddressString = string;
 export interface ITopic {
     id?: string;
     ref?: string;
-    n: string;
-    hand: string;
     pTH?: string;
-    desc?: string;
+    meta?: string;
     sC?: number;
     acct?: AddressString;
     ts?: number;
@@ -17,10 +15,8 @@ export interface ITopic {
 }
 export declare class Topic extends BaseEntity {
     id: string;
-    reference: string;
-    name: string;
-    handle: string;
-    description: string;
+    ref: string;
+    meta: string;
     parentTopicHash: string;
     subsriberCount: number;
     account: string;

@@ -59,7 +59,7 @@ class Authorization extends base_1.BaseEntity {
      * @returns {Buffer}
      */
     encodeBytes() {
-        return helper_1.Utils.encodeBytes({ type: "address", value: this.account.toString() }, { type: "hex", value: this.agent }, { type: "string", value: this.topicIds }, { type: "int", value: this.privilege }, { type: "int", value: this.duration }, { type: "hex", value: this.subnet }, { type: "int", value: this.timestamp });
+        return helper_1.Utils.encodeBytes({ type: "address", value: this.account.toString() }, { type: "hex", value: this.agent }, { type: "string", value: this.topicIds }, { type: "int", value: this.privilege }, { type: "int", value: this.duration }, { type: "string", value: this.subnet }, { type: "int", value: this.timestamp });
     }
 }
 exports.Authorization = Authorization;

@@ -33,11 +33,10 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.handle = "Spsxs";
-  topic.description = "The best toopic";
-
-  topic.name = "Perfectl POpy";
-  topic.reference = "898978";
+  topic.meta = JSON.stringify({
+    name: "Perfectl POpy",
+    description: "The best toopic",
+  });
   topic.isPublic = true;
   topic.id = topicId;
 

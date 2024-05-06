@@ -49,6 +49,7 @@ export interface IClientPayload {
     ty: number;
     val: AddressString;
     nonce: number;
+    snet?: string;
     sig: HexString;
     h: HexString;
     acct: AddressString;
@@ -61,6 +62,7 @@ export declare class ClientPayload<T> extends BaseEntity {
     eventType: AuthorizeEventType | AdminTopicEventType | AdminSubnetEventType | AdminWalletEventType | MemberTopicEventType | MemberMessageEventType;
     authHash: string;
     nonce: number;
+    subnet: string;
     signature: string;
     hash: string;
     encodeBytes(): Buffer;

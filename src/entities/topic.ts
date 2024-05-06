@@ -66,7 +66,7 @@ export class Topic extends BaseEntity {
       // { type: 'int', value: this.subsriberCount },
       { type: "boolean", value: this.isPublic },
       { type: "boolean", value: this.readOnly },
-      { type: "hex", value: this.subnet }
+      { type: "string", value: this.subnet }
 
     );
   }

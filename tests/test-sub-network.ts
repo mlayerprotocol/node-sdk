@@ -34,7 +34,7 @@ async function main() {
 
 
 
-  subNetwork.name = 'New Network';
+  subNetwork.meta = 'New Network';
   subNetwork.reference = 'a898978';
 
   const payload: ClientPayload<Subnet> = new ClientPayload();

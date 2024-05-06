@@ -6,14 +6,12 @@ const helper_1 = require("../helper");
 class Topic extends base_1.BaseEntity {
     constructor() {
         super(...arguments);
-        this.id = "";
-        this.reference = "";
-        this.name = "";
-        this.handle = "";
-        this.description = "";
-        this.parentTopicHash = "";
+        this.id = '';
+        this.ref = '';
+        this.meta = '';
+        this.parentTopicHash = '';
         this.subsriberCount = 0;
-        this.account = "";
+        this.account = '';
         this.timestamp = 0;
         this.isPublic = false;
         this.readOnly = false;
@@ -26,11 +24,9 @@ class Topic extends base_1.BaseEntity {
     asPayload() {
         return {
             id: this.id,
-            ref: this.reference,
-            n: this.name,
-            hand: this.handle,
+            ref: this.ref,
+            meta: this.meta,
             pTH: this.parentTopicHash, // parent handle hash
-            desc: this.description, // description
             // sC: this.subsriberCount, // subscription count
             // acct: this.account, // owner of topic
             // ts: this.timestamp, // timestamp in millisec
@@ -44,9 +40,9 @@ class Topic extends base_1.BaseEntity {
      * @returns {Buffer}
      */
     encodeBytes() {
-        return helper_1.Utils.encodeBytes({ type: "string", value: this.id }, { type: "string", value: this.reference }, { type: "string", value: this.name }, { type: "string", value: this.handle }, { type: "string", value: this.description }, { type: "hex", value: this.parentTopicHash }, 
+        return helper_1.Utils.encodeBytes({ type: 'string', value: this.id }, { type: 'string', value: this.ref }, { type: 'string', value: this.meta }, { type: 'hex', value: this.parentTopicHash }, 
         // { type: 'int', value: this.subsriberCount },
-        { type: "boolean", value: this.isPublic }, { type: "boolean", value: this.readOnly }, { type: "hex", value: this.subnet });
+        { type: "boolean", value: this.isPublic }, { type: "boolean", value: this.readOnly }, { type: "string", value: this.subnet });
     }
 }
 exports.Topic = Topic;

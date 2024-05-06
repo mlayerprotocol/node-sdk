@@ -1,6 +1,6 @@
 {
   "name": "@mlayerprotocol/core",
-  "version": "1.0.133",
+  "version": "1.0.142",
   "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
