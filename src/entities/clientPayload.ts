@@ -126,6 +126,7 @@ export class ClientPayload<T> extends BaseEntity {
         ? []
         : ([{ type: "address", value: this.account.toString() }] as any[])),
       // { type: "hex", value: this.authHash },
+      
       { type: "hex", value: this.validator },
       { type: "int", value: this.nonce },
       { type: "int", value: this.timestamp }
