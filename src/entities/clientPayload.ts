@@ -57,7 +57,7 @@ export enum AdminSubnetEventType {
   // "UpdateDescription" = 1007, //  m.room.topic
   // "UpdateAvatar" = 1008, //  m.room.avatar
   // "PinMessage" = 1008, //  m.room.avatar
-  "SubnetTopic" = 1309, // m.room.create
+  "UpdateSubnet" = 1309, // m.room.create
   // "UpgradeSubscriberEvent" = 1010,
 }
 
@@ -108,7 +108,7 @@ export class ClientPayload<T> extends BaseEntity {
     | MemberMessageEventType;
   public authHash: string = "";
   public nonce: number = 0;
-  public subnet: string = '';
+  public subnet: string = "";
 
   // Secondary
   public signature: string = "";
@@ -120,9 +120,9 @@ export class ClientPayload<T> extends BaseEntity {
         type: "byte",
         value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
       },
-      { type: 'int', value: this.eventType },
-      // { type: 'string', value: this.subnet },
-      ...((this.account?.toString() ?? '') == ''
+      { type: "int", value: this.eventType },
+      { type: 'string', value: this.subnet },
+      ...((this.account?.toString() ?? "") == ""
         ? []
         : ([{ type: "address", value: this.account.toString() }] as any[])),
       // { type: "hex", value: this.authHash },
