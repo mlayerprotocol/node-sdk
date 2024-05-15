@@ -45,24 +45,24 @@ class Utils {
         }
         return bytes;
     }
-    static toAddress(publicKey, prefix = "ml") {
+    static toAddress(publicKey, prefix = 'ml') {
         // Perform SHA256 hashing followed by RIPEMD160
-        const sha256Hash = crypto.createHash("sha256").update(publicKey).digest();
+        const sha256Hash = crypto.createHash('sha256').update(publicKey).digest();
         const ripemd160Hash = crypto
-            .createHash("ripemd160")
+            .createHash('ripemd160')
             .update(sha256Hash)
             .digest();
         // Bech32 encoding
         return bech32_1.bech32.encode(prefix, bech32_1.bech32.toWords(ripemd160Hash));
     }
     static sha256Hash(data) {
-        const hash = crypto.createHash("sha256");
+        const hash = crypto.createHash('sha256');
         hash.update(data);
         return hash.digest();
     }
     static keccak256Hash(data) {
         const hash = (0, ethers_1.keccak256)(data);
-        return buffer_1.Buffer.from(hash.replace("0x", ""), "hex");
+        return buffer_1.Buffer.from(hash.replace('0x', ''), 'hex');
     }
     static generateKeyPairSecp() {
         let privateKey;
@@ -72,8 +72,8 @@ class Utils {
         const publicKey = secp256k1_1.secp256k1.getPublicKey(privateKey);
         const pubKeyBuffer = buffer_1.Buffer.from(publicKey, publicKey.byteOffset, publicKey.byteLength);
         return {
-            privateKey: privateKey.toString("hex"),
-            publicKey: pubKeyBuffer.toString("hex"),
+            privateKey: privateKey.toString('hex'),
+            publicKey: pubKeyBuffer.toString('hex'),
             address: Utils.toAddress(pubKeyBuffer),
         };
     }
@@ -109,8 +109,8 @@ class Utils {
         // Bech32 encoding
         const publicKey = buffer_1.Buffer.from(keypair.publicKey, keypair.publicKey.byteOffset, keypair.publicKey.byteLength);
         return {
-            privateKey: buffer_1.Buffer.from(keypair.secretKey, keypair.secretKey.byteOffset, keypair.secretKey.byteLength).toString("hex"),
-            publicKey: publicKey.toString("hex"),
+            privateKey: buffer_1.Buffer.from(keypair.secretKey, keypair.secretKey.byteOffset, keypair.secretKey.byteLength).toString('hex'),
+            publicKey: publicKey.toString('hex'),
             address: Utils.toAddress(publicKey),
         };
     }
@@ -122,7 +122,7 @@ class Utils {
     static signMessageEdd(message, privateKey) {
         const buffer = Utils.sha256Hash(message);
         const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-        return buffer_1.Buffer.from(nacl.sign.detached(bytes, new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength))).toString("hex");
+        return buffer_1.Buffer.from(nacl.sign.detached(bytes, new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength))).toString('hex');
     }
     static getSignerEcc(message, signature) {
         const hash = (0, ethers_1.keccak256)(message);
@@ -131,14 +131,14 @@ class Utils {
     static signMessageSecp(message, privateKey) {
         const buffer = Utils.sha256Hash(message);
         const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-        const signature = secp256k1_1.secp256k1.sign(bytes, buffer.toString("hex"));
+        const signature = secp256k1_1.secp256k1.sign(bytes, buffer.toString('hex'));
         return signature.toDERHex();
     }
     static async signAminoSecp(message, privateKey, address) {
-        const base64msg = message.toString("base64");
+        const base64msg = message.toString('base64');
         const jsonData = `{"account_number":"0","chain_id":"","fee":{"amount":[],"gas":"0"},"memo":"","msgs":[{"type":"sign/MsgSignData","value":{"data":"${base64msg}","signer":"${address}"}}],"sequence":"0"}`;
         const dataUtf = Utils.toUtf8(jsonData);
-        console.log("DATAUFT", dataUtf);
+        console.log('DATAUFT', dataUtf);
         // const msgHash = Utils.sha256Hash(
         //   Buffer.from(dataUtf, dataUtf.byteOffset, dataUtf.byteLength)
         // );
@@ -150,7 +150,7 @@ class Utils {
         // );
         // const signature = secp256k1.sign(bytes, bytes);
         const msgHash = new crypto_1.Sha256(dataUtf).digest();
-        console.log("Hashh", buffer_1.Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString("hex"));
+        console.log('Hashh', buffer_1.Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString('hex'));
         // const bufR = Utils.bigintToUint8Array(signature.r, 32, true);
         // const bufS = Utils.bigintToUint8Array(signature.s, 32, true);
         const privKeyBytes = new Uint8Array(privateKey.buffer, privateKey.byteOffset, privateKey.byteLength);
@@ -174,19 +174,26 @@ class Utils {
     // Function to verify a message
     static verifyMessageSecp(message, signature, publicKey) {
         const buffer = Utils.sha256Hash(message);
-        console.log("HASHHH", buffer.toString("hex"));
+        console.log('HASHHH', buffer.toString('hex'));
         const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
-        return secp256k1_1.secp256k1.verify(bytes, buffer_1.Buffer.from(signature, "hex"), publicKey);
+        return secp256k1_1.secp256k1.verify(bytes, buffer_1.Buffer.from(signature, 'hex'), publicKey);
     }
     static encodeBytes(...args) {
-        let buffer = buffer_1.Buffer.from("");
+        let buffer = buffer_1.Buffer.from('');
+        // console.log(
+        //   'DATASTRING',
+        //   this.data,
+        //   Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()).toString(
+        //     'hex'
+        //   )
+        // );
         let buffers = [];
         let len = 0;
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
             switch (arg.type) {
-                case "string":
-                    buffers.push(buffer_1.Buffer.from((arg.value ?? "")));
+                case 'string':
+                    buffers.push(buffer_1.Buffer.from((arg.value ?? '')));
                     // const newBuffer = Buffer.from(arg.value);
                     // const combinedBuffer = Buffer.alloc(
                     //   finalBuffer.length + newBuffer.length
@@ -195,21 +202,23 @@ class Utils {
                     // newBuffer.copy(combinedBuffer, finalBuffer.length);
                     // finalBuffer = combinedBuffer;
                     break;
-                case "byte":
+                case 'byte':
                     buffers.push(arg.value);
                     break;
-                case "hex":
-                    buffers.push(buffer_1.Buffer.from(arg.value.replace("0x", ""), "hex"));
+                case 'hex':
+                    buffers.push(buffer_1.Buffer.from(arg.value.replace('0x', ''), 'hex'));
                     break;
-                case "boolean":
-                case "int":
-                case "BigInt":
+                case 'boolean':
+                case 'int':
+                case 'BigInt':
                     const buffer = buffer_1.Buffer.alloc(8);
                     const bigNum = BigInt(String(Number(arg.value || 0)));
                     buffer.writeBigUInt64BE(bigNum);
+                    console.log('TYPPPEPEEE', arg.value, buffer.toString('hex'));
                     buffers.push(buffer);
                     break;
-                case "address":
+                case 'address':
+                    console.log('ACcOUNTBUFFER', buffer_1.Buffer.from(arg.value).toString('hex'));
                     buffers.push(buffer_1.Buffer.from(arg.value));
                     // if ((arg.value as string).startsWith("0x")) {
                     //   buffers.push(
@@ -238,7 +247,7 @@ class Utils {
             }
             len += buffers[i].length;
         }
-        console.log("BUFERSSSS", buffers.length);
+        console.log('BUFERSSSS', buffers.length);
         const finalBuffer = buffer_1.Buffer.alloc(len);
         let copied = 0;
         for (const b of buffers) {
