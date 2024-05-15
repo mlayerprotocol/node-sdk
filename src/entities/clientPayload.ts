@@ -98,7 +98,7 @@ export class ClientPayload<T> extends BaseEntity {
   public data: T;
   public timestamp: number = 0;
   public account: Address = new Address();
-  public validator: string = "";
+  public validator: string = '';
   public eventType:
     | AuthorizeEventType
     | AdminTopicEventType
@@ -106,18 +106,18 @@ export class ClientPayload<T> extends BaseEntity {
     | AdminWalletEventType
     | MemberTopicEventType
     | MemberMessageEventType;
-  public authHash: string = "";
+  public authHash: string = '';
   public nonce: number = 0;
   public subnet: string = "";
 
   // Secondary
-  public signature: string = "";
-  public hash: string = "";
+  public signature: string = '';
+  public hash: string = '';
 
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
       {
-        type: "byte",
+        type: 'byte',
         value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
       },
       { type: "int", value: this.eventType },
@@ -131,28 +131,6 @@ export class ClientPayload<T> extends BaseEntity {
       { type: "int", value: this.nonce },
       { type: "int", value: this.timestamp }
     );
-    const params: {
-      type: EncoderDataType;
-      value: string | number | boolean | Buffer | BigInt;
-    }[] = [
-      {
-        type: "byte",
-        value: Buffer.from(
-          Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()).toString(
-            "hex"
-          ),
-          "hex"
-        ),
-      },
-      { type: "int", value: this.eventType },
-    ];
-    if (this.account.address.length) {
-      params.push({ type: "address", value: this.account.toString() });
-    }
-    params.push({ type: "hex", value: this.validator });
-    params.push({ type: "int", value: this.nonce });
-    params.push({ type: "int", value: this.timestamp });
-    return Utils.encodeBytes(...params);
   }
 
   /**
