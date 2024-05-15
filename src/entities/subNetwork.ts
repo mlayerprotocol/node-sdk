@@ -40,6 +40,7 @@ export class Subnet extends BaseEntity {
       ref: this.reference,
       meta: this.meta,
       st: this.status,
+      ts: this.timestamp,
       sigD: this.signatureData.asPayload(),
       acct: this.account.toString(),
     };
@@ -53,7 +54,8 @@ export class Subnet extends BaseEntity {
     return Utils.encodeBytes(
       { type: "string", value: this.meta },
       { type: "string", value: this.reference },
-      { type: "int", value: this.status }
+      { type: "int", value: this.status },
+      { type: "int", value: this.timestamp }
       // { type: "string", value: this.cats }
     );
   }

@@ -44,7 +44,7 @@ async function main() {
     await client.getTopicSubscribers({
       params: {
         // acct: agentList[0].account.address,
-        top: "211d12d4-fc98-b956-6f70-1a8c3d5859f1",
+        top: "f501d238-a4d7-bc1b-4aab-19af748482a3",
       },
     })
   );
