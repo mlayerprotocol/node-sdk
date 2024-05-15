@@ -34,7 +34,10 @@ jobs:
       #     yarn test:e2e
       - name: Deploy
         run: |
-          yarn deploy
+          npm run build
+          cp package.json dist
+          cd dist/ 
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   
