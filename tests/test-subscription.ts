@@ -11,8 +11,12 @@ import {
 import { Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
-import { Subscription } from "../src/entities/subscription";
-import { Address } from "../src/entities";
+import {
+  Subscription,
+  SubscriptionRole,
+  SubscriptionStatus,
+} from '../src/entities/subscription';
+import { Address } from '../src/entities';
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -33,23 +37,33 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
   // subscribe.status = 1;
-  subscribe.topic = "ac0cb541-2313-dbb5-6cd2-dcba6ecff121";
-  subscribe.account = Address.fromString(agentList[2].account.address);
+  subscribe.topic = '9b93dffe-01a6-41eb-7d61-19840b19bc80';
+  subscribe.subscriber = Address.fromString(agentList[2].account.address);
+  subscribe.status = SubscriptionStatus.Subscribed;
+  subscribe.role = SubscriptionRole.Member;
+  subscribe.ref = 'com.ref.com/sub1';
+
   //   subscribe.agent = "Bitcoin world";
   //   subscribe.reference = "898989";
 
   const payload: ClientPayload<Subscription> = new ClientPayload();
   payload.data = subscribe;
+  payload.subnet = '360db526-9592-b78c-1c5c-f57a92410857';
   payload.timestamp = 2705392177908;
-  payload.eventType = MemberTopicEventType.JoinEvent;
+  payload.eventType = MemberTopicEventType.SubscribeEvent;
   payload.validator = validator.publicKey;
   payload.account = Address.fromString(agentList[2].account.address);
   const pb = payload.encodeBytes();
-  console.log("🚀 ~ main ~ pb:", pb.toString("hex"));
+  console.log('🚀 ~ main ~ pb:', pb.toString('hex'));
   payload.signature = await Utils.signMessageEcc(pb, agentList[2].privateKey);
-  console.log("Payload", JSON.stringify(payload.asPayload()));
+  console.log(
+    'Payload',
+    JSON.stringify(payload.asPayload(), function (k, v) {
+      return v === '' ? undefined : v;
+    })
+  );
 
-  const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log("AUTHORIZE", await client.createSubscription(payload));
+  const client = new Client(new RESTProvider('http://localhost:9531'));
+  console.log('AUTHORIZE', await client.createSubscription(payload));
 }
 main().then();

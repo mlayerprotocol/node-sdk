@@ -7,19 +7,20 @@ type AddressString = string;
 type HexString = string;
 
 export interface ISubscription {
-  id: string;
+  id?: string;
   top: string;
-  acct: AddressString;
-  ts: number;
+  snet: string;
+  ref: string;
+  meta?: string;
+  sub: AddressString;
   st: number;
-  sig: string;
-  h: string;
-  eH: string;
-  agt: string;
   rol: number;
+  sig?: string;
+  h?: string;
+  eH?: string;
 }
 
-enum SubscriptionStatus {
+export enum SubscriptionStatus {
   Unsubscribed = 0,
   Pending = 1,
   Subscribed = 2,
@@ -28,16 +29,23 @@ enum SubscriptionStatus {
   // UNBANNED     SubscriptionStatuses = "unbanned"
 }
 
+export enum SubscriptionRole {
+  Member = 0,
+  Admin = 1,
+}
+
 export class Subscription extends BaseEntity {
-  public id: string = "";
-  public topic: string = "";
-  public account: Address = Address.fromString("");
+  public id: string = '';
+  public topic: string = '';
+  public subnet: string = '';
+  public ref: string = '';
+  public meta: string = '';
+  public subscriber: Address = Address.fromString('');
   public timestamp: number = 0;
   public status: SubscriptionStatus = 0;
-  public signature: string = "";
-  public hash: string = "";
-  public eventHash: string = "";
-  public agent: string = "";
+  public signature: string = '';
+  public hash: string = '';
+  public eventHash: string = '';
   public role: number = 0;
 
   /**
@@ -48,14 +56,15 @@ export class Subscription extends BaseEntity {
     return {
       id: this.id,
       top: this.topic,
-      acct: this.account.toString(),
-      ts: this.timestamp,
+      sub: this.subscriber.toString(),
       sig: this.signature,
+      snet: this.subnet,
       h: this.hash,
       eH: this.eventHash,
       st: this.status,
-      agt: this.agent,
       rol: this.role,
+      ref: this.ref,
+      meta: this.meta,
     };
   }
 
@@ -65,11 +74,12 @@ export class Subscription extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: "string", value: this.topic }
-      // { type: "address", value: this.subscriber.toString() }
-      // { type: "string", value: this.eventHash },
-      // { type: "int", value: this.status },
-      // { type: "int", value: this.timestamp }
+      { type: 'string', value: this.meta },
+      { type: 'string', value: this.ref },
+      { type: 'int', value: this.role },
+      { type: 'int', value: this.status },
+      { type: 'string', value: this.subscriber.toString() },
+      { type: 'string', value: this.topic }
     );
   }
 }

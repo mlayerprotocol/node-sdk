@@ -29,12 +29,12 @@ export enum AdminTopicEventType {
 
 // Member Topic Actions
 export enum MemberTopicEventType {
-  "LeaveEvent" = 1100,
-  "JoinEvent" = 1101,
-  "RequestedEvent" = 1102,
-  "ApprovedEvent" = 1103,
-  "UpgradedEvent" = 1104,
-  "InvitedEvent" = 1105,
+  'UnsubscribeEvent' = 1100,
+  'SubscribeEvent' = 1101,
+  'RequestedEvent' = 1102,
+  'ApprovedEvent' = 1103,
+  'UpgradedEvent' = 1104,
+  'InvitedEvent' = 1105,
 }
 
 // // Message Actions
@@ -117,18 +117,18 @@ export class ClientPayload<T> extends BaseEntity {
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
       {
-        type: "byte",
+        type: 'byte',
         value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
       },
       { type: 'int', value: this.eventType },
-      // { type: 'string', value: this.subnet },
+      { type: 'string', value: this.subnet },
       ...((this.account?.toString() ?? '') == ''
         ? []
-        : ([{ type: "address", value: this.account.toString() }] as any[])),
+        : ([{ type: 'address', value: this.account.toString() }] as any[])),
       // { type: "hex", value: this.authHash },
-      { type: "hex", value: this.validator },
-      { type: "int", value: this.nonce },
-      { type: "int", value: this.timestamp }
+      { type: 'hex', value: this.validator },
+      { type: 'int', value: this.nonce },
+      { type: 'int', value: this.timestamp }
     );
     const params: {
       type: EncoderDataType;
