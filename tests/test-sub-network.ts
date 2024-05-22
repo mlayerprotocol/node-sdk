@@ -36,6 +36,7 @@ async function main() {
 
   subNetwork.meta = 'New Network';
   subNetwork.reference = 'a898978';
+  subNetwork.owner = Address.fromString(agentList[0].account.address);
 
   const payload: ClientPayload<Subnet> = new ClientPayload();
   payload.data = subNetwork;

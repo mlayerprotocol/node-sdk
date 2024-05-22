@@ -31,12 +31,10 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.ref = 'blockchainworld0099';
+  topic.ref = 'blockchainworld009902';
   topic.meta = 'The best toopic';
 
- 
-  
-  topic.isPublic = true;
+  topic.public = true;
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;

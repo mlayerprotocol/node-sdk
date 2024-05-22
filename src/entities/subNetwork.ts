@@ -16,19 +16,21 @@ export interface ISubnet {
   acct?: AddressString; // owner of subNetwork
   ts?: number; // timestamp in millisec
   sigD: ISignatureData; // signatureData
+  own: AddressString;
 
   // sig?: HexString;
   // hash?: HexString;
 }
 
 export class Subnet extends BaseEntity {
-  public id: string = "";
-  public reference: string = "";
-  public meta: string = "";
+  public id: string = '';
+  public reference: string = '';
+  public meta: string = '';
+  public owner: Address = new Address();
   public account: Address = new Address();
   public status: number = 0;
   public timestamp: number = 0;
-  public signatureData: SignatureData = new SignatureData("", "", "");
+  public signatureData: SignatureData = new SignatureData('', '', '');
 
   /**
    * @override
@@ -43,6 +45,7 @@ export class Subnet extends BaseEntity {
       ts: this.timestamp,
       sigD: this.signatureData.asPayload(),
       acct: this.account.toString(),
+      own: this.owner.toString(),
     };
   }
 
@@ -51,12 +54,15 @@ export class Subnet extends BaseEntity {
    * @returns {Buffer}
    */
   public encodeBytes(): Buffer {
+    if (Address.fromString(this.owner.toAddressString()).address == '') {
+      this.owner = this.account;
+    }
     return Utils.encodeBytes(
-      { type: "string", value: this.meta },
-      { type: "string", value: this.reference },
-      { type: "int", value: this.status },
-      { type: "int", value: this.timestamp }
-      // { type: "string", value: this.cats }
+      { type: 'string', value: this.meta },
+      { type: 'string', value: this.owner.toAddressString() },
+      { type: 'string', value: this.reference },
+      { type: 'int', value: this.status },
+      { type: 'int', value: this.timestamp }
     );
   }
 }
