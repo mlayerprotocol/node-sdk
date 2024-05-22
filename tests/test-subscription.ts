@@ -52,10 +52,10 @@ async function main() {
   payload.timestamp = 2705392177908;
   payload.eventType = MemberTopicEventType.SubscribeEvent;
   payload.validator = validator.publicKey;
-  payload.account = Address.fromString(agentList[2].account.address);
+  payload.account = Address.fromString(agentList[0].account.address);
   const pb = payload.encodeBytes();
   console.log('🚀 ~ main ~ pb:', pb.toString('hex'));
-  payload.signature = await Utils.signMessageEcc(pb, agentList[2].privateKey);
+  payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
   console.log(
     'Payload',
     JSON.stringify(payload.asPayload(), function (k, v) {

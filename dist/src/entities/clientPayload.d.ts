@@ -34,7 +34,7 @@ export declare enum MemberMessageEventType {
 export declare enum AdminSubnetEventType {
     "DeleteSubnet" = 1300,
     "CreateSubnet" = 1301,// m.room.create
-    "SubnetTopic" = 1309
+    "UpdateSubnet" = 1309
 }
 export declare enum AdminWalletEventType {
     "DeleteWallet" = 1400,

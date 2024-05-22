@@ -31,12 +31,10 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.ref = 'blockchainworld0099';
+  topic.ref = 'blockchainworld009902';
   topic.meta = 'The best toopic';
 
- 
-  
-  topic.isPublic = true;
+  topic.public = true;
 
   const payload: ClientPayload<Topic> = new ClientPayload();
   payload.data = topic;
@@ -45,7 +43,7 @@ async function main() {
   payload.validator = validator.publicKey;
   payload.account = Address.fromString(agentList[0].account.address);
   payload.nonce = 0;
-  payload.subnet = "e9153709-f98b-93a5-47a2-f3a9acc32396";
+  payload.subnet = '360db526-9592-b78c-1c5c-f57a92410857';
   const pb = payload.encodeBytes();
   console.log("HEXDATA", pb.toString("hex"));
   payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);
@@ -55,6 +53,10 @@ async function main() {
   console.log("AUTHORIZE", await client.createTopic(payload));
 }
 main().then();
+
+// ccb3482210a4b7bb83d2462467c3444b9ac1ffffdb99fddc5fca9abe569328a900000000000003e9                                                                          6469643a636f736d6f73317a3770757836706574663666766e67646b6170306370796e657a746a3577776d6c76377a39662c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b8367
+// ccb3482210a4b7bb83d2462467c3444b9ac1ffffdb99fddc5fca9abe569328a900000000000003e9 33363064623532362d393539322d623738632d316335632d663537613932343130383537 6469643a636f736d6f73317a3770757836706574663666766e67646b6170306370796e657a746a3577776d6c76377a39662c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b8367
+
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
 //0995acea8e015b25c930eb2170c462ca5cd2aafbe4012e7cdc487c822d78216300000000000003e9d8cb87c937a309c86f69dea3730b0a8622462ba72c165d50119fefff0e1d882c2c2387845a0e17281653050892d3095e7fc99ad32d79b7fbdf11c9a87671daca00000000000000000000018d114b82e8
 // approve device
