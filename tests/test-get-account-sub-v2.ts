@@ -41,11 +41,11 @@ async function main() {
   const client = new Client(new RESTProvider("http://localhost:9531"));
   console.log(
     "AUTHORIZE",
-    await client.getTopicSubscribers({
+    await client.getAccountSubscriptionsV2({
       params: {
         // acct: agentList[0].account.address,
-        top: "f501d238-a4d7-bc1b-4aab-19af748482a3",
-        st: 1,
+        sub: "did:cosmos1vxm0v5dm9hacm3mznvx852fmtu6792wpa4wgq",
+        status: 1001,
       },
     })
   );

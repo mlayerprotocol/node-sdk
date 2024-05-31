@@ -148,10 +148,13 @@ export class Client {
     });
   }
 
-  public async getTopic(): Promise<Record<string, unknown>> {
+  public async getTopic({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: "/topics",
       method: "get",
+      params,
     });
   }
 
@@ -181,6 +184,16 @@ export class Client {
     return await this.provider.makeRequest({
       path: "/subscription/account",
       method: "post",
+      params,
+    });
+  }
+
+  public async getAccountSubscriptionsV2({
+    params,
+  }: Record<string, any>): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/subscription/account",
+      method: "get",
       params,
     });
   }
