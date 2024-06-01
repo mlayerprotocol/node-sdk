@@ -42,6 +42,7 @@ export class Subnet extends BaseEntity {
       ref: this.reference,
       meta: this.meta,
       st: this.status,
+      ts: this.timestamp,
       sigD: this.signatureData.asPayload(),
       acct: this.account.toString(),
       own: this.owner.toString(),

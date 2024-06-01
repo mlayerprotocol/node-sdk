@@ -9,7 +9,7 @@ async function main() {
     "AUTHORIZE",
     await client.getSubnets({
       params: {
-        // acct: agentList[0].account.address,
+        acct: agentList[0].account.address,
         // top: "211d12d4-fc98-b956-6f70-1a8c3d5859f1",
       },
     })

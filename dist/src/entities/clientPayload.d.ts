@@ -20,12 +20,12 @@ export declare enum AdminTopicEventType {
     "UpgradeSubscriberEvent" = 1010
 }
 export declare enum MemberTopicEventType {
-    "LeaveEvent" = 1100,
-    "JoinEvent" = 1101,
-    "RequestedEvent" = 1102,
-    "ApprovedEvent" = 1103,
-    "UpgradedEvent" = 1104,
-    "InvitedEvent" = 1105
+    'UnsubscribeEvent' = 1100,
+    'SubscribeEvent' = 1101,
+    'RequestedEvent' = 1102,
+    'ApprovedEvent' = 1103,
+    'UpgradedEvent' = 1104,
+    'InvitedEvent' = 1105
 }
 export declare enum MemberMessageEventType {
     "DeleteMessageEvent " = 1200,//m.room.encrypted

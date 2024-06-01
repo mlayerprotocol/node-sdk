@@ -5,7 +5,7 @@ name: Deploy to dev api
 
 on:
   push:
-    branches: [ci]
+    branches: [publish]
 
   # pull_request:
   #   types: [opened, synchronize, reopened, closed]
