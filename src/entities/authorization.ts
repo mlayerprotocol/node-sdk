@@ -55,14 +55,14 @@ export interface IAuthorization {
 
 export class Authorization extends BaseEntity {
   public account: Address = new Address();
-  public agent: string = "";
+  public agent: string = '';
   public grantor: Address = new Address();
-  public privilege: 0 | 1 | 2 | 3 = 0;
-  public topicIds: string = "";
+  public privilege: AuthorizationPrivilege = 0;
+  public topicIds: string = '';
   public timestamp: number;
   public duration: number;
-  public subnet: string = "";
-  public signatureData: SignatureData = new SignatureData("", "", "");
+  public subnet: string = '';
+  public signatureData: SignatureData = new SignatureData('', '', '');
 
   /**
    * @override
@@ -88,13 +88,13 @@ export class Authorization extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: "address", value: this.account.toString() },
-      { type: "hex", value: this.agent },
-      { type: "string", value: this.topicIds },
-      { type: "int", value: this.privilege },
-      { type: "int", value: this.duration },
-      { type: "string", value: this.subnet },
-      { type: "int", value: this.timestamp }
+      { type: 'address', value: this.account.toString() },
+      { type: 'hex', value: this.agent },
+      { type: 'string', value: this.topicIds },
+      { type: 'int', value: this.privilege },
+      { type: 'int', value: this.duration },
+      { type: 'string', value: this.subnet },
+      { type: 'int', value: this.timestamp }
     );
   }
 }
