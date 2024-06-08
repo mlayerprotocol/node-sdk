@@ -1,6 +1,6 @@
 {
   "name": "@mlayerprotocol/core",
-  "version": "1.0.149",
+  "version": "1.0.150",
   "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
@@ -18,7 +18,7 @@
     "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack"
   },
   "author": "Abdulhafiz",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@cosmjs/crypto": "^0.32.3",
     "axios": "^1.6.5",
