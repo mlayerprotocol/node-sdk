@@ -148,7 +148,7 @@ export class Client {
     });
   }
 
-  public async getTopic({
+  public async getTopics({
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
