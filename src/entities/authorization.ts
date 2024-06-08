@@ -5,8 +5,8 @@ import { Address } from "./address";
 
 export enum AuthorizationPrivilege {
   Unauthorized = 0,
-  Reader = 10,
-  Writer = 20,
+  Basic = 10,
+  Standard = 20,
   Manager = 30,
   Admin = 40,
 }
