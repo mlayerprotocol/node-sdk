@@ -2,6 +2,7 @@ import { isHexString } from "ethers";
 import { BaseEntity } from "./base";
 import { Utils } from "../helper";
 import { Address } from './address';
+import { SubscriberRole } from './subscription';
 
 type AddressString = string;
 type HexString = string;
@@ -19,6 +20,7 @@ export interface ITopic {
   pub: boolean; // is public topic
   rO: boolean;
   snet: string; // subnet
+  dSubRole?: SubscriberRole;
   // sig?: HexString;
   // hash?: HexString;
 }
@@ -34,6 +36,7 @@ export class Topic extends BaseEntity {
   public public: boolean = false;
   public readOnly: boolean = false;
   public subnet: string = '';
+  public defaultSubscriberRole: SubscriberRole = 0;
 
   /**
    * @override
@@ -68,14 +71,14 @@ encoder.EncoderParam{Type: encoder.StringEncoderDataType, Value: topic.ID},
    * @returns {Buffer}
    */
   public encodeBytes(): Buffer {
-    console.log('TOPICDATA', this);
     return Utils.encodeBytes(
+      { type: 'int', value: this.defaultSubscriberRole },
       { type: 'string', value: this.id },
       { type: 'string', value: this.meta },
       { type: 'hex', value: this.parentTopicHash },
       { type: 'boolean', value: this.public },
-      { type: 'string', value: this.ref },
-      { type: 'boolean', value: this.readOnly }
+      { type: 'boolean', value: this.readOnly },
+      { type: 'string', value: this.ref }
       // { type: 'string', value: this.subnet }
     );
   }

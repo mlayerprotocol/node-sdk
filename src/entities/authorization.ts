@@ -3,6 +3,14 @@ import { Utils } from "../helper";
 import { HexString, AddressString, BaseEntity } from "./base";
 import { Address } from "./address";
 
+export enum AuthorizationPrivilege {
+  UnauthorizedPriviledge = 0,
+  ReadPriviledge = 10,
+  WritePriviledge = 20,
+  ManagePriviledge = 30,
+  AdminPriviledge = 40,
+}
+
 export interface ISignatureData {
   ty: string;
   pubK?: string;
@@ -11,13 +19,13 @@ export interface ISignatureData {
 
 export class SignatureData {
   constructor(
-    public type: "" | "tendermint/PubKeySecp256k1" | "eth",
+    public type: '' | 'tendermint/PubKeySecp256k1' | 'eth',
     public publicKey: string,
     public signature: string
   ) {
-    type = "";
-    publicKey = "";
-    signature = "";
+    type = '';
+    publicKey = '';
+    signature = '';
   }
 
   /**
@@ -37,7 +45,7 @@ export interface IAuthorization {
   agt: string;
   gr: AddressString;
   acct: AddressString;
-  privi: 0 | 1 | 2 | 3; //  0=>Read, 1=>Write,2=>Admin
+  privi: AuthorizationPrivilege;
   topIds: string; // "*" all topics or comma separated list of topic ids
   du: number; // duration
   snet: string; // subnet

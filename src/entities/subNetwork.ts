@@ -1,8 +1,12 @@
 import { isHexString } from "ethers";
 import { BaseEntity } from "./base";
 import { Utils } from "../helper";
-import { ISignatureData, SignatureData } from "./authorization";
-import { Address } from "./address";
+import {
+  AuthorizationPrivilege,
+  ISignatureData,
+  SignatureData,
+} from './authorization';
+import { Address } from './address';
 
 type AddressString = string;
 type HexString = string;
@@ -14,6 +18,8 @@ export interface ISubnet {
   meta?: string; // meta
   st?: number; // meta
   acct?: AddressString; // owner of subNetwork
+  cTopPriv?: AuthorizationPrivilege; // minimum privilege needed to create topics within the subnet
+  dAuthPriv?: AuthorizationPrivilege; // default privilege assigned to anyone that joins subnet by authorizing an agent
   ts?: number; // timestamp in millisec
   sigD: ISignatureData; // signatureData
   own: AddressString;
@@ -29,6 +35,8 @@ export class Subnet extends BaseEntity {
   public owner: Address = new Address();
   public account: Address = new Address();
   public status: number = 0;
+  public createTopicPrivilege: AuthorizationPrivilege = 0;
+  public defaultAuthPrivilege: AuthorizationPrivilege = 0;
   public timestamp: number = 0;
   public signatureData: SignatureData = new SignatureData('', '', '');
 
@@ -46,6 +54,8 @@ export class Subnet extends BaseEntity {
       sigD: this.signatureData.asPayload(),
       acct: this.account.toString(),
       own: this.owner.toString(),
+      cTopPriv: this.createTopicPrivilege,
+      dAuthPriv: this.defaultAuthPrivilege,
     };
   }
 
@@ -58,6 +68,8 @@ export class Subnet extends BaseEntity {
       this.owner = this.account;
     }
     return Utils.encodeBytes(
+      { type: 'int', value: this.createTopicPrivilege },
+      { type: 'int', value: this.defaultAuthPrivilege },
       { type: 'string', value: this.meta },
       { type: 'string', value: this.owner.toAddressString() },
       { type: 'string', value: this.reference },

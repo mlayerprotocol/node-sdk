@@ -29,6 +29,13 @@ export enum SubscriptionStatus {
   // UNBANNED     SubscriptionStatuses = "unbanned"
 }
 
+export enum SubscriberRole {
+  TopicReaderRole = 0,
+  TopicWriterRole = 10,
+  TopicManagerRole = 20,
+  TopicAdminRole = 30,
+}
+
 export enum SubscriptionRole {
   Member = 0,
   Admin = 1,
@@ -46,7 +53,7 @@ export class Subscription extends BaseEntity {
   public signature: string = '';
   public hash: string = '';
   public eventHash: string = '';
-  public role: number = 0;
+  public role: SubscriberRole = 0;
 
   /**
    * @override
