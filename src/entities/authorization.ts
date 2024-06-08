@@ -4,11 +4,11 @@ import { HexString, AddressString, BaseEntity } from "./base";
 import { Address } from "./address";
 
 export enum AuthorizationPrivilege {
-  UnauthorizedPriviledge = 0,
-  ReadPriviledge = 10,
-  WritePriviledge = 20,
-  ManagePriviledge = 30,
-  AdminPriviledge = 40,
+  Unauthorized = 0,
+  Reader = 10,
+  Writer = 20,
+  Manager = 30,
+  Admin = 40,
 }
 
 export interface ISignatureData {
