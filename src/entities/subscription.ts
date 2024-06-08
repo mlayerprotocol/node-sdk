@@ -22,11 +22,10 @@ export interface ISubscription {
 
 export enum SubscriptionStatus {
   Unsubscribed = 0,
-  Pending = 1,
-  Subscribed = 2,
-  // ApprovedSubscriptionStatus      SubscriptionStatuses = "approved"
-  Banned = 3,
-  // UNBANNED     SubscriptionStatuses = "unbanned"
+  Invited = 10,
+  Pending = 20,
+  Subscribed = 30,
+  Banned = 40,
 }
 
 export enum SubscriberRole {
