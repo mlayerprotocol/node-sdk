@@ -173,16 +173,15 @@ export class Message extends BaseEntity {
     attachments = Buffer.concat(attachmentArray, len);
     len = 0;
     return Utils.encodeBytes(
-      { type: "string", value: this.topicId },
-      { type: "address", value: this.sender.toString() },
-      { type: "address", value: this.receiver.toString() },
+      { type: 'byte', value: Buffer.from(actions) },
+      { type: 'byte', value: Buffer.from(attachments) },
       {
-        type: "byte",
+        type: 'byte',
         value: Utils.keccak256Hash(this.data),
       },
-
-      { type: "byte", value: Buffer.from(attachments) },
-      { type: "byte", value: Buffer.from(actions) }
+      { type: 'address', value: this.receiver.toString() },
+      { type: 'address', value: this.sender.toString() },
+      { type: 'string', value: this.topicId }
     );
   }
 }

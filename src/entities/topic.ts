@@ -20,7 +20,7 @@ export interface ITopic {
   pub: boolean; // is public topic
   rO: boolean;
   snet: string; // subnet
-  dSubRole?: SubscriberRole;
+  dSubRol: SubscriberRole;
   // sig?: HexString;
   // hash?: HexString;
 }
@@ -48,6 +48,7 @@ export class Topic extends BaseEntity {
       ref: this.ref,
       meta: this.meta,
       pTH: this.parentTopicHash, // parent handle hash
+      dSubRol: this.defaultSubscriberRole,
       // sC: this.subsriberCount, // subscription count
       // acct: this.account, // owner of topic
       // ts: this.timestamp, // timestamp in millisec
