@@ -29,16 +29,16 @@ export enum SubscriptionStatus {
 }
 
 export enum SubscriberRole {
-  TopicReaderRole = 0,
-  TopicWriterRole = 10,
-  TopicManagerRole = 20,
-  TopicAdminRole = 30,
+  Reader = 0,
+  Writer = 10,
+  Manager = 20,
+  Admin = 30,
 }
 
-export enum SubscriptionRole {
-  Member = 0,
-  Admin = 1,
-}
+// export enum SubscriptionRole {
+//   Member = 0,
+//   Admin = 1,
+// }
 
 export class Subscription extends BaseEntity {
   public id: string = '';
