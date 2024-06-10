@@ -26,6 +26,8 @@ class Provider {
     return {};
   }
 }
+export * from './entities';
+
 export class RPCProvider extends Provider {
   private rpcClient: Jayson.TcpClient | undefined;
   constructor({
