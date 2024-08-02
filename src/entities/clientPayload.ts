@@ -1,30 +1,30 @@
 import { keccak256 } from "ethereum-cryptography/keccak";
-import { BaseEntity } from "./base";
-import { EncoderDataType, Utils } from "../helper";
-import { Authorization } from "./authorization";
-import { Address } from "./address";
-import { Keccak256 } from "@cosmjs/crypto";
+import { AddressString, BaseEntity, ChainId, HexString } from './base';
+import { EncoderDataType, Utils } from '../helper';
+import { Authorization } from './authorization';
+import { Address } from './address';
+import { Keccak256 } from '@cosmjs/crypto';
 
 // Authrization
 export enum AuthorizeEventType {
-  "AuthorizeEvent" = 100,
-  "UnauthorizeEvent" = 101,
+  'AuthorizeEvent' = 100,
+  'UnauthorizeEvent' = 101,
 }
 
 // // Administrative Topic Actions
 export enum AdminTopicEventType {
-  "DeleteTopic" = 1000,
-  "CreateTopic" = 1001, // m.room.create
-  "PrivacySet" = 1002,
-  "BanMember" = 1003,
-  "UnbanMember" = 1004,
-  "ContractSet" = 1005,
-  "UpdateName" = 1006, //  m.room.name
-  "UpdateDescription" = 1007, //  m.room.topic
-  "UpdateAvatar" = 1008, //  m.room.avatar
-  "PinMessage" = 1008, //  m.room.avatar
-  "UpdateTopic" = 1009, // m.room.create
-  "UpgradeSubscriberEvent" = 1010,
+  'DeleteTopic' = 1000,
+  'CreateTopic' = 1001, // m.room.create
+  'PrivacySet' = 1002,
+  'BanMember' = 1003,
+  'UnbanMember' = 1004,
+  'ContractSet' = 1005,
+  'UpdateName' = 1006, //  m.room.name
+  'UpdateDescription' = 1007, //  m.room.topic
+  'UpdateAvatar' = 1008, //  m.room.avatar
+  'PinMessage' = 1008, //  m.room.avatar
+  'UpdateTopic' = 1009, // m.room.create
+  'UpgradeSubscriberEvent' = 1010,
 }
 
 // Member Topic Actions
@@ -39,16 +39,16 @@ export enum MemberTopicEventType {
 
 // // Message Actions
 export enum MemberMessageEventType {
-  "DeleteMessageEvent " = 1200, //m.room.encrypted
-  "SendMessageEvent" = 1201, // m.room.message
+  'DeleteMessageEvent ' = 1200, //m.room.encrypted
+  'SendMessageEvent' = 1201, // m.room.message
   // CreateReaction          EventType = 1202 // m.reaction
   // IsTyping                EventType = 1203
 }
 
 // // Administrative Topic Actions
 export enum AdminSubnetEventType {
-  "DeleteSubnet" = 1300,
-  "CreateSubnet" = 1301, // m.room.create
+  'DeleteSubnet' = 1300,
+  'CreateSubnet' = 1301, // m.room.create
   // "PrivacySet" = 1002,
   // "BanMember" = 1003,
   // "UnbanMember" = 1004,
@@ -57,14 +57,14 @@ export enum AdminSubnetEventType {
   // "UpdateDescription" = 1007, //  m.room.topic
   // "UpdateAvatar" = 1008, //  m.room.avatar
   // "PinMessage" = 1008, //  m.room.avatar
-  "UpdateSubnet" = 1309, // m.room.create
+  'UpdateSubnet' = 1309, // m.room.create
   // "UpgradeSubscriberEvent" = 1010,
 }
 
 // // Administrative Topic Actions
 export enum AdminWalletEventType {
-  "DeleteWallet" = 1400,
-  "CreateWallet" = 1401, // m.room.create
+  'DeleteWallet' = 1400,
+  'CreateWallet' = 1401, // m.room.create
   // "PrivacySet" = 1002,
   // "BanMember" = 1003,
   // "UnbanMember" = 1004,
@@ -73,12 +73,11 @@ export enum AdminWalletEventType {
   // "UpdateDescription" = 1007, //  m.room.topic
   // "UpdateAvatar" = 1008, //  m.room.avatar
   // "PinMessage" = 1008, //  m.room.avatar
-  "WalletTopic" = 1409, // m.room.create
+  'WalletTopic' = 1409, // m.room.create
   // "UpgradeSubscriberEvent" = 1010,
 }
 
-type AddressString = string;
-type HexString = string;
+
 
 export interface IClientPayload {
   // Primary
@@ -92,6 +91,7 @@ export interface IClientPayload {
   sig: HexString;
   h: HexString;
   acct: AddressString;
+  chId: string;
 }
 
 export class ClientPayload<T> extends BaseEntity {
@@ -108,28 +108,36 @@ export class ClientPayload<T> extends BaseEntity {
     | MemberMessageEventType;
   public authHash: string = '';
   public nonce: number = 0;
-  public subnet: string = "";
+  public subnet: string = '';
+  public chainId: ChainId = new ChainId('');
 
   // Secondary
   public signature: string = '';
   public hash: string = '';
 
   public encodeBytes(): Buffer {
+    if (this.chainId.get() == '') {
+      throw 'chainId is required';
+    }
     return Utils.encodeBytes(
+      {
+        type: 'byte',
+        value: this.chainId.bytes(),
+      },
       {
         type: 'byte',
         value: Utils.keccak256Hash((this.data as BaseEntity).encodeBytes()),
       },
-      { type: "int", value: this.eventType },
+      { type: 'int', value: this.eventType },
       { type: 'string', value: this.subnet },
-      ...((this.account?.toString() ?? "") == ""
+      ...((this.account?.toString() ?? '') == ''
         ? []
         : ([{ type: 'address', value: this.account.toString() }] as any[])),
       // { type: "hex", value: this.authHash },
-      
-      { type: "hex", value: this.validator },
-      { type: "int", value: this.nonce },
-      { type: "int", value: this.timestamp }
+
+      { type: 'hex', value: this.validator },
+      { type: 'int', value: this.nonce },
+      { type: 'int', value: this.timestamp }
     );
   }
 
@@ -139,6 +147,7 @@ export class ClientPayload<T> extends BaseEntity {
    */
   public asPayload(): IClientPayload {
     return {
+      chId: String(this.chainId),
       d: (this.data as BaseEntity).asPayload(),
       ts: this.timestamp,
       ty: this.eventType,

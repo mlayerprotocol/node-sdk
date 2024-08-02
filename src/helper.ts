@@ -22,12 +22,29 @@ export class Utils {
   static toUtf8(str: string): Uint8Array {
     return new TextEncoder().encode(str);
   }
-  static bigintToUint8Array(num: bigint, length: number, littleEndian = false) {
-    const bytes = new Uint8Array(length);
-    for (let i = 0; i < length; i++) {
-      const byte = num & 0xffn;
-      bytes[littleEndian ? i : length - 1 - i] = Number(byte);
-      num >>= 8n;
+  static bigintToUint8Array(
+    num: bigint,
+    bitLength: 32 | 64,
+    littleEndian = false
+  ): Uint8Array {
+    // Validate the number is within the range for uint32 or uint64
+    const maxUint32 = 0xffffffffn;
+    const maxUint64 = 0xffffffffffffffffn;
+    const size = bitLength / 8;
+    if (
+      (size === 4 && (num < 0n || num > maxUint32)) ||
+      (size === 8 && (num < 0n || num > maxUint64))
+    ) {
+      throw new Error(`Number out of range for uint${size * 8}`);
+    }
+
+    const bytes = new Uint8Array(size);
+
+    for (let i = 0; i < size; i++) {
+      const byte = num & 0xffn; // Extract the least significant byte
+      // Assign the byte to the correct position based on endianness
+      bytes[littleEndian ? i : size - 1 - i] = Number(byte);
+      num >>= 8n; // Shift right by 8 bits to process the next byte
     }
     return bytes;
   }
