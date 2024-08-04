@@ -105,7 +105,7 @@ export class Utils {
 
   static uuidToBytes(uuid: string): Buffer {
     if (uuid == '') return Buffer.from('');
-    return Buffer.from(`0x${uuid.replace(/-/g, '')}`, 'hex');
+    return Buffer.from(`${uuid.replace(/-/g, '')}`, 'hex');
   }
 
   /**
