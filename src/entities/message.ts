@@ -83,32 +83,32 @@ export class MessageAction extends BaseEntity {
   }
 }
 
-export class MessageAttachment extends BaseEntity {
-  public cid: string = '';
-  public hash: string = '';
+// export class MessageAttachment extends BaseEntity {
+//   public cid: string = '';
+//   public hash: string = '';
 
-  /**
-   * @override
-   * @returns {IMessageAttachment} object
-   */
-  // public asPayload(): IMessageAttachment {
-  //   return {
-  //     cid: this.cid,
-  //     h: this.hash,
-  //   };
-  // }
+//   /**
+//    * @override
+//    * @returns {IMessageAttachment} object
+//    */
+//   public asPayload(): IMessageAttachment {
+//     return {
+//       cid: this.cid,
+//       h: this.hash,
+//     };
+//   }
 
-  /**
-   * @override
-   * @returns {Buffer}
-   */
-  public encodeBytes(): Buffer {
-    return Utils.encodeBytes(
-      { type: 'string', value: this.cid },
-      { type: 'string', value: this.hash }
-    );
-  }
-}
+//   /**
+//    * @override
+//    * @returns {Buffer}
+//    */
+//   public encodeBytes(): Buffer {
+//     return Utils.encodeBytes(
+//       { type: 'string', value: this.cid },
+//       { type: 'string', value: this.hash }
+//     );
+//   }
+// }
 
 export class Message extends BaseEntity {
   public id: string = '';
