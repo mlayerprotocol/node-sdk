@@ -1,7 +1,7 @@
 import { Client } from "./src/index";
 // import { Icm } from "./src/icm";
 import { Utils } from "./src/helper";
-import * as Entities from "./src/entities";
-
-export { Utils, Entities };
+import * as Entities from './src/entities';
+export { Client, Utils, Entities };
 export * from './src/index';
+export * from './src/entities';
