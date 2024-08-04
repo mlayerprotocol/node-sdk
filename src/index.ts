@@ -10,7 +10,6 @@ import { Message } from "./entities/message";
 import { Subnet } from "./entities/subNetwork";
 import { Wallet } from "./entities/wallet";
 
-export interface Client extends Jayson.TcpClientOptions {}
 
 class Provider {
   // async read<O>(

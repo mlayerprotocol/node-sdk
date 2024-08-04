@@ -3,5 +3,5 @@ import { Client } from "./src/index";
 import { Utils } from "./src/helper";
 import * as Entities from "./src/entities";
 
-export { Client, Utils, Entities };
-export * from './src/entities';
+export { Utils, Entities };
+export * from './src/index';
