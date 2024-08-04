@@ -29,7 +29,7 @@ export class ChainId {
     this.value = val;
   }
   bytes(): Buffer {
-    if (isNaN(parseInt(this.value))) {
+    if (!isNaN(parseInt(this.value))) {
       const uintA = Utils.bigintToUint8Array(BigInt(this.value), 64);
       return Buffer.from(uintA, uintA.byteOffset, uintA.length);
     } else {
