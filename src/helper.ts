@@ -6,8 +6,7 @@ import { AddressString, HexString } from "./entities/base";
 import { ethers, keccak256 } from "ethers";
 import { Buffer } from "buffer";
 import * as nacl from "tweetnacl";
-import { Secp256k1, Sha256 } from "@cosmjs/crypto";
-import { IMessageAction, IMessageAttachment } from "./entities/message";
+import { Secp256k1, Sha256 } from '@cosmjs/crypto';
 
 export type EncoderDataType =
   | "string"

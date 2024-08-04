@@ -93,7 +93,7 @@ export class MessageAction extends BaseEntity {
 //    */
 //   public asPayload(): IMessageAttachment {
 //     return {
-//       cid: this.cid,
+//       cid: this.cid, o
 //       h: this.hash,
 //     };
 //   }
