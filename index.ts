@@ -5,3 +5,4 @@ import * as Entities from './src/entities';
 export { Client, Utils, Entities };
 export * from './src/index';
 export * from './src/entities';
+export * from './src/constants';
