@@ -90,11 +90,11 @@ export class Authorization extends BaseEntity {
     return Utils.encodeBytes(
       { type: 'address', value: this.account.toString() },
       { type: 'hex', value: this.agent },
-      { type: 'string', value: this.topicIds },
-      { type: 'int', value: this.privilege },
       { type: 'int', value: this.duration },
+      { type: 'int', value: this.privilege },
       { type: 'string', value: this.subnet },
-      { type: 'int', value: this.timestamp }
+      { type: 'int', value: this.timestamp },
+      { type: 'string', value: this.topicIds }
     );
   }
 }

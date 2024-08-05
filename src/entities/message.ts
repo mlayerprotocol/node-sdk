@@ -22,7 +22,7 @@ export interface IMessageAction {
 export interface IMessage {
   id: string;
   ts: number;
-  topId: string;
+  top: string;
   s: AddressString;
   r: AddressString;
   d: HexString;
@@ -113,7 +113,7 @@ export class MessageAction extends BaseEntity {
 export class Message extends BaseEntity {
   public id: string = '';
   public timestamp: number = 0;
-  public topicId: string = '';
+  public topic: string = '';
   public sender: Address = Address.fromString('');
   public receiver: Address = Address.fromString('');
   public dataType: DataType = DataType.BINARY;
@@ -133,7 +133,7 @@ export class Message extends BaseEntity {
     return {
       id: this.id,
       ts: this.timestamp,
-      topId: this.topicId,
+      top: this.topic,
       s: this.sender.toAddressString(),
       r: this.receiver.toAddressString(),
       //  d: new Uint8Array(this.data, this.data.byteOffset, this.data.byteLength),
@@ -189,7 +189,7 @@ export class Message extends BaseEntity {
       },
       { type: 'address', value: this.receiver.toString() },
       { type: 'address', value: this.sender.toString() },
-      { type: 'byte', value: Utils.uuidToBytes(this.topicId) }
+      { type: 'byte', value: Utils.uuidToBytes(this.topic) }
     );
   }
 }
