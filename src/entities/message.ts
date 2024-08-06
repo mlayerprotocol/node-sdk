@@ -33,6 +33,7 @@ export interface IMessage {
   sig: string;
   dh: string;
   url: string;
+  nonce: number;
 }
 
 export class MessageAction extends BaseEntity {
@@ -124,6 +125,7 @@ export class Message extends BaseEntity {
   public signature: string = '';
   public dataHash: string = '';
   public url: string = '';
+  public nonce: number = Date.now();
 
   /**
    * @override
@@ -145,6 +147,7 @@ export class Message extends BaseEntity {
       sig: this.signature,
       dh: this.dataHash,
       url: this.url,
+      nonce: this.nonce,
     };
   }
 
@@ -187,6 +190,7 @@ export class Message extends BaseEntity {
         type: 'string',
         value: this.dataType,
       },
+      { type: 'int', value: this.nonce },
       { type: 'address', value: this.receiver.toString() },
       { type: 'address', value: this.sender.toString() },
       { type: 'byte', value: Utils.uuidToBytes(this.topic) }
