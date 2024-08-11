@@ -116,7 +116,13 @@ export class ClientPayload<T> extends BaseEntity {
   public hash: string = '';
 
   public encodeBytes(): Buffer {
-    if (this.chainId.get() == '') {
+    if (
+      this.chainId.get() == '' &&
+      ![
+        ...Object.values(AuthorizeEventType),
+        ...Object.values(AdminSubnetEventType),
+      ].find((d: any) => Number(d) == Number(this.eventType))
+    ) {
       throw 'chainId is required';
     }
     return Utils.encodeBytes(
