@@ -30,9 +30,11 @@ export class ChainId {
   }
   bytes(): Buffer {
     if (!isNaN(parseInt(this.value))) {
-      const bigNumberValue = ethers.toBigInt(this.value);
+      const uintA = Utils.bigintToUint8Array(BigInt(this.value), 64);
       return Buffer.from(
-        ethers.zeroPadValue(ethers.toBeHex(bigNumberValue), 32),
+        ethers
+          .zeroPadValue(Buffer.from(uintA, uintA.byteOffset, uintA.length), 32)
+          .replace('0x', ''),
         'hex'
       );
     } else {
