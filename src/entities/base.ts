@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { Utils } from '../helper';
 
 export type AddressString = string;
@@ -16,7 +17,6 @@ export class BaseEntity {
   }
 }
 
-
 export class ChainId {
   constructor(private value: string) {}
   toString(): String {
@@ -30,8 +30,11 @@ export class ChainId {
   }
   bytes(): Buffer {
     if (!isNaN(parseInt(this.value))) {
-      const uintA = Utils.bigintToUint8Array(BigInt(this.value), 64);
-      return Buffer.from(uintA, uintA.byteOffset, uintA.length);
+      const bigNumberValue = ethers.toBigInt(this.value);
+      return Buffer.from(
+        ethers.zeroPadValue(ethers.toBeHex(bigNumberValue), 32),
+        'hex'
+      );
     } else {
       return Buffer.from(this.value);
     }
