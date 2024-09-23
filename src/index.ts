@@ -1,6 +1,5 @@
 import Jayson from "jayson";
-import { w3cwebsocket } from "websocket";
-import ethers from "ethers";
+import { w3cwebsocket } from 'websocket';
 import { AuthorizeEventType, ClientPayload } from "./entities/clientPayload";
 import { Authorization } from "./entities/authorization";
 import axios, { AxiosResponse } from "axios";

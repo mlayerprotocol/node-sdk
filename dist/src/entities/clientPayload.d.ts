@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { AddressString, BaseEntity, ChainId, HexString } from './base';
 import { Address } from './address';
 export declare enum AuthorizeEventType {

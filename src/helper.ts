@@ -1,21 +1,21 @@
-import * as crypto from "crypto";
-import { bech32 } from "bech32";
+import crypto from './lib/node-crypto';
+import { Buffer } from 'buffer';
+import { bech32 } from 'bech32';
 // import { keccak256 } from 'ethereum-cryptography/keccak';
-import { secp256k1 } from "ethereum-cryptography/secp256k1";
-import { AddressString, HexString } from "./entities/base";
-import { ethers, keccak256 } from "ethers";
-import { Buffer } from "buffer";
-import * as nacl from "tweetnacl";
-import { Secp256k1, Sha256 } from '@cosmjs/crypto';
+import { secp256k1 } from 'ethereum-cryptography/secp256k1';
+import { AddressString, HexString } from './entities/base';
+import { ethers, keccak256 } from 'ethers';
+
+import * as nacl from 'tweetnacl';
 
 export type EncoderDataType =
-  | "string"
-  | "address"
-  | "int"
-  | "BigInt"
-  | "hex"
-  | "boolean"
-  | "byte";
+  | 'string'
+  | 'address'
+  | 'int'
+  | 'BigInt'
+  | 'hex'
+  | 'boolean'
+  | 'byte';
 
 export class Utils {
   static toUtf8(str: string): Uint8Array {
@@ -206,7 +206,8 @@ export class Utils {
     // );
     // const signature = secp256k1.sign(bytes, bytes);
 
-    const msgHash = new Sha256(dataUtf).digest();
+    //const msgHash = new Sha256(dataUtf).digest();
+    const msgHash = crypto.createHash('sha256').update(dataUtf).digest();
     console.log(
       'Hashh',
       Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString(
@@ -221,8 +222,10 @@ export class Utils {
       privateKey.byteLength
     );
 
-    const signature = await Secp256k1.createSignature(msgHash, privateKey);
-    const sign = new Uint8Array([...signature.r(32), ...signature.s(32)]);
+    // const signature = await Secp256k1.createSignature(msgHash, privateKey);
+    const signature = secp256k1.sign(msgHash, privKeyBytes);
+    const sign = signature.toDERRawBytes();
+    // const sign = new Uint8Array([...signature.r(32), ...signature.s(32)]);
 
     return Buffer.from(sign, sign.byteOffset, sign.byteLength);
 
