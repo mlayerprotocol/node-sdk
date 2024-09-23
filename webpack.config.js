@@ -16,6 +16,7 @@ module.exports = {
       crypto: require.resolve('crypto-browserify'), // Polyfill for `Buffer`
       stream: require.resolve('stream-browserify'),
       vm: require.resolve('vm-browserify'),
+      process: require.resolve('process/browser'),
       net: false,
 
       url: false,

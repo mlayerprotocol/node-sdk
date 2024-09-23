@@ -1,14 +1,9 @@
 {
   "name": "@mlayerprotocol/core",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
-  "browser": {
-    "./src/lib/node-crypto.js": "./lib/browser-crypto.js",
-    "./src/lib/node-buffer.js": "./src/lib/browser-buffer.js",
-    "buffer": "buffer"
-  },
   "scripts": {
     "dev": "node main.js",
     "dev1": "node safe.js",
@@ -36,6 +31,7 @@
     "https-browserify": "^1.0.0",
     "jayson": "^4.1.2",
     "node-fetch": "^3.3.2",
+    "process": "^0.11.10",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "tls": "^0.0.1",
