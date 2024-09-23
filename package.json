@@ -20,22 +20,28 @@
     "build-ts": "tsc",
     "depl": "npm run build && cp package.json dist && cd dist/",
     "deploy": "npm run build && cp package.json dist && cd dist/ && npm publish --access public",
-    "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack"
+    "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack",
+    "build2": "rm -rf build && tsc --outDir build && webpack --config webpack.config.js && cp package.json build"
   },
   "author": "Abdulhafiz",
   "license": "MIT",
   "dependencies": {
     "@cosmjs/crypto": "^0.32.3",
-    "axios": "^1.6.5",
+    "axios": "^1.7.7",
     "bech32": "^2.0.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "dotenv": "^16.0.3",
     "ethers": "^6.10.0",
-    "jayson": "^4.1.0",
+    "https-browserify": "^1.0.0",
+    "jayson": "^4.1.2",
     "node-fetch": "^3.3.2",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "tls": "^0.0.1",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
+    "vm-browserify": "^1.1.2",
     "web3": "^1.8.0",
     "websocket": "^1.0.34"
   },
@@ -43,9 +49,12 @@
     "@types/bech32": "^1.1.4",
     "@types/node-fetch": "^2.6.11",
     "@types/websocket": "^1.0.5",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   }
 }

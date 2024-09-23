@@ -1,4 +1,4 @@
-import crypto from './lib/node-crypto';
+import { createHash, randomBytes } from 'crypto';
 import { Buffer } from 'buffer';
 import { bech32 } from 'bech32';
 // import { keccak256 } from 'ethereum-cryptography/keccak';
@@ -49,17 +49,14 @@ export class Utils {
   }
   static toAddress(publicKey: Buffer, prefix: string = 'ml') {
     // Perform SHA256 hashing followed by RIPEMD160
-    const sha256Hash = crypto.createHash('sha256').update(publicKey).digest();
-    const ripemd160Hash = crypto
-      .createHash('ripemd160')
-      .update(sha256Hash)
-      .digest();
+    const sha256Hash = createHash('sha256').update(publicKey).digest();
+    const ripemd160Hash = createHash('ripemd160').update(sha256Hash).digest();
 
     // Bech32 encoding
     return bech32.encode(prefix, bech32.toWords(ripemd160Hash));
   }
   static sha256Hash(data: Buffer): Buffer {
-    const hash = crypto.createHash('sha256');
+    const hash = createHash('sha256');
     hash.update(data);
     return hash.digest();
   }
@@ -72,7 +69,7 @@ export class Utils {
   static generateKeyPairSecp() {
     let privateKey: Buffer;
     do {
-      privateKey = crypto.randomBytes(32);
+      privateKey = randomBytes(32);
     } while (!secp256k1.utils.isValidPrivateKey(privateKey));
 
     const publicKey = secp256k1.getPublicKey(privateKey);
@@ -207,7 +204,7 @@ export class Utils {
     // const signature = secp256k1.sign(bytes, bytes);
 
     //const msgHash = new Sha256(dataUtf).digest();
-    const msgHash = crypto.createHash('sha256').update(dataUtf).digest();
+    const msgHash = createHash('sha256').update(dataUtf).digest();
     console.log(
       'Hashh',
       Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString(

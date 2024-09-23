@@ -8,7 +8,8 @@ import { Subscription } from "./entities/subscription";
 import { Message } from "./entities/message";
 import { Subnet } from "./entities/subNetwork";
 import { Wallet } from "./entities/wallet";
-
+import jaysonBrowserClient from 'jayson/lib/client/browser';
+import ClientBrowser from 'jayson/lib/client/browser';
 
 class Provider {
   // async read<O>(
@@ -25,17 +26,57 @@ class Provider {
   }
 }
 
-
 export class RPCProvider extends Provider {
-  private rpcClient: Jayson.TcpClient | undefined;
+  private rpcClient:
+    | Jayson.HttpClient
+    | Jayson.HttpClientOptions
+    | ClientBrowser
+    | undefined;
   constructor({
     rpcConfig,
+    server,
   }: {
-    rpcConfig: Jayson.TcpClientOptions | undefined;
+    server: string;
+    rpcConfig:
+      | Jayson.HttpsClientOptions
+      | Jayson.HttpClientOptions
+      | Jayson.TcpClient
+      | undefined;
     ethProvider?: any;
   }) {
     super();
-    if (rpcConfig) this.rpcClient = Jayson.client.tcp(rpcConfig);
+    if (window != null) {
+      if (rpcConfig) {
+        const callServer = function (request: any, callback: any) {
+          axios
+            .post(server, request, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+            .then(
+              (response) => {
+                callback(null, response.data);
+              },
+              (error) => {
+                callback(error);
+              }
+            );
+        };
+
+        this.rpcClient = new jaysonBrowserClient(callServer, rpcConfig as any);
+      }
+    } else {
+      if (server.startsWith('http://')) {
+        this.rpcClient = Jayson.client.http(rpcConfig as any);
+      }
+      if (server.startsWith('https://')) {
+        this.rpcClient = Jayson.client.https(rpcConfig as any);
+      }
+      if (server.startsWith('tcp://')) {
+        this.rpcClient = Jayson.client.tcp(rpcConfig as any);
+      }
+    }
   }
 }
 export class RESTProvider extends Provider {
