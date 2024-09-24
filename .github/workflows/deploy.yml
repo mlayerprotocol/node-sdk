@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
-        run: npm ci
+        run: rm -rf node_modules && yarn install --frozen-lockfile
       # - name: Test
       #   run: |
       #     mkdir _env
@@ -34,10 +34,10 @@ jobs:
       #     yarn test:e2e
       - name: Deploy
         run: |
-          npm run build2
+          yarn run build2
           cp package.json dist
           cd dist/ 
-          npm publish --access public
+          yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   
