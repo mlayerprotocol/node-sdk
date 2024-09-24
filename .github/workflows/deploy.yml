@@ -37,7 +37,7 @@ jobs:
           yarn run build2
           cp package.json dist
           cd dist/ 
-          yarn npm publish --access public
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   
