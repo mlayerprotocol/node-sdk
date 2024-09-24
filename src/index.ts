@@ -1,13 +1,13 @@
-import Jayson from "jayson";
+import Jayson from 'jayson';
 import { w3cwebsocket } from 'websocket';
-import { AuthorizeEventType, ClientPayload } from "./entities/clientPayload";
-import { Authorization } from "./entities/authorization";
-import axios, { AxiosResponse } from "axios";
-import { Topic } from "./entities/topic";
-import { Subscription } from "./entities/subscription";
-import { Message } from "./entities/message";
-import { Subnet } from "./entities/subNetwork";
-import { Wallet } from "./entities/wallet";
+import { AuthorizeEventType, ClientPayload } from './entities/clientPayload';
+import { Authorization } from './entities/authorization';
+import axios, { AxiosResponse } from 'axios';
+import { Topic } from './entities/topic';
+import { Subscription } from './entities/subscription';
+import { Message } from './entities/message';
+import { Subnet } from './entities/subNetwork';
+import { Wallet } from './entities/wallet';
 import jaysonBrowserClient from 'jayson/lib/client/browser';
 import ClientBrowser from 'jayson/lib/client/browser';
 
@@ -80,7 +80,7 @@ export class RPCProvider extends Provider {
   }
 }
 export class RESTProvider extends Provider {
-  private server: string = "http://localhost:9531";
+  private server: string = 'http://localhost:9531';
   constructor(host?: string, ethProvider?: unknown) {
     super();
     if (host.slice(-1) == `/`) host = host.substring(0, host.length - 1);
@@ -94,11 +94,11 @@ export class RESTProvider extends Provider {
    */
   async makeRequest<T, O>(options: {
     path: string;
-    method?: "get" | "put" | "post" | "patch" | "delete";
+    method?: 'get' | 'put' | 'post' | 'patch' | 'delete';
     params?: Record<string, any>;
     payload?: ClientPayload<T> | undefined;
   }): Promise<Record<string, unknown>> {
-    var { payload, path, method = "put", params } = options ?? {};
+    var { payload, path, method = 'put', params } = options ?? {};
     // let path = argOptions?.path;
     // const method = argOptions?.method ?? "put";
     // const params = argOptions?.params;
@@ -106,7 +106,7 @@ export class RESTProvider extends Provider {
       switch (payload.eventType) {
         case AuthorizeEventType.AuthorizeEvent:
         case AuthorizeEventType.UnauthorizeEvent:
-          path = "/authorize";
+          path = '/authorize';
           break;
       }
     }
@@ -114,16 +114,16 @@ export class RESTProvider extends Provider {
       const url = `${this.server}/api${path}`;
       let response: AxiosResponse<any, any>;
       switch (method) {
-        case "post":
-        case "put":
-        case "patch":
-        case "delete":
-          response = await (axios[options.method ?? "put"] as any)(
+        case 'post':
+        case 'put':
+        case 'patch':
+        case 'delete':
+          response = await (axios[options.method ?? 'put'] as any)(
             url,
             payload?.asPayload(),
             {
               headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
               },
               params,
             }
@@ -133,7 +133,7 @@ export class RESTProvider extends Provider {
           // console.log({ urlurl: url });
           response = await axios.get(url, {
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             params,
           });

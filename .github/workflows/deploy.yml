@@ -35,8 +35,8 @@ jobs:
       - name: Deploy
         run: |
           npm run build2
-          cp package.json build
-          cd build/ 
+          cp package.json dist
+          cd dist/ 
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

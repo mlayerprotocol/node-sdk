@@ -1,3 +1,5 @@
+var browserify = require('browserify');
+var process = require('process/browser');
 import { Client } from './src/index';
 // import { Icm } from "./src/icm";
 import { Utils } from './src/helper';

@@ -1,3 +1,4 @@
+var process = require('process');
 import { createHash, randomBytes } from 'crypto';
 import { Buffer } from 'buffer';
 import { bech32 } from 'bech32';
