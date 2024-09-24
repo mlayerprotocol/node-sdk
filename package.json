@@ -4,6 +4,9 @@
   "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
+  "engines": {
+    "node": ">=16"
+  },
   "browser": {
     "process": "process/browser",
     "http": "stream-http",
