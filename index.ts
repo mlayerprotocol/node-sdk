@@ -7,6 +7,7 @@ export { Client, Utils, Entities };
 export * from './src/index';
 export * from './src/entities';
 export * from './src/constants';
+export * from './src/providers';
 const mlayer = {
   Client,
   Utils,
