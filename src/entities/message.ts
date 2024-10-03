@@ -192,7 +192,7 @@ export class Message extends BaseEntity {
       },
       { type: 'int', value: this.nonce },
       { type: 'address', value: this.receiver.toString() },
-      { type: 'address', value: this.sender.toString() },
+      // { type: 'address', value: this.sender.toString() },
       { type: 'byte', value: Utils.uuidToBytes(this.topic) }
     );
   }

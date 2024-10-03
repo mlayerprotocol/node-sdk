@@ -1,10 +1,1 @@
-var browserify = require('browserify');
-var process = require('process/browser');
-import { Client } from './src/index';
-// import { Icm } from "./src/icm";
-import { Utils } from './src/helper';
-import * as Entities from './src/entities';
-export { Client, Utils, Entities };
-export * from './src/index';
-export * from './src/entities';
-export * from './src/constants';
+export * from './index';

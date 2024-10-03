@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './index.ts', // Specify your entry point
@@ -57,4 +58,23 @@ module.exports = {
     }),
   ],
   mode: 'production', // Or 'production' for optimized output
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: {
+          condition: 'some', // Extract comments that match certain conditions
+          filename: 'OTHER_LICENSES.txt', // The name of the file where the licenses will be extracted
+          banner: (licenseFile) => {
+            return `For license information, see LICENSE.txt & ${licenseFile}`;
+          },
+        },
+        terserOptions: {
+          format: {
+            comments: /@license|@preserve|Copyright/i, // You can customize this regex to include/exclude certain comments
+          },
+        },
+      }),
+    ],
+  },
 };
