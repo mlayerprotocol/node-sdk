@@ -1,7 +1,7 @@
 import { isHexString, sha256 } from "ethers";
 import { Utils } from "../helper";
-import { HexString, AddressString, BaseEntity } from "./base";
-import { Address } from "./address";
+import { HexString, AddressString, BaseEntity, DeviceString } from './base';
+import { Address, Device } from './address';
 
 export enum AuthorizationPrivilege {
   Unauthorized = 0,
@@ -42,7 +42,7 @@ export class SignatureData {
 }
 
 export interface IAuthorization {
-  agt: string;
+  agt: DeviceString;
   gr: AddressString;
   acct: AddressString;
   privi: AuthorizationPrivilege;
@@ -55,7 +55,7 @@ export interface IAuthorization {
 
 export class Authorization extends BaseEntity {
   public account: Address = new Address();
-  public agent: string = '';
+  public agent: Device = new Device();
   public grantor: Address = new Address();
   public privilege: AuthorizationPrivilege = 0;
   public topicIds: string = '';
@@ -70,7 +70,7 @@ export class Authorization extends BaseEntity {
    */
   public asPayload(): IAuthorization {
     return {
-      agt: this.agent,
+      agt: this.agent.toAddressString(),
       acct: this.account.toString(),
       gr: this.grantor.toString(),
       privi: this.privilege,
@@ -89,7 +89,7 @@ export class Authorization extends BaseEntity {
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
       { type: 'address', value: this.account.toString() },
-      { type: 'hex', value: this.agent },
+      { type: 'hex', value: this.agent.address },
       { type: 'int', value: this.duration },
       { type: 'int', value: this.privilege },
       { type: 'string', value: this.subnet },

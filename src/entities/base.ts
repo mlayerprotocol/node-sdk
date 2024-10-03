@@ -3,6 +3,7 @@ import { Utils } from '../helper';
 
 export type AddressString = string;
 export type HexString = string;
+export type DeviceString = string;
 
 export class BaseEntity {
   public asPayload(): unknown {
