@@ -67,8 +67,8 @@ export class WSProvider implements Provider {
   constructor(host?: string) {
     if (host.slice(-1) == `/`) {
       host = host.substring(0, host.length - 1);
-      this.server = host;
     }
+    this.server = host;
   }
   /**
    *
