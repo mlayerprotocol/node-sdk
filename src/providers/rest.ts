@@ -2,11 +2,10 @@ import axios, { AxiosResponse } from 'axios';
 import { Provider } from '.';
 import { AuthorizeEventType, ClientPayload } from '../entities';
 
-export class RESTProvider extends Provider {
+export class RESTProvider implements Provider {
   private server: string = 'http://localhost:9531';
 
   constructor(host?: string, ethProvider?: unknown) {
-    super();
     if (host.slice(-1) == `/`) host = host.substring(0, host.length - 1);
     this.server = host;
   }
@@ -16,7 +15,7 @@ export class RESTProvider extends Provider {
    * @param payload
    * @returns
    */
-  async makeRequest<T, O>(options: {
+  public async makeRequest<T, O>(options: {
     path: string;
     method?: 'get' | 'put' | 'post' | 'patch' | 'delete';
     params?: Record<string, any>;

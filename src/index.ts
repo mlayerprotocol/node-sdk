@@ -14,7 +14,7 @@ import { EventFilter, Provider, SubscriptionEvents } from './providers';
 import { RESTProvider } from './providers/rest';
 import { WSProvider } from './providers/ws';
 
-export class RPCProvider extends Provider {
+export class RPCProvider implements Provider {
   private rpcClient:
     | Jayson.HttpClient
     | Jayson.HttpClientOptions
@@ -32,7 +32,6 @@ export class RPCProvider extends Provider {
       | undefined;
     ethProvider?: any;
   }) {
-    super();
     if (window != null) {
       if (rpcConfig) {
         const callServer = function (request: any, callback: any) {
@@ -66,10 +65,12 @@ export class RPCProvider extends Provider {
       }
     }
   }
+
+  makeRequest: (options?: unknown) => Promise<Record<string, unknown>>;
 }
 
-export class Client {
-  constructor(public provider: RESTProvider | RPCProvider | WSProvider) {}
+export class Client<P> {
+  constructor(public provider: Provider) {}
 
   public async connect(): Promise<boolean> {
     return await this.provider?.connect();

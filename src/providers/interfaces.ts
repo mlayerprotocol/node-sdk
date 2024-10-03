@@ -45,6 +45,23 @@ export interface SubscriptionEvents {
   onReceive: (response: SubscriptionResponse) => void;
   onError?: (error: Error) => void;
 }
+export interface Provider {
+  connect?: (options?: any) => Promise<boolean>;
+  subscribe?: (
+    filter: EventFilter,
+    events: SubscriptionEvents
+  ) => Promise<void>;
+  endSubscription?: (subscriptionId: string) => Promise<void>;
+  makeRequest: <T, O>(
+    // payload: unknown,
+    options: {
+      path: string;
+      method?: 'get' | 'put' | 'post' | 'patch' | 'delete';
+      params?: Record<string, any>;
+      payload?: ClientPayload<T> | undefined;
+    }
+  ) => Promise<Record<string, unknown>>;
+}
 
 // export class Provider {
 //   // async read<O>(
@@ -73,6 +90,5 @@ export interface SubscriptionEvents {
 //   }
 // }
 
-export * from './rest';
-export * from './ws';
-export * from './interfaces';
+// export * from './rest';
+// export * from './ws';

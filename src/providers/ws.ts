@@ -59,14 +59,12 @@ var subscriptionMessageBus$ = new Subject<{
 /**
  *
  */
-export class WSProvider extends Provider {
+export class WSProvider implements Provider {
   private server: string = 'ws://localhost:8088/ws';
   private socket;
 
   //  private messageBus = new Subject<{ id: string; payload?: any }>();
   constructor(host?: string) {
-    super();
-
     if (host.slice(-1) == `/`) {
       host = host.substring(0, host.length - 1);
       this.server = host;
