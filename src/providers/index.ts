@@ -11,7 +11,7 @@ export enum EntityType {
 }
 export type FilterValue = '*' | EntityType | UUID;
 export type EventFilter = Record<string, FilterValue[]>;
-interface ISubRespData extends IEvents {
+export interface ISubRespData extends IEvents {
   modelType: string;
   topic?: string;
 }
