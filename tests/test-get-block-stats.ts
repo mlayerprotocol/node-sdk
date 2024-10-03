@@ -29,7 +29,7 @@ async function main() {
 
   //   await wsClient.subscribe(
   //     {
-  //       '2274aec8-6107-cb4f-5204-de5a9aaedb67': ['*'],
+  //       '2274aec8-6107-cb4f-5204-de5a9aaedb67': ['*', 'f0b7be5f-3e70-0a05-6f04-797462ec3e61'],
   //     },
   //     {
   //       onError: console.log,
