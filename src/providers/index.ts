@@ -30,6 +30,7 @@ type PartialEvent = PartialWithRequired<
   | 'ts'
   | 'val'
   | 't'
+  | 'pld'
 >;
 export interface ISubRespData extends PartialEvent {
   modelType: string;
