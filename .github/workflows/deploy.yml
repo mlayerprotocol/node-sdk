@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v4
       - name: Setup - Node.js ${{ matrix.node-version }}
@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
-        run: npm ci
+        run: rm -rf node_modules && yarn install --frozen-lockfile
       # - name: Test
       #   run: |
       #     mkdir _env
@@ -34,7 +34,7 @@ jobs:
       #     yarn test:e2e
       - name: Deploy
         run: |
-          npm run build
+          yarn run build2
           cp package.json dist
           cd dist/ 
           npm publish --access public

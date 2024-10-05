@@ -1,49 +1,63 @@
-import * as crypto from "crypto";
-import { bech32 } from "bech32";
+var process = require('process');
+import { createHash, randomBytes } from 'crypto';
+import { Buffer } from 'buffer';
+import { bech32 } from 'bech32';
 // import { keccak256 } from 'ethereum-cryptography/keccak';
-import { secp256k1 } from "ethereum-cryptography/secp256k1";
-import { AddressString, HexString } from "./entities/base";
-import { ethers, keccak256 } from "ethers";
-import { Buffer } from "buffer";
-import * as nacl from "tweetnacl";
-import { Secp256k1, Sha256 } from "@cosmjs/crypto";
-import { IMessageAction, IMessageAttachment } from "./entities/message";
+import { secp256k1 } from 'ethereum-cryptography/secp256k1';
+import { AddressString, HexString } from './entities/base';
+import { ethers, keccak256 } from 'ethers';
+
+import * as nacl from 'tweetnacl';
 
 export type EncoderDataType =
-  | "string"
-  | "address"
-  | "int"
-  | "BigInt"
-  | "hex"
-  | "boolean"
-  | "byte";
+  | 'string'
+  | 'address'
+  | 'int'
+  | 'BigInt'
+  | 'hex'
+  | 'boolean'
+  | 'byte';
 
 export class Utils {
   static toUtf8(str: string): Uint8Array {
     return new TextEncoder().encode(str);
   }
-  static bigintToUint8Array(num: bigint, length: number, littleEndian = false) {
-    const bytes = new Uint8Array(length);
-    for (let i = 0; i < length; i++) {
-      const byte = num & 0xffn;
-      bytes[littleEndian ? i : length - 1 - i] = Number(byte);
-      num >>= 8n;
+  static bigintToUint8Array(
+    num: bigint,
+    bitLength: 32 | 64,
+    littleEndian = false
+  ): Uint8Array {
+    // Validate the number is within the range for uint32 or uint64
+    const maxUint32 = 0xffffffffn;
+    const maxUint64 = 0xffffffffffffffffn;
+    const size = bitLength / 8;
+    if (
+      (size === 4 && (num < 0n || num > maxUint32)) ||
+      (size === 8 && (num < 0n || num > maxUint64))
+    ) {
+      throw new Error(`Number out of range for uint${size * 8}`);
+    }
+
+    const bytes = new Uint8Array(size);
+
+    for (let i = 0; i < size; i++) {
+      const byte = num & 0xffn; // Extract the least significant byte
+      // Assign the byte to the correct position based on endianness
+      bytes[littleEndian ? i : size - 1 - i] = Number(byte);
+      num >>= 8n; // Shift right by 8 bits to process the next byte
     }
     return bytes;
   }
   static toAddress(publicKey: Buffer, prefix: string = 'ml') {
     // Perform SHA256 hashing followed by RIPEMD160
-    const sha256Hash = crypto.createHash('sha256').update(publicKey).digest();
-    const ripemd160Hash = crypto
-      .createHash('ripemd160')
-      .update(sha256Hash)
-      .digest();
+    const sha256Hash = createHash('sha256').update(publicKey).digest();
+    const ripemd160Hash = createHash('ripemd160').update(sha256Hash).digest();
 
     // Bech32 encoding
     return bech32.encode(prefix, bech32.toWords(ripemd160Hash));
   }
   static sha256Hash(data: Buffer): Buffer {
-    const hash = crypto.createHash('sha256');
+    const hash = createHash('sha256');
     hash.update(data);
     return hash.digest();
   }
@@ -56,7 +70,7 @@ export class Utils {
   static generateKeyPairSecp() {
     let privateKey: Buffer;
     do {
-      privateKey = crypto.randomBytes(32);
+      privateKey = randomBytes(32);
     } while (!secp256k1.utils.isValidPrivateKey(privateKey));
 
     const publicKey = secp256k1.getPublicKey(privateKey);
@@ -85,6 +99,11 @@ export class Utils {
     const address = wallet.address;
 
     return { privateKey, publicKey, address };
+  }
+
+  static uuidToBytes(uuid: string): Buffer {
+    if (uuid == '') return Buffer.from('');
+    return Buffer.from(`${uuid.replace(/-/g, '')}`, 'hex');
   }
 
   /**
@@ -185,7 +204,8 @@ export class Utils {
     // );
     // const signature = secp256k1.sign(bytes, bytes);
 
-    const msgHash = new Sha256(dataUtf).digest();
+    //const msgHash = new Sha256(dataUtf).digest();
+    const msgHash = createHash('sha256').update(dataUtf).digest();
     console.log(
       'Hashh',
       Buffer.from(msgHash, msgHash.byteOffset, msgHash.byteLength).toString(
@@ -200,8 +220,10 @@ export class Utils {
       privateKey.byteLength
     );
 
-    const signature = await Secp256k1.createSignature(msgHash, privateKey);
-    const sign = new Uint8Array([...signature.r(32), ...signature.s(32)]);
+    // const signature = await Secp256k1.createSignature(msgHash, privateKey);
+    const signature = secp256k1.sign(msgHash, privKeyBytes);
+    const sign = signature.toDERRawBytes();
+    // const sign = new Uint8Array([...signature.r(32), ...signature.s(32)]);
 
     return Buffer.from(sign, sign.byteOffset, sign.byteLength);
 

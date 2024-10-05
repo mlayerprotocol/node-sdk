@@ -1,6 +1,5 @@
-import { isHexString } from "ethers";
-import { BaseEntity } from "./base";
-import { Utils } from "../helper";
+import { BaseEntity } from './base';
+import { Utils } from '../helper';
 
 type AddressString = string;
 type HexString = string;
@@ -18,11 +17,11 @@ export interface IWallet {
 }
 
 export class Wallet extends BaseEntity {
-  public id: string = "";
-  public name: string = "";
-  public account: string = "";
+  public id: string = '';
+  public name: string = '';
+  public account: string = '';
   public timestamp: number = 0;
-  public subnet: string = "";
+  public subnet: string = '';
 
   /**
    * @override
@@ -44,9 +43,9 @@ export class Wallet extends BaseEntity {
    */
   public encodeBytes(): Buffer {
     return Utils.encodeBytes(
-      { type: "string", value: this.name },
-      { type: "hex", value: this.subnet },
-      { type: "string", value: this.account }
+      { type: 'string', value: this.name },
+      { type: 'hex', value: this.subnet },
+      { type: 'string', value: this.account }
     );
   }
 }

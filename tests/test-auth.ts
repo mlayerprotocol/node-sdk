@@ -10,8 +10,9 @@ import {
 import { Client, RESTProvider } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Address } from "../src/entities/address";
+import { ChainId } from '../src/entities/base';
 const client = jayson.client.tcp({
-  host: "127.0.0.1",
+  host: '127.0.0.1',
   port: 9521,
   version: 1,
 });
@@ -27,31 +28,34 @@ const client = jayson.client.tcp({
 // };
 
 async function main() {
+  const chainId = new ChainId('84532');
+  console.log('ChainID', chainId.bytes().toString('hex'));
+  return;
   const authority: Authorization = new Authorization();
-  console.log("keypairsss", Utils.generateKeyPairSecp());
+  console.log('keypairsss', Utils.generateKeyPairSecp());
   console.log(
-    "BECH32ADDRESS",
+    'BECH32ADDRESS',
     validator.publicKey,
-    Utils.toAddress(Buffer.from(validator.publicKey, "hex"))
+    Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   );
   authority.account = Address.fromString(agentList[0].account.address);
   authority.agent = agent.address;
   authority.grantor = Address.fromString(agentList[0].account.address);
   authority.timestamp = 1714408257702;
-  authority.topicIds = "*";
-  authority.privilege = 3;
+  authority.topicIds = '*';
+  // authority.privilege = 3;
   authority.subnet =
-    "c870ce77c41a36f1fc60966c8c4e111964a32af400e7d9cbe78ac9117d4e0cdb";
+    'c870ce77c41a36f1fc60966c8c4e111964a32af400e7d9cbe78ac9117d4e0cdb';
   authority.duration = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   const encoded = authority.encodeBytes();
 
-  const hash = Utils.sha256Hash(encoded).toString("base64");
-  console.log("Hash string", `Approve ${authority.agent} for tml: ${hash}`);
+  const hash = Utils.sha256Hash(encoded).toString('base64');
+  console.log('Hash string', `Approve ${authority.agent} for tml: ${hash}`);
   const authSig =
-    "juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==";
+    'juYiOV/ZOIS3AEBunyl5FLGTTTHOzliZKJeQHW8ZMCEpbHJMecWHWTD612D0kHO5m/BRTUPSSZwJgmFp6wb+gg==';
   authority.signatureData = new SignatureData(
-    "tendermint/PubKeySecp256k1",
+    'tendermint/PubKeySecp256k1',
     agentList[0].publicKey,
     authSig
   );
@@ -78,7 +82,7 @@ async function main() {
   //   signature: signature.toString('base64'),
   // });
 
-  console.log("Grant", authority.asPayload());
+  console.log('Grant', authority.asPayload());
 
   const payload: ClientPayload<Authorization> = new ClientPayload();
   payload.data = authority;
@@ -90,8 +94,8 @@ async function main() {
 
   // console.log("Payload", JSON.stringify(payload.asPayload()));
 
-  const client = new Client(new RESTProvider("http://localhost:9531"));
-  console.log("AUTHORIZE", await client.authorize(payload));
+  const client = new Client(new RESTProvider('http://localhost:9531'));
+  console.log('AUTHORIZE', await client.authorize(payload));
 }
 main().then();
 

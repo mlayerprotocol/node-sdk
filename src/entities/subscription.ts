@@ -22,24 +22,23 @@ export interface ISubscription {
 
 export enum SubscriptionStatus {
   Unsubscribed = 0,
-  Pending = 1,
-  Subscribed = 2,
-  // ApprovedSubscriptionStatus      SubscriptionStatuses = "approved"
-  Banned = 3,
-  // UNBANNED     SubscriptionStatuses = "unbanned"
+  Invited = 10,
+  Pending = 20,
+  Subscribed = 30,
+  Banned = 40,
 }
 
 export enum SubscriberRole {
-  TopicReaderRole = 0,
-  TopicWriterRole = 10,
-  TopicManagerRole = 20,
-  TopicAdminRole = 30,
+  Reader = 0,
+  Writer = 10,
+  Manager = 20,
+  Admin = 30,
 }
 
-export enum SubscriptionRole {
-  Member = 0,
-  Admin = 1,
-}
+// export enum SubscriptionRole {
+//   Member = 0,
+//   Admin = 1,
+// }
 
 export class Subscription extends BaseEntity {
   public id: string = '';

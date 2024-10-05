@@ -17,12 +17,12 @@ export interface ISubnet {
   ref?: string; // optional custom reference
   meta?: string; // meta
   st?: number; // meta
-  acct?: AddressString; // owner of subNetwork
-  cTopPriv?: AuthorizationPrivilege; // minimum privilege needed to create topics within the subnet
+  acct?: AddressString;
+  // cTopPriv?: AuthorizationPrivilege; // minimum privilege needed to create topics within the subnet
   dAuthPriv?: AuthorizationPrivilege; // default privilege assigned to anyone that joins subnet by authorizing an agent
   ts?: number; // timestamp in millisec
   sigD: ISignatureData; // signatureData
-  own: AddressString;
+  // own: AddressString;
 
   // sig?: HexString;
   // hash?: HexString;
@@ -32,10 +32,10 @@ export class Subnet extends BaseEntity {
   public id: string = '';
   public reference: string = '';
   public meta: string = '';
-  public owner: Address = new Address();
+  // public owner: Address = new Address();
   public account: Address = new Address();
   public status: number = 0;
-  public createTopicPrivilege: AuthorizationPrivilege = 0;
+  // public createTopicPrivilege: AuthorizationPrivilege = 0;
   public defaultAuthPrivilege: AuthorizationPrivilege = 0;
   public timestamp: number = 0;
   public signatureData: SignatureData = new SignatureData('', '', '');
@@ -53,8 +53,8 @@ export class Subnet extends BaseEntity {
       ts: this.timestamp,
       sigD: this.signatureData.asPayload(),
       acct: this.account.toString(),
-      own: this.owner.toString(),
-      cTopPriv: this.createTopicPrivilege,
+      // own: this.owner.toString(),
+      // cTopPriv: this.createTopicPrivilege,
       dAuthPriv: this.defaultAuthPrivilege,
     };
   }
@@ -64,14 +64,14 @@ export class Subnet extends BaseEntity {
    * @returns {Buffer}
    */
   public encodeBytes(): Buffer {
-    if (Address.fromString(this.owner.toAddressString()).address == '') {
-      this.owner = this.account;
-    }
+    // if (Address.fromString(this.owner.toAddressString()).address == '') {
+    //   this.owner = this.account;
+    // }
     return Utils.encodeBytes(
-      { type: 'int', value: this.createTopicPrivilege },
+      // { type: 'int', value: this.createTopicPrivilege },
+      { type: 'string', value: this.account.toAddressString() },
       { type: 'int', value: this.defaultAuthPrivilege },
       { type: 'string', value: this.meta },
-      { type: 'string', value: this.owner.toAddressString() },
       { type: 'string', value: this.reference },
       { type: 'int', value: this.status },
       { type: 'int', value: this.timestamp }

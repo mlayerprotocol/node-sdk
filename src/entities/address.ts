@@ -2,6 +2,7 @@ import { isHexString, sha256 } from "ethers";
 import { Utils } from "../helper";
 import { HexString, AddressString, BaseEntity } from "./base";
 
+
 export class Address extends BaseEntity {
   public prefix: string = 'did';
   public address: string = '';
@@ -48,3 +49,5 @@ export class Address extends BaseEntity {
     return Utils.encodeBytes({ type: 'address', value: this.toString() });
   }
 }
+
+export class Device extends Address {}

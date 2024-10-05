@@ -1,9 +1,13 @@
 {
   "name": "@mlayerprotocol/core",
-  "version": "1.0.149",
+  "version": "1.4.1",
   "description": "Typescript SDK for the mLayer protocol",
   "main": "index.js",
   "types": "index.d.ts",
+  "engines": {
+    "node": ">=16"
+  },
+  "browser": {},
   "scripts": {
     "dev": "node main.js",
     "dev1": "node safe.js",
@@ -15,31 +19,52 @@
     "build-ts": "tsc",
     "depl": "npm run build && cp package.json dist && cd dist/",
     "deploy": "npm run build && cp package.json dist && cd dist/ && npm publish --access public",
-    "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack"
+    "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack",
+    "build2": "rm -rf dist && tsc --outDir dist && webpack --config webpack.config.js && cp package.json dist && cp LICENSE.txt dist"
   },
-  "author": "Abdulhafiz",
-  "license": "ISC",
+  "author": "Abdulhafiz / @RulerOfCode",
+  "license": "MIT",
   "dependencies": {
     "@cosmjs/crypto": "^0.32.3",
-    "axios": "^1.6.5",
+    "@types/nanoid": "^3.0.0",
+    "@types/ws": "^8.5.12",
+    "axios": "^1.7.7",
     "bech32": "^2.0.0",
+    "browserify": "^17.0.0",
+    "browserify-fs": "^1.0.0",
     "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
     "dotenv": "^16.0.3",
     "ethers": "^6.10.0",
-    "jayson": "^4.1.0",
+    "https-browserify": "^1.0.0",
+    "jayson": "^4.1.2",
+    "nanoid": "3",
     "node-fetch": "^3.3.2",
+    "process": "^0.11.10",
+    "rxjs": "^7.8.1",
+    "stream-browserify": "^2.0.2",
+    "stream-http": "^3.2.0",
+    "tls": "^0.0.1",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
+    "vm-browserify": "^1.1.2",
     "web3": "^1.8.0",
-    "websocket": "^1.0.34"
+    "websocket": "^1.0.34",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-typescript": "^7.24.7",
     "@types/bech32": "^1.1.4",
     "@types/node-fetch": "^2.6.11",
     "@types/websocket": "^1.0.5",
+    "babel-loader": "^9.2.1",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "tsup": "^8.0.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   }
 }
