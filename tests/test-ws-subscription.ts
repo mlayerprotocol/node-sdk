@@ -1,8 +1,9 @@
 require('dotenv').config();
 
-import { Client } from '../index';
+import { Client, Message } from '../index';
 import { RESTProvider } from '../index';
 import { WSProvider } from '../index';
+import { Events } from '../src/entities/event';
 // import { WSProvider } from '../dist';
 
 async function main() {
@@ -28,16 +29,27 @@ async function main() {
     //   })
     // );
 
+    const topicId = 'f0b7be5f-3e70-0a05-6f04-797462ec3e61';
     await wsClient.subscribe(
       {
         '2274aec8-6107-cb4f-5204-de5a9aaedb67': [
-          '*',
-          'f0b7be5f-3e70-0a05-6f04-797462ec3e61',
+          // 'snet',
+          // 'auth',
+          // 'sub',
+          // 'top',
+          // 'msg',
+          topicId,
         ],
       },
       {
         onError: console.log,
-        onReceive: (e) => console.log('RECEIVED', e),
+        onReceive: (msg) => {
+          const event = Events.fromPayload(msg.event);
+          if (msg.event.modelType == topicId) {
+            const sentMessage = event.payload?.data as Message; // if listening to
+            console.log(sentMessage.data); // this is the message body
+          }
+        },
         onSubscribe: (id) => console.log('SUBSCRIPTIONID', id),
       }
     );
