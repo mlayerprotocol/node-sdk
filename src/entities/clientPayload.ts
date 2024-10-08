@@ -160,4 +160,18 @@ export class ClientPayload<T> extends BaseEntity {
       nonce: this.nonce,
     };
   }
+
+  public sign(params: {
+    chainId: string | number;
+    agentPrivateKey: string;
+    validator: string;
+  }): ClientPayload<T> {
+    if (!this.timestamp) this.timestamp = Date.now();
+    this.chainId = new ChainId(String(params.chainId));
+    this.validator = params.validator;
+    const pb = this.encodeBytes();
+    this.signature = Utils.signMessageEcc(pb, params.agentPrivateKey);
+    console.log('validator', params.validator, this.validator);
+    return this;
+  }
 }
