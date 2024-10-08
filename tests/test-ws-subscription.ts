@@ -7,17 +7,17 @@ import { Events } from '../src/entities/event';
 // import { WSProvider } from '../dist';
 
 async function main() {
-  // const client = new Client(new RESTProvider('http://localhost:9531'));
-  // try {
-  //   console.log(
-  //     'AUTHORIZE-HTTP',
-  //     await client.getBlockStats({
-  //       params: {},
-  //     })
-  //   );
-  // } catch (e) {
-  //   console.log('EEEEEE', e.message);
-  //}
+  const client = new Client(new RESTProvider('http://localhost:9531'));
+  try {
+    console.log(
+      'AUTHORIZE-HTTP',
+      await client.getNodeInfo({
+        params: {},
+      })
+    );
+  } catch (e) {
+    console.log('EEEEEE', e.message);
+  }
   const wsClient = new Client(new WSProvider('ws://localhost:9091/ws'));
   const connected = await wsClient.connect();
   console.log('connected!!!');
