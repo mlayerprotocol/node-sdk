@@ -20,7 +20,7 @@
     "depl": "npm run build && cp package.json dist && cd dist/",
     "deploy": "npm run build && cp package.json dist && cd dist/ && npm publish --access public",
     "n-pack": "npm run build && cp package.json dist && cd dist/ && npm pack",
-    "build2": "rm -rf dist && tsc --outDir dist && webpack --config webpack.config.js && cp package.json dist && cp LICENSE.txt dist"
+    "build2": "rm -rf dist && tsc --outDir dist && webpack --config webpack.config.js && cp package.json dist && cp LICENSE.txt dist && cp README.md dist"
   },
   "author": "Abdulhafiz / @RulerOfCode",
   "license": "MIT",

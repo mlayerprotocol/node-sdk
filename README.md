@@ -1,17 +1,16 @@
 # mLayer node sdk
 
 - Node SDK for interacting with the mLayer protocol
-
 - Learn more at [https://www.mlayer.network](https://www.mlayer.network).
 
 
-*** Install ***
+## Install
 
 ```typescript
 yarn add @mlayerprotocol/core
 ```
 
-*** Rest client ***
+## Rest client
 
 ```typescript
 // browser based import
@@ -41,7 +40,7 @@ try {
 }
 ```
 
-*** Websocket client ***
+## Websocket client
 
 ```typescript
 // browser based import
