@@ -4,7 +4,14 @@
 
 - Learn more at [https://www.mlayer.network](https://www.mlayer.network).
 
-**_ Rest client _**
+
+*** Install ***
+
+```typescript
+yarn add @mlayerprotocol/core
+```
+
+*** Rest client ***
 
 ```typescript
 // browser based import
@@ -14,6 +21,7 @@ import {
   RESTProvider,
   Events,
 } from '@mlayerprotocol/core/browser';
+
 // nodejs backend based import
 // import { Client, Message, RESTProvider, WSProvider,  Events} from '@mlayerprotocol/core';
 
@@ -33,7 +41,7 @@ try {
 }
 ```
 
-**_ Websocket client _**
+*** Websocket client ***
 
 ```typescript
 // browser based import
