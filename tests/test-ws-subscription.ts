@@ -1,9 +1,9 @@
-require('dotenv').config();
+require("dotenv").config();
 
-import { Client, Message } from '../index';
-import { RESTProvider } from '../index';
-import { WSProvider } from '../index';
-import { Events } from '../src/entities/event';
+import { Client, Message } from "../index";
+import { RESTProvider } from "../index";
+import { WSProvider } from "../index";
+import { Events } from "../src/entities/event";
 // import { WSProvider } from '../dist';
 
 async function main() {
@@ -18,9 +18,9 @@ async function main() {
   // } catch (e) {
   //   console.log('EEEEEE', e.message);
   //}
-  const wsClient = new Client(new WSProvider('ws://localhost:9091/ws'));
+  const wsClient = new Client(new WSProvider("ws://154.12.228.25:9531"));
   const connected = await wsClient.connect();
-  console.log('connected!!!');
+  console.log("connected!!!");
   if (connected) {
     // console.log(
     //   'BLOCKSTAT-WS',
@@ -29,10 +29,10 @@ async function main() {
     //   })
     // );
 
-    const topicId = 'f0b7be5f-3e70-0a05-6f04-797462ec3e61';
+    const topicId = "f0b7be5f-3e70-0a05-6f04-797462ec3e61";
     await wsClient.subscribe(
       {
-        '2274aec8-6107-cb4f-5204-de5a9aaedb67': [
+        "2274aec8-6107-cb4f-5204-de5a9aaedb67": [
           // 'snet',
           // 'auth',
           // 'sub',
@@ -50,11 +50,11 @@ async function main() {
             console.log(sentMessage.data); // this is the message body
           }
         },
-        onSubscribe: (id) => console.log('SUBSCRIPTIONID', id),
+        onSubscribe: (id) => console.log("SUBSCRIPTIONID", id),
       }
     );
   } else {
-    console.log('Unable to connect');
+    console.log("Unable to connect");
   }
   await wsClient.subscribe;
 }
