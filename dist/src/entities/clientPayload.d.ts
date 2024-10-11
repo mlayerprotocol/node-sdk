@@ -70,4 +70,9 @@ export declare class ClientPayload<T> extends BaseEntity {
      * @returns {IAuthorization}
      */
     asPayload(): IClientPayload;
+    sign(params: {
+        chainId: string | number;
+        agentPrivateKey: string;
+        validator: string;
+    }): ClientPayload<T>;
 }
