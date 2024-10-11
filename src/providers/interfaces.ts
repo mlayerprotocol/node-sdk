@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 import { ClientPayload } from "../entities";
 import { Events, IEvents } from "../entities/event";
+=======
+import { ClientPayload, UUID } from '../entities';
+import { Events, IEvents } from '../entities/event';
+>>>>>>> develop
 
-export type UUID = string;
 export enum EntityType {
   Auth = "auth",
   Topic = "top",

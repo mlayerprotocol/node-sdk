@@ -2,9 +2,22 @@ import { isHexString } from "ethers";
 import { BaseEntity } from "./base";
 import { Utils } from "../helper";
 import { Address } from "./address";
+import { ClientPayload, MemberTopicEventType } from './clientPayload';
+import { UUID } from './types';
 
 type AddressString = string;
 type HexString = string;
+
+// export type SubscriptionPayload = {
+//   agentPrivateKey: Buffer;
+//   account: Address;
+//   topic: string;
+//   status: SubscriptionStatus;
+//   role: SubscriberRole;
+//   subnet: UUID;
+//   subscriber?: Address;
+//   timestamp?: number;
+// };
 
 export interface ISubscription {
   id?: string;
@@ -87,5 +100,31 @@ export class Subscription extends BaseEntity {
       { type: 'string', value: this.subscriber.toString() },
       { type: 'string', value: this.topic }
     );
+  }
+
+  public static newSubscriptionPayload(payloadData: {
+    account: Address;
+    topic: string;
+    status: SubscriptionStatus;
+    role: SubscriberRole;
+    subnet: UUID;
+    subscriber?: Address;
+    timestamp?: number;
+  }): ClientPayload<Subscription> {
+    const subscribe: Subscription = new Subscription();
+    subscribe.status = payloadData.status ?? SubscriptionStatus.Invited;
+    subscribe.role = payloadData.role;
+    subscribe.subnet = payloadData.subnet;
+    subscribe.topic = payloadData.topic;
+    subscribe.subscriber = payloadData.subscriber ?? payloadData.account;
+
+    const payload: ClientPayload<Subscription> = new ClientPayload();
+    // payload.chainId = new ChainId(ML_CHAIN_ID);
+    payload.data = subscribe;
+    payload.subnet = payloadData.subnet;
+    payload.timestamp = payloadData?.timestamp;
+    payload.eventType = MemberTopicEventType.SubscribeEvent;
+    payload.account = payloadData.account;
+    return payload;
   }
 }
