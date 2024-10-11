@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from 'axios';
-import { EventFilter, Provider, SubscriptionEvents } from '.';
-import { AuthorizeEventType, ClientPayload } from '../entities';
-import { nanoid } from 'nanoid';
-import { Subject, of } from 'rxjs';
+import axios, { AxiosResponse } from "axios";
+import { EventFilter, Provider, SubscriptionEvents } from ".";
+import { AuthorizeEventType, ClientPayload } from "../entities";
+import { nanoid } from "nanoid";
+import { Subject, of } from "rxjs";
 import {
   first,
   timeout,
@@ -10,24 +10,24 @@ import {
   catchError,
   tap,
   takeUntil,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 let WsService: any;
 
-export const ERROR_MESSAGE = '__error__';
-export const STOP_MESSAGE = '__stop__';
+export const ERROR_MESSAGE = "__error__";
+export const STOP_MESSAGE = "__stop__";
 
 if (isBrowser()) {
   // In a browser environment, use the native WebSocket
   WsService = window.WebSocket;
 } else {
   // In a Node.js environment, use the 'ws' package
-  WsService = require('ws');
+  WsService = require("ws");
 }
 
 function isBrowser(): Boolean {
   return (
-    typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined'
+    typeof window !== "undefined" && typeof window.WebSocket !== "undefined"
   );
 }
 
@@ -60,7 +60,7 @@ var subscriptionMessageBus$ = new Subject<{
  *
  */
 export class WSProvider implements Provider {
-  private server: string = 'ws://localhost:8088/ws';
+  private server: string = "ws://localhost:8088/ws";
   private socket;
 
   //  private messageBus = new Subject<{ id: string; payload?: any }>();
@@ -93,20 +93,25 @@ export class WSProvider implements Provider {
 
     try {
       const subscr: any = await this.makeRequest({
-        path: '/__subscribe__',
-        method: 'post',
+        path: "/__subscribe__",
+        method: "post",
         params: filter,
       });
       const stopNotifier$ = subscriptionMessageBus$.pipe(
         tap((message) => {
-          if (message.subscriptionId == subscr && message.event[STOP_MESSAGE]) {
-            console.log('Received stop message. Ending subscription.');
+          if (
+            message.subscriptionId == subscr?.id &&
+            message.event[STOP_MESSAGE]
+          ) {
+            console.log("Received stop message. Ending subscription.");
           }
         }),
-        rxFilter(
-          (message) =>
-            message.subscriptionId == subscr && !!message.event[STOP_MESSAGE]
-        ) // Only emit when the message is 'stop'
+        rxFilter((message) => {
+          return (
+            message.subscriptionId == subscr?.id &&
+            !!message.event[STOP_MESSAGE]
+          );
+        }) // Only emit when the message is 'stop'
       );
       events.onSubscribe(subscr.id);
       await new Promise((resolve, reject) => {
@@ -116,23 +121,25 @@ export class WSProvider implements Provider {
               return message?.subscriptionId === subscr.id;
             }),
             catchError((error) => {
-              console.error('An error occurred:', error);
+              console.error("An error occurred:", error);
 
-              return of({ error: 'An error occurred.' });
+              return of({ error: "An error occurred." });
             }),
             takeUntil(stopNotifier$)
           )
           .subscribe({
             next: async (message) => {
               if (message.event[STOP_MESSAGE]) {
-                console.log('Subscription stopped');
+                console.log("Subscription stopped");
                 resolve(undefined);
                 return;
               }
               if (message.event[ERROR_MESSAGE]) {
-                reject(new Error('socket closed'));
+                reject(new Error("socket closed"));
                 return;
               }
+
+              console.log("🚀 ~ WSProvider ~ next: ~ message: ON RECIEVE");
               events.onReceive(message);
             },
 
@@ -172,12 +179,12 @@ export class WSProvider implements Provider {
           this.onClose();
         };
       } else {
-        this.socket.on('open', this.onOpen);
-        this.socket.on('error', this.onError);
+        this.socket.on("open", this.onOpen);
+        this.socket.on("error", this.onError);
 
-        this.socket.on('close', this.onClose);
+        this.socket.on("close", this.onClose);
 
-        this.socket.on('message', this.onMessage);
+        this.socket.on("message", this.onMessage);
       }
       for (let i = 0; i <= 10; i++) {
         await new Promise((r) => setTimeout(r, 1000));
@@ -192,13 +199,12 @@ export class WSProvider implements Provider {
   }
 
   onOpen() {
-    console.log('WebSocket connection opened');
+    console.log("WebSocket connection opened");
   }
 
   public onMessage(data: MessageEvent | any) {
     try {
       const msg = JSON.parse(data.toString());
-      console.log('MESSAGERECEIVED: ', msg);
       if (msg.subscriptionId) {
         subscriptionMessageBus$.next(msg);
       } else {
@@ -207,14 +213,14 @@ export class WSProvider implements Provider {
     } catch (e) {
       requestMessageBus$.next({
         id: ERROR_MESSAGE,
-        error: 'invalid response',
+        error: "invalid response",
         rCode: 500,
       });
     }
   }
 
   onError(error: Event) {
-    console.error('WebSocket error:', error);
+    console.error("WebSocket error:", error);
   }
 
   onClose = () => {
@@ -224,10 +230,10 @@ export class WSProvider implements Provider {
 
   private sendMessage(message: string): void {
     if (this.socket.readyState === WsService.OPEN) {
-      console.log('SENDINGMESSAGE', message);
+      console.log("SENDINGMESSAGE", message);
       this.socket.send(message);
     } else {
-      console.error('WebSocket is not open');
+      console.error("WebSocket is not open");
     }
   }
 
@@ -238,11 +244,11 @@ export class WSProvider implements Provider {
    */
   async makeRequest<T, O>(options: {
     path: string;
-    method?: 'get' | 'put' | 'post' | 'patch' | 'delete';
+    method?: "get" | "put" | "post" | "patch" | "delete";
     params?: Record<string, any>;
     payload?: ClientPayload<T> | undefined;
   }): Promise<Record<string, unknown>> {
-    var { payload, path, method = 'get', params } = options ?? {};
+    var { payload, path, method = "get", params } = options ?? {};
     // let path = argOptions?.path;
     // const method = argOptions?.method ?? "put";
     // const params = argOptions?.params;
@@ -250,48 +256,48 @@ export class WSProvider implements Provider {
     return new Promise((resolve, reject) => {
       let _method;
       switch (method) {
-        case 'get':
-          _method = 'READ';
+        case "get":
+          _method = "READ";
           break;
-        case 'post':
-        case 'patch':
-        case 'put':
-        case 'delete':
-          _method = 'WRITE';
+        case "post":
+        case "patch":
+        case "put":
+        case "delete":
+          _method = "WRITE";
       }
       if (payload != null) {
         switch (payload.eventType) {
           case AuthorizeEventType.AuthorizeEvent:
           case AuthorizeEventType.UnauthorizeEvent:
-            path = '/authorizations';
+            path = "/authorizations";
             break;
         }
       }
       try {
-        const action = `${_method}:${path.replace('/', '')}`;
-        console.log('Acction', action);
+        const action = `${_method}:${path.replace("/", "")}`;
+        console.log("Acction", action);
         const id = nanoid(5);
         requestMessageBus$
           .pipe(
             first((message: any) => {
-              console.debug('MakeRequest', message, id);
+              console.debug("MakeRequest", message, id);
               return message?.id === id || message?.id == ERROR_MESSAGE;
             }),
             timeout(60 * 1000),
             catchError((error) => {
-              if (error.name === 'TimeoutError') {
-                console.error('Request timed out.');
-                return of({ error: 'Request timed out.' });
+              if (error.name === "TimeoutError") {
+                console.error("Request timed out.");
+                return of({ error: "Request timed out." });
               }
-              console.error('An error occurred:', error);
-              return of({ error: 'An error occurred.' });
+              console.error("An error occurred:", error);
+              return of({ error: "An error occurred." });
             })
           )
 
           .subscribe({
             next: (message) => {
               if (message.id == ERROR_MESSAGE) {
-                reject(new Error('socket closed'));
+                reject(new Error("socket closed"));
 
                 return;
               }

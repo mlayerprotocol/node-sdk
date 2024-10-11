@@ -1,9 +1,9 @@
-require('dotenv').config();
+require("dotenv").config();
 
-import { Client, Message } from '../index';
-import { RESTProvider } from '../index';
-import { WSProvider } from '../index';
-import { Events } from '../src/entities/event';
+import { Client, Message, RPCProvider } from "../index";
+import { RESTProvider } from "../index";
+import { WSProvider } from "../index";
+import { Events } from "../src/entities/event";
 // import { WSProvider } from '../dist';
 
 async function main() {
@@ -18,9 +18,9 @@ async function main() {
   // } catch (e) {
   //   console.log('EEEEEE', e.message);
   //}
-  const wsClient = new Client(new WSProvider('ws://localhost:9091/ws'));
+  const wsClient = new Client(new WSProvider(process.env.WEBSOCKET_URL));
   const connected = await wsClient.connect();
-  console.log('connected!!!');
+  console.log("connected!!!");
   if (connected) {
     // console.log(
     //   'BLOCKSTAT-WS',
@@ -29,10 +29,10 @@ async function main() {
     //   })
     // );
 
-    const topicId = 'f0b7be5f-3e70-0a05-6f04-797462ec3e61';
+    const topicId = "9ec7d174-d9dd-7151-5295-f3751a20be9b";
     await wsClient.subscribe(
       {
-        '2274aec8-6107-cb4f-5204-de5a9aaedb67': [
+        "15ee1c23-115d-9b6f-c005-db154b42781c": [
           // 'snet',
           // 'auth',
           // 'sub',
@@ -43,18 +43,22 @@ async function main() {
       },
       {
         onError: console.log,
-        onReceive: (msg) => {
+        onReceive: async (msg) => {
           const event = Events.fromPayload(msg.event);
-          if (msg.event.modelType == topicId) {
-            const sentMessage = event.payload?.data as Message; // if listening to
-            console.log(sentMessage.data); // this is the message body
+          if (msg.event.modelType == "msg" && msg.event.topic == topicId) {
+            const sentMessage = (event.payload as any).d; // if listening to
+            console.log(Buffer.from(sentMessage.d, "hex").toString()); // this is the message body
+            const client = new Client(
+              new RESTProvider(process.env.MIDDLEWARE_HTTP)
+            );
+            await client.saveGamePoints(event);
           }
         },
-        onSubscribe: (id) => console.log('SUBSCRIPTIONID', id),
+        onSubscribe: (id) => console.log("SUBSCRIPTIONID", id),
       }
     );
   } else {
-    console.log('Unable to connect');
+    console.log("Unable to connect");
   }
   await wsClient.subscribe;
 }
