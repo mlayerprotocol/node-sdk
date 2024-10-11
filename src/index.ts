@@ -1,18 +1,18 @@
-import Jayson from 'jayson';
-import { w3cwebsocket } from 'websocket';
-import { AuthorizeEventType, ClientPayload } from './entities/clientPayload';
-import { Authorization } from './entities/authorization';
-import axios, { AxiosResponse } from 'axios';
-import { Topic } from './entities/topic';
-import { Subscription } from './entities/subscription';
-import { Message } from './entities/message';
-import { Subnet } from './entities/subNetwork';
-import { Wallet } from './entities/wallet';
-import jaysonBrowserClient from 'jayson/lib/client/browser';
-import ClientBrowser from 'jayson/lib/client/browser';
-import { EventFilter, Provider, SubscriptionEvents } from './providers';
-import { RESTProvider } from './providers/rest';
-import { WSProvider } from './providers/ws';
+import Jayson from "jayson";
+import { w3cwebsocket } from "websocket";
+import { AuthorizeEventType, ClientPayload } from "./entities/clientPayload";
+import { Authorization } from "./entities/authorization";
+import axios, { AxiosResponse } from "axios";
+import { Topic } from "./entities/topic";
+import { Subscription } from "./entities/subscription";
+import { Message } from "./entities/message";
+import { Subnet } from "./entities/subNetwork";
+import { Wallet } from "./entities/wallet";
+import jaysonBrowserClient from "jayson/lib/client/browser";
+import ClientBrowser from "jayson/lib/client/browser";
+import { EventFilter, Provider, SubscriptionEvents } from "./providers";
+import { RESTProvider } from "./providers/rest";
+import { WSProvider } from "./providers/ws";
 
 export class RPCProvider implements Provider {
   private rpcClient:
@@ -38,7 +38,7 @@ export class RPCProvider implements Provider {
           axios
             .post(server, request, {
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
             })
             .then(
@@ -54,13 +54,13 @@ export class RPCProvider implements Provider {
         this.rpcClient = new jaysonBrowserClient(callServer, rpcConfig as any);
       }
     } else {
-      if (server.startsWith('http://')) {
+      if (server.startsWith("http://")) {
         this.rpcClient = Jayson.client.http(rpcConfig as any);
       }
-      if (server.startsWith('https://')) {
+      if (server.startsWith("https://")) {
         this.rpcClient = Jayson.client.https(rpcConfig as any);
       }
-      if (server.startsWith('tcp://')) {
+      if (server.startsWith("tcp://")) {
         this.rpcClient = Jayson.client.tcp(rpcConfig as any);
       }
     }
@@ -87,7 +87,7 @@ export class Client<P> {
     payload: ClientPayload<Authorization>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/authorizations',
+      path: "/authorizations",
       payload,
     });
   }
@@ -96,8 +96,8 @@ export class Client<P> {
     payload: ClientPayload<Topic>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics',
-      method: 'post',
+      path: "/topics",
+      method: "post",
       payload,
     });
   }
@@ -107,7 +107,7 @@ export class Client<P> {
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: `/topics`,
-      method: 'put',
+      method: "put",
       payload,
     });
   }
@@ -116,8 +116,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics',
-      method: 'get',
+      path: "/topics",
+      method: "get",
       params,
     });
   }
@@ -126,8 +126,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/authorizations',
-      method: 'get',
+      path: "/authorizations",
+      method: "get",
       params,
     });
   }
@@ -136,8 +136,8 @@ export class Client<P> {
     payload: ClientPayload<Subscription>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics/subscribe',
-      method: 'post',
+      path: "/topics/subscribe",
+      method: "post",
       payload,
     });
   }
@@ -146,8 +146,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/subscription/account',
-      method: 'get',
+      path: "/subscription/account",
+      method: "get",
       params,
     });
   }
@@ -156,8 +156,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics/subscribers',
-      method: 'get',
+      path: "/topics/subscribers",
+      method: "get",
       params,
     });
   }
@@ -166,8 +166,8 @@ export class Client<P> {
     payload: ClientPayload<Message>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/topics/messages',
-      method: 'post',
+      path: "/topics/messages",
+      method: "post",
       payload,
     });
   }
@@ -176,8 +176,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/info',
-      method: 'get',
+      path: "/info",
+      method: "get",
       params,
     });
   }
@@ -186,8 +186,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/block-stats',
-      method: 'get',
+      path: "/block-stats",
+      method: "get",
       params,
     });
   }
@@ -196,8 +196,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/main-stats',
-      method: 'get',
+      path: "/main-stats",
+      method: "get",
       params,
     });
   }
@@ -207,7 +207,7 @@ export class Client<P> {
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: `/topics/${id}/messages`,
-      method: 'get',
+      method: "get",
       params,
     });
   }
@@ -218,7 +218,7 @@ export class Client<P> {
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
       path: `/event/${type}/${id}`,
-      method: 'get',
+      method: "get",
     });
   }
 
@@ -228,7 +228,7 @@ export class Client<P> {
     delay = 0,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     const data = await this.getEvent({ type, id });
-    const synced: boolean = data?.['data']?.['sync'] ?? false;
+    const synced: boolean = data?.["data"]?.["sync"] ?? false;
     if (synced) {
       return data;
     }
@@ -244,8 +244,8 @@ export class Client<P> {
     payload: ClientPayload<Subnet>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/subnets',
-      method: 'post',
+      path: "/subnets",
+      method: "post",
       payload,
     });
   }
@@ -254,8 +254,8 @@ export class Client<P> {
     params,
   }: Record<string, any>): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/subnets',
-      method: 'get',
+      path: "/subnets",
+      method: "get",
       params,
     });
   }
@@ -264,9 +264,18 @@ export class Client<P> {
     payload: ClientPayload<Wallet>
   ): Promise<Record<string, unknown>> {
     return await this.provider.makeRequest({
-      path: '/wallets',
-      method: 'post',
+      path: "/wallets",
+      method: "post",
       payload,
+    });
+  }
+
+  public async saveGamePoints(payload: any): Promise<Record<string, unknown>> {
+    return await this.provider.makeRequest({
+      path: "/activity/game",
+      method: "post",
+      payload,
+      prefix: "v1",
     });
   }
 }

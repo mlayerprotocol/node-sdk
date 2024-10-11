@@ -7,10 +7,11 @@ import {
   AuthorizeEventType,
   ClientPayload,
 } from "../src/entities/clientPayload";
-import { Client, RESTProvider } from "../src";
+import { Client } from "../src";
 import { validator, account, agent, agentList } from "./lib/keys";
 import { Topic } from "../src/entities/topic";
 import { Address } from "../src/entities/address";
+import { RESTProvider } from "../src/providers";
 
 // console.log(Utils.generateKeyPairEdd());
 
@@ -31,8 +32,8 @@ async function main() {
   //   Utils.toAddress(Buffer.from(validator.publicKey, 'hex'))
   // );
 
-  topic.ref = 'blockchainworld009902';
-  topic.meta = 'The best toopic';
+  topic.ref = "blockchainworld009902";
+  topic.meta = "The best toopic";
 
   topic.public = true;
 
@@ -43,7 +44,7 @@ async function main() {
   payload.validator = validator.publicKey;
   payload.account = Address.fromString(agentList[0].account.address);
   payload.nonce = 0;
-  payload.subnet = '360db526-9592-b78c-1c5c-f57a92410857';
+  payload.subnet = "360db526-9592-b78c-1c5c-f57a92410857";
   const pb = payload.encodeBytes();
   console.log("HEXDATA", pb.toString("hex"));
   payload.signature = await Utils.signMessageEcc(pb, agentList[0].privateKey);

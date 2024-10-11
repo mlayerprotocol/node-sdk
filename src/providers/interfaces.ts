@@ -1,16 +1,16 @@
-import { ClientPayload } from '../entities';
-import { Events, IEvents } from '../entities/event';
+import { ClientPayload } from "../entities";
+import { Events, IEvents } from "../entities/event";
 
 export type UUID = string;
 export enum EntityType {
-  Auth = 'auth',
-  Topic = 'top',
-  Subscription = 'sub',
-  Message = 'msg',
-  Subnet = 'snet',
-  Wallet = 'wal',
+  Auth = "auth",
+  Topic = "top",
+  Subscription = "sub",
+  Message = "msg",
+  Subnet = "snet",
+  Wallet = "wal",
 }
-export type FilterValue = '*' | EntityType | UUID;
+export type FilterValue = "*" | EntityType | UUID;
 export type EventFilter = Record<string, FilterValue[]>;
 export interface ISubRespData extends IEvents {
   modelType: string;
@@ -19,17 +19,17 @@ export interface ISubRespData extends IEvents {
 type PartialWithRequired<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 type PartialEvent = PartialWithRequired<
   IEvents,
-  | 'snet'
-  | 'id'
-  | 'blk'
-  | 'cy'
-  | 'ep'
-  | 'h'
-  | 'preE'
-  | 'authE'
-  | 'ts'
-  | 'val'
-  | 't'
+  | "snet"
+  | "id"
+  | "blk"
+  | "cy"
+  | "ep"
+  | "h"
+  | "preE"
+  | "authE"
+  | "ts"
+  | "val"
+  | "t"
 >;
 export interface ISubRespData extends PartialEvent {
   modelType: string;
@@ -56,9 +56,10 @@ export interface Provider {
     // payload: unknown,
     options: {
       path: string;
-      method?: 'get' | 'put' | 'post' | 'patch' | 'delete';
+      method?: "get" | "put" | "post" | "patch" | "delete";
       params?: Record<string, any>;
       payload?: ClientPayload<T> | undefined;
+      prefix?: string;
     }
   ) => Promise<Record<string, unknown>>;
 }
